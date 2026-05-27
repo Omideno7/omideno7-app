@@ -1,7 +1,7 @@
 {
   "name": "Omid No 7 Church",
   "short_name": "Omid No 7",
-  "description": "Daily Word, Prayer, Faith — کلیسای امیدنو۷",
+  "description": "Daily Word, Prayer, Faith",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,1 +1,0 @@
-# omideno7-app

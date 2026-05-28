@@ -1,15 +1,14 @@
-Omid No 7 Church PWA - V12 Fixed Complete
+Omid No 7 Church PWA - V13 Plans Navigation + Bible Nav + Salvation Plan
 
-Fixes:
-- Home page now includes Teaching Plans, Bible, and Faith Declarations.
-- Teaching Plans page renders the 10-day Obedience and Blessing plan with all 10 banners.
-- Related Scriptures now have beautiful expandable buttons and show verse text.
-- More section includes Our Vision, Beliefs, Privacy & Personal Data Protection.
-- Translation keys are fully included to prevent raw key names appearing.
-- Google Analytics ID remains active.
+Updates:
+- Bottom navigation now includes: Home, Plans, Bible, Word, More.
+- Bible has a generic Bible icon and opens Bible.com.
+- Plans page now starts with a plan list.
+- User selects a plan, starts Day 1, then continues day by day.
+- Added second 10-day plan: Salvation and New Life in Christ.
+- Scripture references inside plans are localized by language: English, Persian, Croatian.
+- Obedience plan keeps the 10 uploaded day banners.
 
 Upload all files to GitHub root and Commit changes.
 Test:
-https://omideno7.github.io/omideno7-app/?v=12
-
-If old content appears, open the test link with ?v=12 or remove and reinstall the Home Screen app.
+https://omideno7.github.io/omideno7-app/?v=13

@@ -32,3 +32,20 @@ V15:
 - Plans now use a clean professional design without portrait images.
 Test URL:
 https://omideno7.github.io/omideno7-app/?v=15
+
+
+V16:
+- Scripture references inside the Teaching Plans are now clickable expandable buttons.
+- Tapping a scripture reference opens the verse text.
+- Verse text is localized for English, Persian, and Croatian where the plan is viewed.
+Test URL:
+https://omideno7.github.io/omideno7-app/?v=16
+
+
+V17:
+- Salvation and New Life in Christ plan now has a unique devotional teaching for each of the 10 days.
+- Each day is deeper and aligned with its title/topic.
+- Scripture references remain clickable expandable buttons.
+- Verse text remains localized in English, Persian, and Croatian.
+Test URL:
+https://omideno7.github.io/omideno7-app/?v=17

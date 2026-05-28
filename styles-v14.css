@@ -36,3 +36,53 @@
   margin-bottom:16px;
 }
 .plan-cover{display:none!important}
+
+/* V16 expandable scriptures inside teaching plans */
+.plan-scripture-expand{
+  background:linear-gradient(135deg,#ffffff,#F7FFF8);
+  border:1px solid #CFEAD4;
+  border-radius:18px;
+  margin:10px 0;
+  overflow:hidden;
+  box-shadow:0 4px 12px rgba(16,24,40,.04);
+}
+.plan-scripture-expand summary{
+  list-style:none;
+  cursor:pointer;
+  padding:14px 16px;
+  color:var(--blue);
+  font-weight:900;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.plan-scripture-expand summary::-webkit-details-marker{display:none}
+.plan-scripture-expand summary:after{
+  content:"＋";
+  background:var(--green);
+  color:#fff;
+  border-radius:50%;
+  width:26px;
+  height:26px;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  font-weight:900;
+  flex:0 0 auto;
+  margin-left:10px;
+}
+.fa .plan-scripture-expand summary:after{
+  margin-left:0;
+  margin-right:10px;
+}
+.plan-scripture-expand[open] summary:after{
+  content:"−";
+  background:var(--gold);
+}
+.plan-scripture-expand p{
+  padding:0 16px 16px;
+  margin:0;
+  line-height:1.85;
+  color:var(--text);
+  font-weight:650;
+}

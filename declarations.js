@@ -3,9 +3,9 @@ window.declarationsData = {
     "financial": {
       "title": "Financial Declaration",
       "items": [
-        "I walk in wisdom, diligence, and divine provision.",
-        "The Lord teaches me to profit and leads me in the way I should go.",
-        "I am blessed to be a blessing, and my resources serve God’s Kingdom."
+        "The Lord gives me wisdom, diligence, and divine provision.",
+        "I am blessed to be a blessing, and my resources serve God’s Kingdom.",
+        "God teaches me to profit and leads me in the way I should go."
       ]
     },
     "health": {
@@ -29,9 +29,9 @@ window.declarationsData = {
     "financial": {
       "title": "اعلان مالی",
       "items": [
-        "من در حکمت، تلاش درست و تأمین الهی قدم برمی‌دارم.",
-        "خداوند مرا برای نفع و پیشرفت تعلیم می‌دهد و در راه درست هدایت می‌کند.",
-        "من برکت یافته‌ام تا برکت باشم و منابع من در خدمت پادشاهی خدا قرار می‌گیرد."
+        "خداوند به من حکمت، تلاش درست و تأمین الهی می‌بخشد.",
+        "من برکت یافته‌ام تا برکت باشم و منابع من در خدمت پادشاهی خدا قرار می‌گیرد.",
+        "خداوند مرا برای نفع و پیشرفت تعلیم می‌دهد و در راه درست هدایت می‌کند."
       ]
     },
     "health": {
@@ -55,9 +55,9 @@ window.declarationsData = {
     "financial": {
       "title": "Financijska izjava vjere",
       "items": [
-        "Hodam u mudrosti, marljivosti i Božjoj opskrbi.",
-        "Gospodin me uči za napredak i vodi me putem kojim trebam ići.",
-        "Blagoslovljen sam da budem blagoslov, a moji resursi služe Božjem kraljevstvu."
+        "Gospodin mi daje mudrost, marljivost i božansku opskrbu.",
+        "Blagoslovljen sam da budem blagoslov, a moji resursi služe Božjem kraljevstvu.",
+        "Bog me uči za napredak i vodi me putem kojim trebam ići."
       ]
     },
     "health": {

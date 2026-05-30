@@ -1,0 +1,25 @@
+V30 New Testament + Key Words
+
+This version includes the complete New Testament:
+- Persian: Old Persian Version / ترجمه قدیم
+- English: World English Bible Protestant Edition
+- Croatian: Sveta Biblija / Ivan Šarić
+
+Features:
+- Select book
+- Select chapter
+- Search
+- Bookmark
+- Mark read
+- Highlight colors
+- Bold verse
+- Verse note up to 1000 characters
+- Original-language key word panels
+
+Important:
+The original-language key word system is now built into the app, but the lexical/explanatory dataset is intentionally expandable.
+The first set includes important theological verses and Greek terms such as:
+logos, agape, zoe aionios, charis, pistis, dikaioo, eirene, katakrima.
+
+Next step:
+Expand key word notes chapter by chapter, or begin with Romans, John, Ephesians, Hebrews, and 1 John.

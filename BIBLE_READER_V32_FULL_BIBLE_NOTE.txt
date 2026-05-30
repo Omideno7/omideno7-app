@@ -1,0 +1,18 @@
+V32 Full Canonical Bible + Apocrypha Shell
+
+Included:
+- Complete Old Testament
+- Complete New Testament
+- Persian / English / Croatian text
+- Search, bookmark, read marker, highlight, bold, notes up to 1000 characters
+- Key-word panel system where key terms are defined
+
+Sources:
+- Persian: Old Persian Version / ترجمه قدیم
+- English: World English Bible Protestant Edition
+- Croatian: Sveta Biblija / Ivan Šarić
+
+Apocrypha:
+The section and book list are prepared, but the full text is not included yet.
+Reason: we need verified public-domain or otherwise permitted Persian and Croatian texts.
+English public-domain texts exist for several books, but the user requested three-language support.

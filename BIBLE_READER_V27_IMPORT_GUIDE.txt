@@ -1,0 +1,26 @@
+V27 BIBLE READER DATA IMPORT GUIDE
+
+This V27 package adds the Bible Reader interface and reader features:
+- Book selector
+- Chapter selector
+- Search over imported verses
+- Bookmark
+- Read marker
+- Highlight colors
+- Bold verse
+- Personal note up to 1000 characters per verse
+
+The included Bible text is only starter/sample text for testing the interface.
+To add the full Bible in Persian, English, and Croatian, we need approved structured data.
+
+Recommended sources:
+- English: World English Bible (WEB) or KJV
+- Persian: Old Persian Version / ترجمه قدیم
+- Croatian: Ivan Šarić Bible / Sveta Biblija
+
+Future audio structure:
+audio/fa/MAT/001.mp3
+audio/en/MAT/001.mp3
+audio/hr/MAT/001.mp3
+
+When audio files are ready, chapter audio buttons can be enabled.

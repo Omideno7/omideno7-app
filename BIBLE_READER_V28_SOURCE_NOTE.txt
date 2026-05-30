@@ -1,0 +1,12 @@
+V28 Gospel Text Sources
+
+This version includes the complete four Gospels:
+- Persian: Old Persian Version / ترجمه قدیم, prepared from eBible/BibleNLP corpus.
+- English: World English Bible Protestant Edition, prepared from eBible/BibleNLP corpus.
+- Croatian: Sveta Biblija / Ivan Šarić, prepared from eBible/BibleNLP corpus.
+
+The app currently includes the four Gospels only: Matthew, Mark, Luke, and John.
+Next stages:
+1. Add the full New Testament.
+2. Add the full Bible.
+3. Add audio files recorded by Omideno7 Church.

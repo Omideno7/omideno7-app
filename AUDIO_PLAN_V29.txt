@@ -1,0 +1,19 @@
+V29 AUDIO PLAN
+
+The browser/computer voice has been removed from the visible app because it was unstable and sounded unnatural.
+
+Recommended future professional audio structure:
+audio/daily/fa/day-01.mp3
+audio/daily/en/day-01.mp3
+audio/daily/hr/day-01.mp3
+
+audio/bible/fa/MAT/001.mp3
+audio/bible/en/MAT/001.mp3
+audio/bible/hr/MAT/001.mp3
+
+When Omideno7 Church records the audio, we can add:
+- Play / Pause / Stop buttons
+- progress bar
+- per-language audio
+- per-chapter Bible audio
+- per-day devotional audio

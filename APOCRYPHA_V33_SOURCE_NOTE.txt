@@ -1,0 +1,8 @@
+V33 Apocrypha Source Note
+
+English Apocrypha text is loaded from Project Gutenberg eBook #124: Deuterocanonical Books of the Bible.
+Project Gutenberg lists the work as Public domain in the USA. Users outside the USA should check local laws.
+
+The app includes a trilingual introduction. Persian and Croatian translations of the Apocrypha are planned for a later version.
+
+Book of Enoch currently opens to its Project Gutenberg page as an external source until a clean in-app verse/chapter structure is prepared.

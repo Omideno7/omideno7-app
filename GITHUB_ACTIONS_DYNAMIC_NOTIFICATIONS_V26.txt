@@ -1,0 +1,41 @@
+OMIDENO7 V26 - AUTOMATIC DYNAMIC NOTIFICATIONS
+
+You already created these GitHub Secrets:
+ONESIGNAL_APP_ID
+ONESIGNAL_REST_API_KEY
+
+Upload ALL files from this ZIP to your GitHub repository, including:
+.github/workflows/send-daily-word.yml
+.github/workflows/send-thanksgiving.yml
+.github/workflows/send-faith-declaration.yml
+scripts/send-dynamic-notification.js
+
+After Commit, go to:
+GitHub Repository > Actions
+
+You should see 3 workflows:
+1. Send Daily Word notification
+2. Send Thanksgiving notification
+3. Send Faith Declaration notification
+
+Click each workflow and press "Run workflow" one time for testing.
+
+Schedules:
+Daily Word: 02:00 UTC = 04:00 Croatia summer time
+Thanksgiving: 07:00 UTC = 09:00 Croatia summer time
+Faith Declaration: 10:00 UTC = 12:00 Croatia summer time
+
+Important:
+GitHub cron uses UTC. During Croatian winter time, these will arrive one hour earlier in local time unless the cron is changed.
+
+Direct links:
+Daily Word: https://omideno7.github.io/omideno7-app/?page=word&v=26
+Thanksgiving: https://omideno7.github.io/omideno7-app/?page=thanksgiving&v=26
+Faith Declarations: https://omideno7.github.io/omideno7-app/?page=declarations&v=26
+
+The script sends 3 localized notifications every run:
+language=fa
+language=en
+language=hr
+
+Users must open the V25/V26 app at least once so the language tag reaches OneSignal.

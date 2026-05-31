@@ -1,0 +1,1 @@
+V58 adds Persian Apocrypha / Pseudepigrapha texts extracted from user-provided PDFs. Croatian apocrypha remains for later. English KJVA remains from V57. Upload files in root; do not delete audio folders. Test with ?v=58.

@@ -989,4 +989,13 @@ window.declarationsData = [
       "hr": "Pročitaj ovu izjavu naglas najmanje tri puta danas: ujutro, tijekom dana i navečer."
     }
   }
+  ,{
+    "day": 31,
+    "title": {"fa":"تازگی زندگی در مسیح","en":"Newness of Life in Christ","hr":"Novost života u Kristu"},
+    "ref": {"fa":"رومیان ۶:۴","en":"Romans 6:4","hr":"Rimljanima 6:4"},
+    "verse": {"fa":"تا چنانکه مسیح به جلال پدر از مردگان برخیزانیده شد، ما نیز در تازگی حیات رفتار نماییم.","en":"Just as Christ was raised from the dead by the glory of the Father, even so we also should walk in newness of life.","hr":"Kao što Krist uskrsnu od mrtvih slavom Očevom, tako i mi hodimo u novosti života."},
+    "teaching": {"fa":"امروز قلب خود را روی حقیقت «تازگی زندگی در مسیح» متمرکز کن و این اعلان را با ایمان و صدای بلند بخوان.","en":"Focus your heart today on “newness of life in Christ” and speak this declaration with faith and out loud.","hr":"Danas usmjeri srce na “novost života u Kristu” i izgovori ovu izjavu vjerom i naglas."},
+    "declaration": {"fa":"امروز با ایمان اعلام می‌کنم که من در مسیح برای زندگی تازه برخاسته‌ام. گذشته من مالک آینده من نیست. ترس، محکومیت، شکست و عادت‌های قدیمی قدرت ندارند هویت مرا تعیین کنند. من با حیات خدا، با کلام خدا و با هدایت روح‌القدس زندگی می‌کنم. امروز فکر من تازه می‌شود، زبان من با ایمان سخن می‌گوید، قدم‌های من با حکمت هدایت می‌شود و زندگی من ثمر مسیح را نشان می‌دهد. من در تازگی حیات رفتار می‌کنم. در نام عیسی مسیح، آمین.","en":"Today I declare by faith that I have been raised in Christ for a new life. My past does not own my future. Fear, condemnation, failure, and old habits have no power to define my identity. I live by the life of God, the Word of God, and the guidance of the Holy Spirit. Today my mind is renewed, my mouth speaks faith, my steps are guided with wisdom, and my life shows the fruit of Christ. I walk in newness of life. In the Name of Jesus Christ, Amen.","hr":"Danas vjerom izjavljujem da sam u Kristu podignut za novi život. Moja prošlost ne posjeduje moju budućnost. Strah, osuda, neuspjeh i stare navike nemaju moć odrediti moj identitet. Živim Božjim životom, Božjom riječju i vodstvom Duha Svetoga. Danas se moj um obnavlja, moja usta govore vjeru, moji koraci se vode mudrošću i moj život pokazuje Kristov plod. Hodim u novosti života. U ime Isusa Krista, amen."},
+    "practice": {"fa":"امروز سه بار با صدای بلند بگو: من در مسیح تازه هستم و در تازگی حیات قدم برمی‌دارم.","en":"Say out loud three times today: I am new in Christ, and I walk in newness of life.","hr":"Danas tri puta naglas reci: Nov sam u Kristu i hodim u novosti života."}
+  }
 ];

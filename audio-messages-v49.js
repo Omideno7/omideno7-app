@@ -1,12 +1,12 @@
-/* OmidNo7 V47 - Spiritual Audio Teachings Fix
+/* OmidNo7 V49 - Persian Spiritual Audio Compact Player
    Replace/upload this file and load it after app-v45.js.
    Fixes: Persian teaching audio list not showing, restores Persian titles, keeps existing audio files in GitHub paths. */
 (function(){
   const d=document;
   function addStyle(){
-    if(d.getElementById('audio-teachings-fix-v47-style')) return;
+    if(d.getElementById('audio-messages-v49-style')) return;
     const s=d.createElement('style');
-    s.id='audio-teachings-fix-v47-style';
+    s.id='audio-messages-v49-style';
     s.textContent=`
       .audio-home-card{border-top:5px solid var(--gold,#D4A72C);}
       .audio-hero{border-top:5px solid var(--gold,#D4A72C);}
@@ -14,6 +14,11 @@
       .audio-cat-btn{border:1px solid var(--line,#E5E7EB);background:#fff;border-radius:999px;padding:9px 13px;font-weight:900;color:var(--blue,#06146D);white-space:nowrap;cursor:pointer;font-family:inherit;}
       .audio-cat-btn.active{background:var(--blue,#06146D);color:#fff;border-color:var(--blue,#06146D);}
       .audio-message-card{border-inline-start:5px solid var(--gold,#D4A72C);}
+      .audio-message-title-btn{width:100%;border:0;background:transparent;text-align:inherit;font-family:inherit;cursor:pointer;padding:0;color:var(--blue,#06146D);}
+      .audio-message-title-btn h3{margin:8px 0 4px;font-size:18px;}
+      .audio-message-content{display:none;margin-top:10px;}
+      .audio-message-card.open .audio-message-content{display:block;}
+      .audio-open-hint{font-size:12px;color:#64748B;font-weight:800;}
       .audio-message-head h3{margin:8px 0 6px;}
       .audio-tag{display:inline-block;background:#FFF8E8;border:1px solid #E9D69A;color:#6B4A00;border-radius:999px;padding:4px 10px;font-weight:900;font-size:12px;}
       .audio-message-card audio{width:100%;margin-top:10px;}
@@ -53,7 +58,7 @@
   window.toggleAudioNote=function(id){ const box=d.getElementById('audio-note-box-'+id); if(box) box.hidden=!box.hidden; };
   window.saveAudioNote=function(id){ const el=d.getElementById('audio-note-'+id); if(!el)return; localStorage.setItem('audio_note_'+id,el.value||''); const st=d.getElementById('audio-note-status-'+id); if(st)st.textContent='ذخیره شد'; };
   window.toggleAudioFavorite=function(id){ const k='audio_favorite_'+id; localStorage.getItem(k)==='1'?localStorage.removeItem(k):localStorage.setItem(k,'1'); renderSpiritualAudioList(window.currentAudioCategory||'morning'); };
-  window.audioShareLink=function(id){ const url=new URL(location.href); url.searchParams.set('v','48'); url.searchParams.set('audio',id); url.searchParams.delete('reset'); return url.origin+url.pathname+url.search; };
+  window.audioShareLink=function(id){ const url=new URL(location.href); url.searchParams.set('v','49'); url.searchParams.set('audio',id); url.searchParams.delete('reset'); return url.origin+url.pathname+url.search; };
   window.shareAudioMessage=async function(id){ const item=AUDIO_ITEMS.find(x=>x.id===id); if(!item)return; const link=window.audioShareLink(id); const text=item.title+'\n\nبرای گوش دادن به این پیام صوتی از اپ کلیسای امیدنو۷ وارد شوید:\n'+link; try{ if(navigator.share) await navigator.share({title:item.title,text,url:link}); else { await navigator.clipboard.writeText(text); alert('لینک پیام کپی شد'); } }catch(e){ try{ await navigator.clipboard.writeText(text); alert('لینک پیام کپی شد'); }catch(err){ prompt('لینک پیام:',link); } } };
   window.renderSpiritualAudioFeature=function(){
     addStyle();
@@ -83,6 +88,12 @@
     window.renderSpiritualAudioList(def);
     if(targetId){ setTimeout(()=>{ const el=d.getElementById('audio-card-'+targetId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },100); }
   };
+  window.toggleAudioMessage=function(id){
+    const card=d.getElementById('audio-card-'+id);
+    if(!card)return;
+    const open=card.classList.toggle('open');
+    if(open){ const a=audioEl(id); if(a){ d.querySelectorAll('.spiritual-audio-el').forEach(x=>{if(x!==a)x.pause();}); const p=a.play(); if(p&&p.catch)p.catch(()=>{}); } }
+  };
   window.renderSpiritualAudioList=function(cat){
     window.currentAudioCategory=cat || 'morning';
     const list=d.getElementById('audioMessagesList'); if(!list)return;
@@ -90,7 +101,7 @@
     list.innerHTML=items.length?items.map(item=>{
       const note=localStorage.getItem('audio_note_'+item.id)||'';
       const fav=localStorage.getItem('audio_favorite_'+item.id)==='1';
-      return '<div class="card audio-message-card" id="audio-card-'+item.id+'"><div class="audio-message-head"><span class="audio-tag">'+item.tag+'</span><h3>'+item.title+'</h3><p>'+item.desc+'</p></div><audio id="audio-player-'+item.id+'" class="spiritual-audio-el" preload="metadata" controls src="'+item.src+'"></audio><div class="audio-control-bar"><button type="button" onclick="playAudio(\''+item.id+'\')">▶︎ / ⏸</button><button type="button" onclick="seekAudio(\''+item.id+'\',-15)">-۱۵ ثانیه</button><button type="button" onclick="seekAudio(\''+item.id+'\',15)">+۱۵ ثانیه</button><button type="button" onclick="stopAudio(\''+item.id+'\')">توقف</button></div><div class="audio-speed-row"><strong>سرعت:</strong><button type="button" class="active" data-speed-for="'+item.id+'" data-rate="1" onclick="setAudioSpeed(\''+item.id+'\',1)">1x</button><button type="button" data-speed-for="'+item.id+'" data-rate="1.25" onclick="setAudioSpeed(\''+item.id+'\',1.25)">1.25x</button><button type="button" data-speed-for="'+item.id+'" data-rate="1.5" onclick="setAudioSpeed(\''+item.id+'\',1.5)">1.5x</button><button type="button" data-speed-for="'+item.id+'" data-rate="2" onclick="setAudioSpeed(\''+item.id+'\',2)">2x</button></div><div class="audio-action-row"><button class="btn secondary" type="button" onclick="toggleAudioNote(\''+item.id+'\')">یادداشت</button><button class="btn secondary" type="button" onclick="toggleAudioFavorite(\''+item.id+'\')">'+(fav?'★ ستاره‌دار':'☆ ستاره‌دار')+'</button><button class="btn gold" type="button" onclick="shareAudioMessage(\''+item.id+'\')">اشتراک‌گذاری لینک</button></div><div class="audio-note-box" id="audio-note-box-'+item.id+'" hidden><textarea id="audio-note-'+item.id+'" maxlength="1000" placeholder="یادداشت شما...">'+note+'</textarea><div class="audio-action-row"><button class="btn primary" type="button" onclick="saveAudioNote(\''+item.id+'\')">ذخیره یادداشت</button><span class="status" id="audio-note-status-'+item.id+'"></span></div></div></div>';
+      return '<div class="card audio-message-card" id="audio-card-'+item.id+'"><div class="audio-message-head"><span class="audio-tag">'+item.tag+'</span><button class="audio-message-title-btn" type="button" onclick="toggleAudioMessage(\''+item.id+'\')"><h3>'+item.title+'</h3><span class="audio-open-hint">برای پخش و باز شدن ابزارها کلیک کنید</span></button></div><div class="audio-message-content"><p>'+item.desc+'</p><audio id="audio-player-'+item.id+'" class="spiritual-audio-el" preload="metadata" controls src="'+item.src+'"></audio><div class="audio-control-bar"><button type="button" onclick="playAudio(\''+item.id+'\')">▶︎ / ⏸</button><button type="button" onclick="seekAudio(\''+item.id+'\',-15)">-۱۵ ثانیه</button><button type="button" onclick="seekAudio(\''+item.id+'\',15)">+۱۵ ثانیه</button><button type="button" onclick="stopAudio(\''+item.id+'\')">توقف</button></div><div class="audio-speed-row"><strong>سرعت:</strong><button type="button" class="active" data-speed-for="'+item.id+'" data-rate="1" onclick="setAudioSpeed(\''+item.id+'\',1)">1x</button><button type="button" data-speed-for="'+item.id+'" data-rate="1.25" onclick="setAudioSpeed(\''+item.id+'\',1.25)">1.25x</button><button type="button" data-speed-for="'+item.id+'" data-rate="1.5" onclick="setAudioSpeed(\''+item.id+'\',1.5)">1.5x</button><button type="button" data-speed-for="'+item.id+'" data-rate="2" onclick="setAudioSpeed(\''+item.id+'\',2)">2x</button></div><div class="audio-action-row"><button class="btn secondary" type="button" onclick="toggleAudioNote(\''+item.id+'\')">یادداشت</button><button class="btn secondary" type="button" onclick="toggleAudioFavorite(\''+item.id+'\')">'+(fav?'★ ستاره‌دار':'☆ ستاره‌دار')+'</button><button class="btn gold" type="button" onclick="shareAudioMessage(\''+item.id+'\')">اشتراک‌گذاری لینک</button></div><div class="audio-note-box" id="audio-note-box-'+item.id+'" hidden><textarea id="audio-note-'+item.id+'" maxlength="1000" placeholder="یادداشت شما...">'+note+'</textarea><div class="audio-action-row"><button class="btn primary" type="button" onclick="saveAudioNote(\''+item.id+'\')">ذخیره یادداشت</button><span class="status" id="audio-note-status-'+item.id+'"></span></div></div></div></div>';
     }).join(''):'<div class="card audio-empty-card"><p>فعلاً پیامی در این دسته‌بندی ثبت نشده است.</p></div>';
   };
   function boot(){ addStyle(); window.renderSpiritualAudioFeature(); if(d.getElementById('audioMessages')?.classList.contains('active')) window.renderSpiritualAudioMessages(); const audioParam=new URLSearchParams(location.search).get('audio'); if(audioParam) setTimeout(()=>window.openSpiritualAudio(audioParam),250); }

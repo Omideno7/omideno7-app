@@ -989,4 +989,13 @@ window.dailyMessages = [
       "hr": "Gospodine, otvori oči moga srca za svoju slavu i obnavljaj moju nadu svaki dan. Amen."
     }
   }
+  ,{
+    "day": 31,
+    "title": {"fa":"در مسیح تازه می‌شوم","en":"Renewed in Christ","hr":"Obnovljen u Kristu"},
+    "ref": {"fa":"دوم قرنتیان ۵:۱۷","en":"2 Corinthians 5:17","hr":"2. Korinćanima 5:17"},
+    "verse": {"fa":"پس اگر کسی در مسیح باشد، خلقت تازه‌ای است؛ چیزهای کهنه درگذشت، اینک همه چیز تازه شده است.","en":"If anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.","hr":"Ako je tko u Kristu, novo je stvorenje; staro je prošlo, gle, sve je novo nastalo."},
+    "message": {"fa":"امروز به یاد داشته باش که زندگی تو در مسیح بر پایه گذشته، ترس یا شکست‌های قدیمی تعریف نمی‌شود. خدا تو را در مسیح تازه کرده است. هر روز می‌توانی با ایمان، فکر خود را با کلام خدا تازه کنی و در هویت تازه‌ات قدم برداری.","en":"Remember today that your life in Christ is not defined by the past, fear, or old failures. God has made you new in Christ. Every day you can renew your mind with God’s Word and walk in your new identity.","hr":"Danas se sjeti da tvoj život u Kristu nije određen prošlošću, strahom ili starim neuspjesima. Bog te učinio novim u Kristu. Svaki dan možeš obnavljati svoj um Božjom riječju i hodati u svom novom identitetu."},
+    "declaration": {"fa":"من در مسیح خلقت تازه هستم؛ امروز با فکر تازه، ایمان تازه و قوت تازه زندگی می‌کنم.","en":"I am a new creation in Christ; today I live with renewed thoughts, renewed faith, and renewed strength.","hr":"Ja sam novo stvorenje u Kristu; danas živim s obnovljenim mislima, obnovljenom vjerom i obnovljenom snagom."},
+    "prayer": {"fa":"خداوندا، ذهن و قلب مرا با کلام خود تازه کن تا امروز در هویت تازه‌ام در مسیح قدم بردارم. آمین.","en":"Lord, renew my mind and heart with Your Word so I may walk today in my new identity in Christ. Amen.","hr":"Gospodine, obnovi moj um i srce svojom Riječju kako bih danas hodao u svom novom identitetu u Kristu. Amen."}
+  }
 ];

@@ -1,249 +1,324 @@
 window.newBirthContentData = {
   "fa": {
-    "title": "نیاز به نجات",
-    "subtitle": "اگر هنوز نجات را دریافت نکرده‌اید، این بخش شما را قدم‌به‌قدم به شناخت نجات، دعای نجات، تولد تازه و زندگی مسیحی هدایت می‌کند.",
+    "title": "تولد تازه و نجات در مسیح",
+    "subtitle": "این بخش برای کسانی است که می‌خواهند نجات را بشناسند، دعای نجات را با ایمان بخوانند، درباره زندگی مسیحی یاد بگیرند، ثبت‌نام کنند و تعالیم تولد تازه را ببینند.",
     "sections": [
       {
         "id": "what",
         "title": "نجات چیست؟",
         "content": [
-          "نجات، کار عظیم خدا در عیسی مسیح است که انسان را از گناه، محکومیت، جدایی از خدا، تاریکی و مرگ روحانی بیرون می‌آورد و او را وارد حیات جاودان، آمرزش، عدالت و رابطه زنده با خدا می‌کند.",
-          "کتاب‌مقدس می‌گوید: «زیرا همه گناه کرده‌اند و از جلال خدا قاصر می‌باشند» (رومیان ۳:۲۳). این یعنی مشکل اصلی انسان فقط ضعف اخلاقی یا کمبود آموزش نیست؛ مشکل اصلی، گناه و جدایی از خداست. هیچ انسان، از هر قوم، زبان، ملیت، فرهنگ یا جایگاه اجتماعی، نمی‌تواند با قدرت خودش خود را نجات دهد.",
-          "کلام خدا می‌گوید: «زیرا مزد گناه موت است، اما نعمت خدا حیات جاودانی در خداوند ما عیسی مسیح» (رومیان ۶:۲۳). پس انسان به نجات نیاز دارد، زیرا گناه مرگ روحانی می‌آورد، اما خدا در مسیح حیات جاودان می‌بخشد.",
-          "نجات با اعمال نیکو خریداری نمی‌شود. کتاب‌مقدس می‌گوید: «زیرا که محض فیض نجات یافته‌اید، به‌وسیله ایمان؛ و این از شما نیست بلکه بخشش خداست؛ و نه از اعمال، تا هیچ‌کس فخر نکند» (افسسیان ۲:۸-۹). نجات هدیه خداست، اما این هدیه با ایمان به عیسی مسیح دریافت می‌شود.",
-          "عیسی مسیح تنها راه نجات است. خود عیسی فرمود: «من راه و راستی و حیات هستم؛ هیچ‌کس نزد پدر جز به‌وسیله من نمی‌آید» (یوحنا ۱۴:۶). بنابراین نجات یعنی ایمان آوردن به مرگ، دفن و قیام عیسی مسیح و پذیرفتن او به عنوان خداوند و نجات‌دهنده زندگی."
+          "نجات یکی از مهم‌ترین حقیقت‌های کلام خداست. نجات یعنی انسان از گناه، مرگ روحانی، محکومیت و جدایی از خدا آزاد شود و به زندگی تازه در مسیح وارد گردد. نجات فقط یک تغییر مذهبی نیست؛ نجات تولد تازه، انتقال از تاریکی به نور، و ورود به رابطه زنده با خدا از طریق عیسی مسیح است.",
+          "کتاب‌مقدس می‌گوید: «زیرا خدا جهان را این‌قدر محبت نمود که پسر یگانه خود را داد تا هر که به او ایمان آورد هلاک نگردد بلکه حیات جاودانی یابد.» — یوحنا ۳:۱۶",
+          "این آیه نشان می‌دهد که نجات از محبت خدا آغاز شد. انسان با قدرت، اعمال نیک، شریعت، مذهب یا تلاش شخصی نمی‌تواند خود را نجات دهد. نجات هدیه خداست، نه پاداش کارهای انسان.",
+          "افسسیان ۲:۸-۹ می‌گوید: «زیرا که محض فیض نجات یافته‌اید، به وسیله ایمان؛ و این از شما نیست بلکه بخشش خداست؛ و نه از اعمال، تا هیچ‌کس فخر نکند.» پس نجات بر پایه فیض خدا و ایمان انسان به عیسی مسیح است.",
+          "چرا انسان به نجات نیاز دارد؟ از ابتدا، خدا انسان را برای مشارکت، محبت و زندگی در حضور خود آفرید. اما گناه باعث جدایی انسان از خدا شد. گناه فقط انجام کارهای اشتباه نیست؛ گناه یک طبیعت سقوط‌کرده است که انسان را از حیات خدا جدا می‌کند.",
+          "رومیان ۳:۲۳ می‌گوید: «زیرا همه گناه کرده‌اند و از جلال خدا قاصر می‌باشند.» یعنی همه انسان‌ها، بدون استثنا، به نجات نیاز دارند. هیچ انسانی با اخلاق خوب، دانش، ثروت، خدمت مذهبی یا کارهای نیک نمی‌تواند خودش را عادل کند. تنها راه نجات، عیسی مسیح است.",
+          "عیسی مسیح پسر خداست که به جهان آمد تا انسان را نجات دهد. او بدون گناه زندگی کرد، بر صلیب مرد، خون خود را برای آمرزش گناهان ما ریخت، دفن شد و در روز سوم از مردگان برخاست.",
+          "مرگ عیسی بر صلیب فقط یک مرگ تاریخی نبود؛ او جای ما را گرفت. مجازاتی که باید بر ما می‌آمد، بر او قرار گرفت. او گناه، محکومیت و مرگ ما را بر خود گرفت تا ما حیات، عدالت و صلح با خدا را دریافت کنیم.",
+          "رومیان ۵:۸ می‌گوید: «اما خدا محبت خود را در ما ثابت می‌کند از اینکه هنگامی که ما هنوز گناهکار بودیم، مسیح در راه ما مرد.» این یعنی خدا منتظر نماند تا انسان کامل شود. وقتی ما هنوز گناهکار بودیم، مسیح برای ما مرد. این محبت حقیقی خداست.",
+          "نجات با ایمان به عیسی مسیح دریافت می‌شود. ایمان فقط قبول ذهنی نیست؛ ایمان یعنی اعتماد قلبی به عیسی، پذیرفتن او به عنوان خداوند، و اعتراف به اینکه خدا او را از مردگان برخیزانید.",
+          "رومیان ۱۰:۹-۱۰ می‌گوید: «زیرا اگر به زبان خود عیسی خداوند را اعتراف کنی و در دل خود ایمان آوری که خدا او را از مردگان برخیزانید، نجات خواهی یافت. چون به دل ایمان آورده می‌شود برای عدالت، و به زبان اعتراف می‌شود برای نجات.»",
+          "طبق این آیه، نجات با دو حقیقت مهم دریافت می‌شود: اول، ایمان در دل؛ یعنی شخص در قلب خود باور می‌کند که عیسی مسیح مرد و خدا او را از مردگان برخیزانید. دوم، اعتراف با زبان؛ یعنی شخص با زبان خود اعلام می‌کند که عیسی مسیح خداوند زندگی اوست.",
+          "نجات فقط بخشیده شدن گناهان گذشته نیست. نجات یعنی انسان از درون تازه می‌شود و حیات خدا را دریافت می‌کند. عیسی فرمود: «اگر کسی از سر نو مولود نشود، ملکوت خدا را نمی‌تواند دید.» — یوحنا ۳:۳",
+          "تولد تازه یعنی روح انسان دوباره زنده می‌شود. وقتی شخص عیسی را می‌پذیرد، خدا او را فرزند خود می‌سازد. او دیگر فقط یک انسان عادی نیست؛ او مخلوق تازه در مسیح است.",
+          "دوم قرنتیان ۵:۱۷ می‌گوید: «پس اگر کسی در مسیح باشد، خلقت تازه‌ای است؛ چیزهای کهنه درگذشت، اینک همه چیز تازه شده است.» این یعنی گذشته تو دیگر هویت تو نیست. در مسیح، تو یک خلقت تازه هستی.",
+          "وقتی شخص نجات را دریافت می‌کند، گناهان او آمرزیده می‌شود. اول یوحنا ۱:۷ می‌گوید: «خون عیسی مسیح، پسر او، ما را از هر گناه پاک می‌سازد.» کسی که در مسیح است، دیگر زیر محکومیت نیست.",
+          "رومیان ۸:۱ می‌گوید: «پس الآن هیچ قصاص نیست بر آنانی که در مسیح عیسی هستند.» یعنی کسی که در مسیح است، دیگر محکوم نیست. خدا او را پذیرفته، بخشیده و عادل شمرده است.",
+          "حیات جاودانی فقط زندگی بعد از مرگ نیست. حیات جاودانی، نوع زندگی خداست که از لحظه ایمان آوردن در روح انسان قرار می‌گیرد. اول یوحنا ۵:۱۱-۱۲ می‌گوید: «خدا حیات جاودانی به ما داده است و این حیات در پسر اوست. آن که پسر را دارد، حیات را دارد.»",
+          "نجات برای همه انسان‌هاست. رومیان ۱۰:۱۳ می‌گوید: «زیرا هر که نام خداوند را بخواند، نجات خواهد یافت.» کلمه «هر که» یعنی هر انسان، در هر شرایطی، با هر گذشته‌ای، می‌تواند نجات یابد.",
+          "نتیجه نجات این است که انسان با خدا صلح دارد، گناهانش آمرزیده شده است، از محکومیت آزاد شده است، حیات جاودانی دارد، فرزند خدا شده است، روح‌القدس در او ساکن می‌شود و قدرت زندگی تازه را دریافت می‌کند.",
+          "کولسیان ۱:۱۳-۱۴ می‌گوید: «او ما را از قدرت ظلمت رهانیده و به ملکوت پسر محبت خود منتقل ساخته است؛ که در او فدیه خود، یعنی آمرزش گناهان را یافته‌ایم.»",
+          "نجات برای امروز است. لازم نیست صبر کنی تا کامل شوی. عیسی تو را همان‌طور که هستی می‌پذیرد، اما تو را همان‌طور که هستی رها نمی‌کند؛ او تو را تازه، پاک، قوی و زنده می‌سازد. امروز می‌توانی با ایمان، عیسی مسیح را به عنوان خداوند و نجات‌دهنده خود بپذیری."
         ]
       },
       {
         "id": "prayer",
         "title": "دعای نجات",
-        "intro": "اگر می‌خواهید عیسی مسیح را به عنوان خداوند و نجات‌دهنده زندگی خود بپذیرید، لطفاً این دعا را با ایمان، از قلب خود و با صدای بلند بخوانید.",
+        "intro": "اگر می‌خواهید عیسی مسیح را به عنوان خداوند و نجات‌دهنده زندگی خود بپذیرید، این دعا را با ایمان، از قلب خود و با صدای بلند بخوانید.",
         "content": [
-          "خداوندا،",
-          "امروز با ایمان، فروتنی و قلبی باز نزد تو می‌آیم.",
-          "اعتراف می‌کنم که گناهکار هستم و به نجات نیاز دارم.",
-          "اعتراف می‌کنم که گناه مرا از تو جدا کرده است و با قدرت خودم نمی‌توانم خود را نجات دهم و عادل شمرده شوم. ایمان دارم که هیچ عمل نیکو، دینداری، تلاش انسانی یا قدرت شخصی نمی‌تواند مرا از گناه آزاد کند و به من حیات جاودان و عادل‌شمردگی را بدهد.",
-          "ای خداوند، من به رحمت، محبت و فیض تو نیاز دارم.",
-          "من ایمان دارم که تو انسان را برای نابودی نیافریدی، بلکه می‌خواهی همه نجات یابند و به شناخت حقیقت برسند.",
-          "امروز قلب خود را به روی نجات تو باز می‌کنم و بر طبق وعده‌ات مرا نجات بده.",
-          "ای خداوند عیسی مسیح، من ایمان دارم که تو پسر خدا هستی.",
-          "ایمان دارم که از طرف پدر آمدی تا انسان را نجات دهی.",
-          "ایمان دارم که تو بی‌گناه بودی، اما برای گناهان من بر صلیب جان دادی.",
-          "ایمان دارم که خون مقدس تو برای بخشش، پاکی و نجات و حیات من ریخته شد.",
-          "ایمان دارم که تو بر روی صلیب به اختیار خودت جان دادی، دفن شدی، و در روز سوم از دنیای مردگان قیام نمودی و با خون پاکت بهای تمامی گناهان مرا پرداخت نمودی.",
-          "امروز با قلب خود ایمان می‌آورم و با دهان خود اعتراف می‌کنم که عیسی مسیح خداوند است.",
-          "عیسی مسیح خداوند زندگی من است. عیسی مسیح نجات‌دهنده من است.",
-          "ای عیسی مسیح، من تو را به عنوان خداوند و نجات‌دهنده زندگی خود می‌پذیرم.",
-          "از زندگی بدون خدا بازمی‌گردم. از گناه، تاریکی و راه‌های گذشته خود توبه می‌کنم.",
-          "زندگی، قلب، فکر، آینده و تمام وجود خود را به تو می‌سپارم.",
-          "خداوندا اکنون، وارد قلب و جان من شو و قلبی تازه در من ایجاد کن.",
-          "روح تازه‌ای در درون من قرار بده. مرا از درون تازه بساز و مرا فرزند خود بگردان.",
-          "ای روح‌القدس، لطفاً به زندگی من بیا. در قلب من ساکن شو.",
-          "مرا هدایت کن، تعلیم بده، تقویت کن و تبدیل نما.",
-          "چشمان روحانی مرا باز کن تا کلام خدا را بفهمم.",
-          "به من کمک کن تا در ایمان، محبت، قدوسیت، اطاعت و شناخت خداوند رشد کنم.",
-          "امروز با ایمان اعلام می‌کنم: عیسی مسیح برای گناهان من مُرد. عیسی مسیح دفن شد. عیسی مسیح در روز سوم از دنیای مردگان برخاست. و اکنون عیسی مسیح زنده است. عیسی مسیح خداوند من است.",
-          "از امروز ایمان دارم که نجات یافته‌ام. گناهان من بخشیده شده‌اند و از نو متولد شده‌ام.",
-          "من از مرگ به حیات منتقل شده‌ام. من از تاریکی به ملکوت خدا وارد شده‌ام.",
-          "من دیگر اسیر گناه نیستم. من متعلق به خدا هستم. من فرزند خدا هستم.",
-          "نام من در کتاب حیات نوشته شده است. حیات جاودان را در عیسی مسیح دریافت کرده‌ام.",
+          "خداوندا، امروز با ایمان و قلبی باز نزد تو می‌آیم.",
+          "ایمان دارم که عیسی مسیح پسر خداست؛ او برای گناهان من بر صلیب مرد، دفن شد و در روز سوم از مردگان برخاست.",
+          "من با قلب خود ایمان می‌آورم و با زبان خود اعتراف می‌کنم که عیسی مسیح خداوند زندگی من است.",
+          "ای عیسی مسیح، تو را به عنوان خداوند و نجات‌دهنده خود می‌پذیرم. وارد قلب من شو، مرا ببخش، مرا پاک کن و مرا از نو متولد ساز.",
+          "از امروز اعلام می‌کنم که نجات یافته‌ام، فرزند خدا هستم، از تاریکی به نور منتقل شده‌ام و حیات جاودانی را در مسیح دریافت کرده‌ام.",
+          "ای روح‌القدس، در من ساکن شو، مرا تعلیم بده، مرا هدایت کن و کمک کن در ایمان، محبت، اطاعت و شناخت خداوند رشد کنم.",
           "در نام عیسی مسیح. آمین."
         ]
       },
       {
-        "id": "newbirth",
-        "title": "تولد تازه چیست؟",
+        "id": "life",
+        "title": "زندگی مسیحی چیست؟",
         "content": [
-          "تولد تازه یعنی خدا انسان را از درون با حیات خود تازه می‌سازد. عیسی فرمود: «اگر کسی از سر نو مولود نشود، ملکوت خدا را نمی‌تواند دید» (یوحنا ۳:۳). این تولد، یک تغییر مذهبی ظاهری نیست؛ یک خلقت تازه روحانی در مسیح است.",
-          "وقتی شخص به عیسی مسیح ایمان می‌آورد و او را به عنوان خداوند می‌پذیرد، خدا روح او را زنده می‌کند، او را می‌بخشد، عادل می‌شمارد و وارد خانواده خود می‌سازد. کتاب‌مقدس می‌گوید: «اگر کسی در مسیح باشد، خلقت تازه‌ای است؛ چیزهای کهنه گذشت، اینک همه چیز تازه شده است» (دوم قرنتیان ۵:۱۷).",
-          "بعد از دریافت نجات، بسیار مهم است که ایماندار تازه، تعلیم درست بشنود تا ایمان او از ابتدا بر کلام خدا بنا شود. برای همین، لطفاً شش قسمت تعلیم تولد تازه را با دقت گوش کنید."
-        ],
-        "videosTitle": "تعالیم تولد تازه — شش قسمت"
+          "زندگی مسیحی فقط پذیرفتن یک دین یا رفتن به کلیسا نیست؛ زندگی مسیحی یعنی آغاز یک زندگی تازه با عیسی مسیح. وقتی شخص به عیسی ایمان می‌آورد، او از درون تولد تازه پیدا می‌کند و وارد رابطه‌ای زنده با خدا می‌شود. از آن لحظه، او دیگر تنها زندگی نمی‌کند، بلکه روح خدا در او ساکن می‌شود و او را در مسیر رشد، شناخت خدا، محبت، ایمان و اطاعت هدایت می‌کند.",
+          "ایمان به عیسی آغاز راه است، اما رشد در ایمان نیاز به توجه، تعهد و زندگی روزانه با خدا دارد. همان‌طور که یک کودک برای رشد به غذا، مراقبت و آموزش نیاز دارد، ایماندار تازه نیز برای رشد روحانی به کلام خدا، دعا، پرستش، شنیدن تعلیم درست و حضور در جمع ایمانداران نیاز دارد.",
+          "۱. خواندن کلام خدا: کلام خدا غذای روح انسان است. اگر ایماندار بخواهد در ایمان قوی شود، باید خواندن کتاب‌مقدس را در زندگی خود جایگاه بسیار مهمی بدهد. کتاب‌مقدس به ما نشان می‌دهد خدا کیست، ما در مسیح چه کسی هستیم، چگونه باید زندگی کنیم، چگونه با وسوسه‌ها مقابله کنیم و چگونه در اراده خدا قدم برداریم.",
+          "عیسی فرمود: «انسان تنها به نان زیست نمی‌کند، بلکه به هر کلامی که از دهان خدا صادر گردد.» پس همان‌طور که بدن ما هر روز به غذا نیاز دارد، روح ما نیز هر روز به کلام خدا نیاز دارد.",
+          "۲. دعا و رابطه شخصی با خدا: دعا فقط درخواست کردن از خدا نیست؛ دعا یعنی گفت‌وگو، مشارکت و رابطه با پدر آسمانی. ایماندار باید یاد بگیرد هر روز با خدا صحبت کند، او را شکر کند، صدای او را بشنود، برای زندگی خود هدایت بطلبد و برای دیگران دعا کند.",
+          "دعا ایمان را فعال می‌کند، دل انسان را آرام می‌سازد و او را در حضور خدا قوی نگه می‌دارد. کسی که دعا را جدی می‌گیرد، در برابر ترس، وسوسه، ضعف و سردی روحانی مقاوم‌تر می‌شود.",
+          "۳. پرستش خداوند: پرستش فقط خواندن سرود نیست؛ پرستش یعنی احترام، محبت، تسلیم و تمرکز قلب بر خدا. وقتی ما خدا را می‌پرستیم، توجه ما از مشکلات برداشته می‌شود و بر عظمت، محبت و قدرت خداوند قرار می‌گیرد.",
+          "پرستش فضای قلب انسان را تغییر می‌دهد. پرستش باعث می‌شود حضور خدا را عمیق‌تر تجربه کنیم، دل ما نرم شود و ایمان ما تقویت گردد. یک ایماندار باید پرستش را بخشی مهم از زندگی روزانه خود بداند.",
+          "۴. حضور در کلیسا: کلیسا فقط یک ساختمان نیست؛ کلیسا خانواده روحانی ایمانداران است. خدا ما را تنها نجات نداده است که تنها زندگی کنیم، بلکه ما را وارد بدن مسیح کرده است. هر ایماندار نیاز دارد در یک کلیسای سالم، زنده و کتاب‌مقدسی رشد کند.",
+          "در کلیسا ما تعلیم می‌گیریم، تشویق می‌شویم، اصلاح می‌شویم، دعا می‌کنیم، خدمت می‌کنیم و در محبت رشد می‌کنیم. ایمانداری که از کلیسا جدا شود، به‌تدریج ضعیف می‌شود؛ اما کسی که در جمع ایمانداران می‌ماند، رشد، حفاظت و تقویت روحانی دریافت می‌کند.",
+          "۵. شنیدن کلام و تعلیم درست: ایمان از شنیدن کلام خدا می‌آید. به همین دلیل، ایماندار باید به تعلیم درست، موعظه کتاب‌مقدسی و آموزش روحانی اهمیت زیادی بدهد. هر چیزی که می‌شنویم بر فکر، ایمان و تصمیم‌های ما اثر می‌گذارد.",
+          "پس باید مراقب باشیم چه تعلیمی دریافت می‌کنیم. تعلیم درست ما را به عیسی نزدیک‌تر می‌کند، ایمان ما را قوی‌تر می‌سازد و ما را از فریب، ترس و افکار غلط حفظ می‌کند.",
+          "۶. رشد در ایمان و روح: ایمان مسیحی باید رشد کند. رشد روحانی یعنی شخص روزبه‌روز شبیه‌تر به مسیح شود؛ در محبت، بخشش، صبر، پاکی، حکمت، اطاعت و خدمت رشد کند. رشد در ایمان زمانی اتفاق می‌افتد که شخص فقط شنونده کلام نباشد، بلکه انجام‌دهنده کلام خدا شود.",
+          "ایمان واقعی در زندگی روزانه دیده می‌شود؛ در رفتار ما، در گفتار ما، در تصمیم‌های ما، در رابطه ما با دیگران، در وفاداری ما به خدا و در ایستادگی ما هنگام سختی‌ها.",
+          "۷. وظیفه ایماندار نسبت به ایمان خود: هر ایماندار مسئول است که ایمان خود را مراقبت کند، رشد دهد و جدی بگیرد. نجات هدیه خداست، اما رشد روحانی نیاز به همکاری ما با روح‌القدس دارد. ما باید وقت خود را با خدا تنظیم کنیم، کلام او را بخوانیم، دعا کنیم، در کلیسا بمانیم، تعلیم بپذیریم و از چیزهایی که ایمان ما را ضعیف می‌کند دوری کنیم.",
+          "ایمان مانند بذری است که باید آبیاری شود. اگر به آن توجه شود، رشد می‌کند و ثمر می‌آورد؛ اما اگر رها شود، ضعیف می‌شود. بنابراین، ایماندار باید زندگی خود را بر اساس کلام خدا بنا کند، نه بر احساسات، ترس‌ها، عادت‌های گذشته یا فرهنگ دنیا.",
+          "زندگی مسیحی یک سفر زیبا با خداست؛ سفری از نجات به رشد، از ضعف به قوت، از نادانی به شناخت، و از زندگی معمولی به زندگی پر از روح خدا. هر کسی که تازه به عیسی ایمان آورده است باید بداند که خدا او را دوست دارد، او را پذیرفته و برای زندگی او نقشه‌ای عالی دارد.",
+          "برای رشد در این زندگی تازه، خواندن کلام خدا، دعا، پرستش، حضور در کلیسا، شنیدن تعلیم درست و اطاعت از کلام باید جایگاه بسیار والایی در زندگی او داشته باشد. وقتی ایماندار این اصول را جدی بگیرد، در ایمان قوی می‌شود، روح رشد می‌کند و زندگی او به‌تدریج ثمرات مسیح را نشان خواهد داد."
+        ]
       },
       {
-        "id": "life",
-        "title": "زندگی مسیحی",
+        "id": "register",
+        "title": "ثبت‌نام و عضویت",
         "content": [
-          "زندگی مسیحی فقط عضو شدن در یک گروه مذهبی نیست؛ زندگی تازه با خدا، در مسیح و به‌وسیله روح‌القدس است. ایماندار تازه باید یاد بگیرد که با کلام خدا فکر کند، با ایمان دعا کند، از هدایت روح‌القدس پیروی کند، و در محبت، قدوسیت، اطاعت و خدمت رشد نماید.",
-          "عیسی فرمود: «اگر شما در کلام من بمانید، به‌حقیقت شاگرد من خواهید بود؛ و حق را خواهید شناخت و حق شما را آزاد خواهد کرد» (یوحنا ۸:۳۱-۳۲). بنابراین زندگی مسیحی با ماندن در کلام، دعا، مشارکت با کلیسا، تعلیم درست و اطاعت روزانه ساخته می‌شود.",
-          "پس از دعای نجات، قدم بعدی این است که در فرم ثبت‌نام اطلاعات خود را وارد کنید تا بتوانیم با شما ارتباط بگیریم، برای شما دعا کنیم، تعالیم لازم را در اختیار شما بگذاریم و شما را در مسیر رشد ایمانی همراهی کنیم."
+          "ثبت‌نام بعد از دعای نجات",
+          "اگر دعای دریافت نجات را خواندید یا می‌خواهید درباره ایمان به عیسی مسیح بیشتر بدانید، لطفاً فرم زیر را تکمیل کنید. تیم خدمتی کلیسای امیدنو۷ با محبت با شما ارتباط خواهد گرفت، برای شما دعا خواهد کرد و شما را در مسیر رشد ایمانی و شاگردسازی راهنمایی خواهد نمود.",
+          "متی ۲۸:۱۹–۲۰ — عیسی به ما فرمان داد که شاگرد بسازیم و مردم را تعلیم دهیم تا در راه او رشد کنند."
         ]
+      },
+      {
+        "id": "videos",
+        "title": "ویدیوهای تولد تازه",
+        "content": [
+          "برای اینکه ایمان شما از ابتدا بر پایه صحیح بنا شود، این شش تعلیم را به ترتیب ببینید. این تعالیم به شما کمک می‌کند بفهمید تولد تازه چیست، نجات در مسیح چه معنایی دارد، و چگونه باید زندگی تازه خود را در ایمان آغاز کنید."
+        ],
+        "videosTitle": "شش قسمت تعلیم تولد تازه"
       }
     ],
-    "registerText": "ثبت‌نام بعد از دعای نجات",
+    "registerText": "باز کردن فرم ثبت‌نام کلیسا",
     "registerUrl": "https://docs.google.com/forms/d/133BVzudIVIHozGroo-EHJqLKutjzSdZ7c_dl0k-vCuI/viewform"
   },
   "en": {
-    "title": "Need Salvation?",
-    "subtitle": "If you have not yet received salvation, this section will guide you step by step into understanding salvation, praying the prayer of salvation, learning the new birth, and beginning the Christian life.",
+    "title": "New Birth & Salvation in Christ",
+    "subtitle": "This section helps you understand salvation, pray the prayer of salvation with faith, learn about the Christian life, register with the church, and watch the New Birth teachings.",
     "sections": [
       {
         "id": "what",
         "title": "What Is Salvation?",
         "content": [
-          "Salvation is God’s great work in Jesus Christ by which a person is delivered from sin, condemnation, separation from God, darkness, and spiritual death, and brought into eternal life, forgiveness, righteousness, and living fellowship with God.",
-          "The Bible says, “For all have sinned, and come short of the glory of God” (Romans 3:23, KJV). This means the deepest human problem is not merely moral weakness or lack of education; the deepest problem is sin and separation from God. No person, from any tribe, language, nation, culture, or social position, can save himself by his own power.",
-          "The Word of God says, “For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord” (Romans 6:23, KJV). Therefore mankind needs salvation because sin brings spiritual death, but God gives eternal life in Christ.",
-          "Salvation is not purchased by good works. The Bible says, “For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast” (Ephesians 2:8-9, KJV). Salvation is the gift of God, and this gift is received by faith in Jesus Christ.",
-          "Jesus Christ is the only way of salvation. Jesus said, “I am the way, the truth, and the life: no man cometh unto the Father, but by me” (John 14:6, KJV). Salvation means believing in the death, burial, and resurrection of Jesus Christ and receiving Him as the Lord and Savior of your life."
+          "Salvation is one of the most important truths of God’s Word. Salvation means that a person is delivered from sin, spiritual death, condemnation, and separation from God, and is brought into new life in Christ. It is not merely a religious change; it is the new birth, a transfer from darkness to light, and entrance into a living relationship with God through Jesus Christ.",
+          "The Bible says: “For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.” — John 3:16",
+          "This verse shows that salvation began with God’s love. A person cannot save himself by power, good works, law, religion, or personal effort. Salvation is the gift of God, not the reward of human works.",
+          "Ephesians 2:8-9 says: “For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast.” Salvation is therefore based on God’s grace and our faith in Jesus Christ.",
+          "Why does mankind need salvation? God created man for fellowship, love, and life in His presence. But sin separated man from God. Sin is not only wrong actions; it is a fallen nature that separates man from the life of God.",
+          "Romans 3:23 says: “For all have sinned, and come short of the glory of God.” This means that every person, without exception, needs salvation. No one can make himself righteous by good morals, knowledge, wealth, religious service, or good works. The only way of salvation is Jesus Christ.",
+          "Jesus Christ is the Son of God who came into the world to save mankind. He lived without sin, died on the cross, shed His blood for the forgiveness of our sins, was buried, and rose from the dead on the third day.",
+          "The death of Jesus on the cross was not merely a historical death; He took our place. The punishment that should have come upon us was laid upon Him. He took our sin, condemnation, and death so that we might receive life, righteousness, and peace with God.",
+          "Romans 5:8 says: “But God commendeth his love toward us, in that, while we were yet sinners, Christ died for us.” God did not wait for man to become perfect. While we were still sinners, Christ died for us. This is the true love of God.",
+          "Salvation is received by faith in Jesus Christ. Faith is not only mental agreement; faith means trusting Jesus from the heart, receiving Him as Lord, and confessing that God raised Him from the dead.",
+          "Romans 10:9-10 says that if you confess with your mouth the Lord Jesus and believe in your heart that God raised Him from the dead, you shall be saved. With the heart man believes unto righteousness, and with the mouth confession is made unto salvation.",
+          "According to this scripture, salvation is received through two important truths: first, faith in the heart; second, confession with the mouth that Jesus Christ is Lord.",
+          "Salvation is not only forgiveness of past sins. Salvation means that a person is made new inwardly and receives the life of God. Jesus said: “Except a man be born again, he cannot see the kingdom of God.” — John 3:3",
+          "The new birth means that the human spirit is made alive again. When a person receives Jesus, God makes him His child. He is no longer merely an ordinary person; he is a new creation in Christ.",
+          "2 Corinthians 5:17 says: “Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new.” Your past is no longer your identity. In Christ, you are a new creation.",
+          "When a person receives salvation, his sins are forgiven. 1 John 1:7 says that the blood of Jesus Christ cleanses us from all sin. The one who is in Christ is no longer under condemnation.",
+          "Romans 8:1 says: “There is therefore now no condemnation to them which are in Christ Jesus.” God has accepted, forgiven, and justified the person who is in Christ.",
+          "Eternal life is not only life after death. Eternal life is the very life of God placed in the human spirit from the moment of faith. 1 John 5:11-12 says that God has given us eternal life, and this life is in His Son. He who has the Son has life.",
+          "Salvation is for all people. Romans 10:13 says: “For whosoever shall call upon the name of the Lord shall be saved.” Whoever means any person, in any condition, with any past, can be saved.",
+          "The result of salvation is peace with God, forgiveness of sins, freedom from condemnation, eternal life, sonship, the indwelling of the Holy Spirit, and the power to live a new life.",
+          "Colossians 1:13-14 says that God has delivered us from the power of darkness and transferred us into the kingdom of His dear Son, in whom we have redemption and forgiveness of sins.",
+          "Salvation is for today. You do not need to wait until you become perfect. Jesus receives you as you are, but He does not leave you as you are; He makes you new, clean, strong, and alive. Today you can receive Jesus Christ by faith as your Lord and Savior."
         ]
       },
       {
         "id": "prayer",
         "title": "Prayer of Salvation",
-        "intro": "If you want to receive Jesus Christ as the Lord and Savior of your life, please read this prayer with faith, from your heart, and out loud.",
+        "intro": "If you want to receive Jesus Christ as the Lord and Savior of your life, read this prayer with faith, from your heart, and out loud.",
         "content": [
-          "Lord God,",
-          "Today I come to You with faith, humility, and an open heart.",
-          "I confess that I am a sinner and that I need salvation.",
-          "I confess that sin has separated me from You, and by my own power I cannot save myself or be justified. I believe that no good work, religion, human effort, or personal strength can free me from sin or give me eternal life and justification.",
-          "O Lord, I need Your mercy, love, and grace.",
-          "I believe that You did not create man for destruction, but You want all people to be saved and to come to the knowledge of the truth.",
-          "Today I open my heart to Your salvation, and according to Your promise, save me.",
-          "Lord Jesus Christ, I believe that You are the Son of God.",
-          "I believe that You came from the Father to save mankind.",
-          "I believe that You were without sin, yet You died on the cross for my sins.",
-          "I believe that Your holy blood was shed for my forgiveness, cleansing, salvation, and life.",
-          "I believe that You willingly gave Your life on the cross, were buried, and rose from the world of the dead on the third day, and by Your pure blood You paid the price for all my sins.",
-          "Today I believe with my heart and confess with my mouth that Jesus Christ is Lord.",
-          "Jesus Christ is the Lord of my life. Jesus Christ is my Savior.",
-          "Lord Jesus Christ, I receive You as the Lord and Savior of my life.",
-          "I turn away from life without God. I repent from sin, darkness, and my former ways.",
-          "I surrender my life, heart, mind, future, and my entire being to You.",
-          "Lord, now come into my heart and soul and create a new heart in me.",
-          "Put a new spirit within me. Make me new from within and make me Your child.",
-          "Holy Spirit, please come into my life. Dwell in my heart.",
-          "Guide me, teach me, strengthen me, and transform me.",
-          "Open my spiritual eyes so I may understand the Word of God.",
-          "Help me grow in faith, love, holiness, obedience, and the knowledge of the Lord.",
-          "Today I declare by faith: Jesus Christ died for my sins. Jesus Christ was buried. Jesus Christ rose from the world of the dead on the third day. And now Jesus Christ is alive. Jesus Christ is my Lord.",
-          "From today, I believe that I am saved. My sins are forgiven, and I am born again.",
-          "I have passed from death to life. I have been brought out of darkness into the Kingdom of God.",
-          "I am no longer a slave of sin. I belong to God. I am a child of God.",
-          "My name is written in the Book of Life. I have received eternal life in Jesus Christ.",
-          "In the Name of Jesus Christ. Amen."
+          "Lord God, today I come to You with faith and an open heart.",
+          "I believe that Jesus Christ is the Son of God; He died on the cross for my sins, was buried, and rose from the dead on the third day.",
+          "I believe in my heart and confess with my mouth that Jesus Christ is the Lord of my life.",
+          "Lord Jesus, I receive You as my Lord and Savior. Come into my heart, forgive me, cleanse me, and cause me to be born again.",
+          "From today I declare that I am saved, I am a child of God, I have been transferred from darkness to light, and I have received eternal life in Christ.",
+          "Holy Spirit, dwell in me, teach me, guide me, and help me grow in faith, love, obedience, and the knowledge of the Lord.",
+          "In the name of Jesus Christ. Amen."
         ]
-      },
-      {
-        "id": "newbirth",
-        "title": "What Is the New Birth?",
-        "content": [
-          "The new birth means that God makes a person new from within by His life. Jesus said, “Except a man be born again, he cannot see the kingdom of God” (John 3:3, KJV). This is not an outward religious change; it is a new spiritual creation in Christ.",
-          "When a person believes in Jesus Christ and receives Him as Lord, God makes his spirit alive, forgives him, justifies him, and brings him into His family. The Bible says, “Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new” (2 Corinthians 5:17, KJV).",
-          "After receiving salvation, it is very important for the new believer to hear sound teaching so that faith is built from the beginning on the Word of God. Please listen carefully to the six parts of the New Birth teaching."
-        ],
-        "videosTitle": "New Birth Teachings — Six Parts"
       },
       {
         "id": "life",
-        "title": "The Christian Life",
+        "title": "What Is the Christian Life?",
         "content": [
-          "The Christian life is not merely joining a religious group; it is a new life with God, in Christ, and by the Holy Spirit. A new believer must learn to think with the Word of God, pray with faith, follow the guidance of the Holy Spirit, and grow in love, holiness, obedience, and service.",
-          "Jesus said, “If ye continue in my word, then are ye my disciples indeed; And ye shall know the truth, and the truth shall make you free” (John 8:31-32, KJV). Therefore the Christian life is built by remaining in the Word, prayer, fellowship with the church, sound teaching, and daily obedience.",
-          "After the prayer of salvation, the next step is to fill out the registration form so we can contact you, pray for you, provide the necessary teachings, and walk with you in your growth of faith."
+          "The Christian life is not merely accepting a religion or attending church; it is the beginning of a new life with Jesus Christ. When a person believes in Jesus, he is born again inwardly and enters into a living relationship with God. From that moment, he no longer lives alone; the Spirit of God dwells in him and leads him in growth, knowledge of God, love, faith, and obedience.",
+          "Faith in Jesus is the beginning of the journey, but growth in faith requires attention, commitment, and daily life with God. Just as a child needs food, care, and instruction to grow, a new believer needs the Word of God, prayer, worship, sound teaching, and fellowship with believers.",
+          "1. Reading the Word of God: God’s Word is food for the human spirit. If a believer wants to become strong in faith, the Bible must have an important place in daily life. Scripture shows us who God is, who we are in Christ, how to live, how to resist temptation, and how to walk in God’s will.",
+          "Jesus said that man shall not live by bread alone, but by every word that proceeds from the mouth of God. As our body needs food every day, our spirit also needs God’s Word every day.",
+          "2. Prayer and personal relationship with God: Prayer is not only asking God for things; prayer is conversation, fellowship, and relationship with the heavenly Father. A believer must learn to speak with God every day, thank Him, listen to His voice, seek guidance, and pray for others.",
+          "Prayer activates faith, brings peace to the heart, and keeps the believer strong in God’s presence. The person who takes prayer seriously becomes stronger against fear, temptation, weakness, and spiritual coldness.",
+          "3. Worshiping the Lord: Worship is not only singing songs; worship is honor, love, surrender, and the focus of the heart on God. When we worship God, our attention is lifted from problems and placed on the greatness, love, and power of the Lord.",
+          "Worship changes the atmosphere of the heart. It helps us experience God’s presence more deeply, softens our hearts, and strengthens our faith. A believer should see worship as an important part of daily life.",
+          "4. Being planted in the church: The church is not only a building; it is the spiritual family of believers. God did not save us to live alone; He brought us into the Body of Christ. Every believer needs to grow in a healthy, living, biblical church.",
+          "In the church we receive teaching, encouragement, correction, prayer, opportunities to serve, and growth in love. A believer who separates from the church gradually becomes weak, but the one who remains in fellowship receives growth, protection, and spiritual strength.",
+          "5. Hearing the Word and sound teaching: Faith comes by hearing the Word of God. Therefore, a believer must value sound teaching, biblical preaching, and spiritual instruction. Everything we hear affects our thoughts, faith, and decisions.",
+          "We must be careful about the teaching we receive. Sound teaching brings us closer to Jesus, strengthens our faith, and protects us from deception, fear, and wrong thinking.",
+          "6. Growing in faith and spirit: Christian faith must grow. Spiritual growth means becoming more like Christ day by day in love, forgiveness, patience, purity, wisdom, obedience, and service. Growth happens when a person is not only a hearer of the Word, but a doer of the Word.",
+          "Real faith is seen in daily life: in our behavior, words, decisions, relationships, faithfulness to God, and our standing firm in difficulties.",
+          "7. The believer’s responsibility toward his faith: Every believer is responsible to guard, grow, and take his faith seriously. Salvation is God’s gift, but spiritual growth requires our cooperation with the Holy Spirit. We must arrange time with God, read His Word, pray, remain in church, receive teaching, and stay away from things that weaken our faith.",
+          "Faith is like a seed that must be watered. If it receives attention, it grows and bears fruit; if it is neglected, it becomes weak. Therefore, a believer must build life on God’s Word, not on feelings, fears, past habits, or the culture of the world.",
+          "The Christian life is a beautiful journey with God: from salvation to growth, from weakness to strength, from ignorance to knowledge, and from ordinary life to a life filled with the Spirit of God. Every new believer should know that God loves him, has accepted him, and has a great plan for his life.",
+          "To grow in this new life, reading God’s Word, prayer, worship, church fellowship, sound teaching, and obedience to the Word must have a high place in life. When a believer takes these principles seriously, he becomes strong in faith, grows in spirit, and his life gradually shows the fruit of Christ."
         ]
+      },
+      {
+        "id": "register",
+        "title": "Registration & Membership",
+        "content": [
+          "Registration after the prayer of salvation",
+          "If you prayed to receive salvation, or if you want to know more about faith in Jesus Christ, please complete the form below. The ministry team of Omid No 7 Church will contact you with love, pray for you, and guide you in the path of spiritual growth and discipleship.",
+          "Matthew 28:19–20 — Jesus commanded us to make disciples and teach people so they may grow in His way."
+        ]
+      },
+      {
+        "id": "videos",
+        "title": "New Birth Videos",
+        "content": [
+          "To build your faith on the right foundation from the beginning, watch these six teachings in order. They will help you understand the new birth, what salvation in Christ means, and how to begin your new life of faith."
+        ],
+        "videosTitle": "Six New Birth Teaching Episodes"
       }
     ],
-    "registerText": "Register After the Prayer of Salvation",
+    "registerText": "Open Church Registration Form",
     "registerUrl": "https://docs.google.com/forms/d/133BVzudIVIHozGroo-EHJqLKutjzSdZ7c_dl0k-vCuI/viewform"
   },
   "hr": {
-    "title": "Trebate spasenje?",
-    "subtitle": "Ako još niste primili spasenje, ovaj će vas dio korak po korak voditi u razumijevanje spasenja, molitvu spasenja, učenje o novom rođenju i početak kršćanskog života.",
+    "title": "Novo rođenje i spasenje u Kristu",
+    "subtitle": "Ovaj odjeljak pomaže vam razumjeti spasenje, moliti molitvu spasenja s vjerom, učiti o kršćanskom životu, registrirati se u crkvi i pogledati učenja o novom rođenju.",
     "sections": [
       {
         "id": "what",
         "title": "Što je spasenje?",
         "content": [
-          "Spasenje je veliko Božje djelo u Isusu Kristu kojim se čovjek oslobađa od grijeha, osude, odvojenosti od Boga, tame i duhovne smrti, te ulazi u vječni život, oproštenje, pravednost i živo zajedništvo s Bogom.",
-          "Biblija kaže: “Jer svi su sagriješili i lišeni su slave Božje” (Rimljanima 3:23). To znači da najdublji čovjekov problem nije samo moralna slabost ili nedostatak znanja; najdublji problem je grijeh i odvojenost od Boga. Nitko, iz bilo kojeg naroda, jezika, kulture ili društvenog položaja, ne može spasiti samoga sebe vlastitom snagom.",
-          "Božja riječ kaže: “Jer plaća je grijeha smrt, a dar Božji jest život vječni u Kristu Isusu, Gospodinu našem” (Rimljanima 6:23). Zato čovjek treba spasenje, jer grijeh donosi duhovnu smrt, a Bog u Kristu daje vječni život.",
-          "Spasenje se ne kupuje dobrim djelima. Biblija kaže: “Milošću ste spašeni po vjeri; i to nije od vas, Božji je dar; ne po djelima, da se nitko ne pohvali” (Efežanima 2:8-9). Spasenje je Božji dar, a taj se dar prima vjerom u Isusa Krista.",
-          "Isus Krist je jedini put spasenja. Isus je rekao: “Ja sam put i istina i život; nitko ne dolazi Ocu osim po meni” (Ivan 14:6). Spasenje znači vjerovati u smrt, pokop i uskrsnuće Isusa Krista i primiti Ga kao Gospodina i Spasitelja svoga života."
+          "Spasenje je jedna od najvažnijih istina Božje riječi. Spasenje znači da je čovjek oslobođen od grijeha, duhovne smrti, osude i odvojenosti od Boga te uveden u novi život u Kristu. To nije samo religiozna promjena; to je novo rođenje, prijelaz iz tame u svjetlo i ulazak u živi odnos s Bogom kroz Isusa Krista.",
+          "Biblija kaže: “Jer Bog je tako ljubio svijet da je dao svoga jedinorođenog Sina, da nijedan koji vjeruje u njega ne propadne, nego ima vječni život.” — Ivan 3:16",
+          "Ovaj stih pokazuje da je spasenje započelo Božjom ljubavlju. Čovjek se ne može spasiti vlastitom snagom, dobrim djelima, zakonom, religijom ili osobnim trudom. Spasenje je Božji dar, a ne nagrada za ljudska djela.",
+          "Efežanima 2:8-9 kaže da smo spašeni milošću po vjeri; to nije od nas, nego je Božji dar, ne po djelima, da se nitko ne bi hvalio. Zato se spasenje temelji na Božjoj milosti i čovjekovoj vjeri u Isusa Krista.",
+          "Zašto čovjek treba spasenje? Bog je čovjeka stvorio za zajedništvo, ljubav i život u Njegovoj prisutnosti. Ali grijeh je čovjeka odvojio od Boga. Grijeh nije samo činjenje pogrešnih djela; to je pala narav koja čovjeka odvaja od Božjeg života.",
+          "Rimljanima 3:23 kaže: “Svi su sagriješili i lišeni su Božje slave.” To znači da svi ljudi, bez iznimke, trebaju spasenje. Nitko se ne može opravdati dobrim moralom, znanjem, bogatstvom, religioznom službom ili dobrim djelima. Jedini put spasenja je Isus Krist.",
+          "Isus Krist je Sin Božji koji je došao na svijet spasiti čovjeka. Živio je bez grijeha, umro na križu, prolio svoju krv za oproštenje naših grijeha, bio pokopan i treći dan uskrsnuo od mrtvih.",
+          "Isusova smrt na križu nije bila samo povijesna smrt; On je zauzeo naše mjesto. Kazna koja je trebala doći na nas položena je na Njega. On je uzeo naš grijeh, osudu i smrt kako bismo mi primili život, pravednost i mir s Bogom.",
+          "Rimljanima 5:8 kaže da Bog pokazuje svoju ljubav prema nama time što je Krist umro za nas dok smo još bili grešnici. Bog nije čekao da čovjek postane savršen. Dok smo još bili grešnici, Krist je umro za nas. To je istinska Božja ljubav.",
+          "Spasenje se prima vjerom u Isusa Krista. Vjera nije samo mentalno slaganje; vjera znači pouzdanje u Isusa iz srca, primanje Njega kao Gospodina i priznanje da ga je Bog uskrisio od mrtvih.",
+          "Rimljanima 10:9-10 kaže da ćeš biti spašen ako svojim ustima priznaš Isusa kao Gospodina i u svom srcu vjeruješ da ga je Bog uskrisio od mrtvih. Srcem se vjeruje za pravednost, a ustima se priznaje za spasenje.",
+          "Prema ovom stihu, spasenje se prima kroz dvije važne istine: prvo, vjeru u srcu; drugo, priznanje ustima da je Isus Krist Gospodin.",
+          "Spasenje nije samo oproštenje prošlih grijeha. Spasenje znači da je čovjek iznutra učinjen novim i prima Božji život. Isus je rekao: “Ako se tko ne rodi nanovo, ne može vidjeti kraljevstvo Božje.” — Ivan 3:3",
+          "Novo rođenje znači da ljudski duh ponovno oživljava. Kada osoba primi Isusa, Bog je čini svojim djetetom. Ona više nije samo običan čovjek; ona je novo stvorenje u Kristu.",
+          "2. Korinćanima 5:17 kaže: “Ako je tko u Kristu, novo je stvorenje; staro prođe, gle, novo nastade.” Tvoja prošlost više nije tvoj identitet. U Kristu si novo stvorenje.",
+          "Kada osoba primi spasenje, grijesi su joj oprošteni. 1. Ivanova 1:7 kaže da nas krv Isusa Krista čisti od svakoga grijeha. Onaj koji je u Kristu više nije pod osudom.",
+          "Rimljanima 8:1 kaže da sada nema osude za one koji su u Kristu Isusu. Bog prihvaća, oprašta i opravdava osobu koja je u Kristu.",
+          "Vječni život nije samo život nakon smrti. Vječni život je Božja vrsta života koja se stavlja u ljudski duh od trenutka vjere. 1. Ivanova 5:11-12 kaže da nam je Bog dao vječni život i da je taj život u Njegovu Sinu. Tko ima Sina, ima život.",
+          "Spasenje je za sve ljude. Rimljanima 10:13 kaže: “Tko god prizove ime Gospodnje, bit će spašen.” Tko god znači svaka osoba, u bilo kojem stanju i s bilo kakvom prošlošću, može biti spašena.",
+          "Rezultat spasenja je mir s Bogom, oproštenje grijeha, sloboda od osude, vječni život, sinovstvo, prebivanje Duha Svetoga i snaga za novi život.",
+          "Kološanima 1:13-14 kaže da nas je Bog izbavio iz vlasti tame i prenio u kraljevstvo Sina svoje ljubavi, u kojem imamo otkupljenje i oproštenje grijeha.",
+          "Spasenje je za danas. Ne moraš čekati da postaneš savršen. Isus te prima takvog kakav jesi, ali te ne ostavlja takvim; On te čini novim, čistim, snažnim i živim. Danas možeš vjerom primiti Isusa Krista kao svoga Gospodina i Spasitelja."
         ]
       },
       {
         "id": "prayer",
         "title": "Molitva spasenja",
-        "intro": "Ako želite primiti Isusa Krista kao Gospodina i Spasitelja svoga života, molimo vas da ovu molitvu pročitate s vjerom, iz srca i naglas.",
+        "intro": "Ako želite primiti Isusa Krista kao Gospodina i Spasitelja svoga života, pročitajte ovu molitvu s vjerom, iz srca i naglas.",
         "content": [
-          "Gospodine Bože,",
-          "Danas dolazim k Tebi s vjerom, poniznošću i otvorenim srcem.",
-          "Priznajem da sam grešnik i da trebam spasenje.",
-          "Priznajem da me grijeh odvojio od Tebe i da se svojom snagom ne mogu spasiti niti biti opravdan. Vjerujem da me nijedno dobro djelo, religioznost, ljudski trud ili osobna snaga ne mogu osloboditi od grijeha niti mi dati vječni život i opravdanje.",
-          "Gospodine, trebam Tvoje milosrđe, ljubav i milost.",
-          "Vjerujem da nisi stvorio čovjeka za propast, nego želiš da se svi spase i dođu do spoznaje istine.",
-          "Danas otvaram svoje srce Tvome spasenju i prema Tvome obećanju, spasi me.",
-          "Gospodine Isuse Kriste, vjerujem da si Ti Sin Božji.",
-          "Vjerujem da si došao od Oca da spasiš čovjeka.",
-          "Vjerujem da si bio bez grijeha, ali si umro na križu za moje grijehe.",
-          "Vjerujem da je Tvoja sveta krv prolivena za moje oproštenje, očišćenje, spasenje i život.",
-          "Vjerujem da si dragovoljno dao svoj život na križu, bio pokopan, i trećega dana ustao iz svijeta mrtvih, i svojom čistom krvlju platio cijenu svih mojih grijeha.",
-          "Danas vjerujem srcem i priznajem ustima da je Isus Krist Gospodin.",
-          "Isus Krist je Gospodin mog života. Isus Krist je moj Spasitelj.",
-          "Gospodine Isuse Kriste, primam Te kao Gospodina i Spasitelja svoga života.",
-          "Odvraćam se od života bez Boga. Kajem se za grijeh, tamu i svoje prijašnje putove.",
-          "Predajem Ti svoj život, srce, misli, budućnost i cijelo svoje biće.",
-          "Gospodine, sada uđi u moje srce i dušu i stvori u meni novo srce.",
-          "Stavi novi duh u mene. Učini me novim iznutra i učini me svojim djetetom.",
-          "Duše Sveti, molim Te dođi u moj život. Nastani se u mom srcu.",
-          "Vodi me, uči me, jačaj me i preobrazi me.",
-          "Otvori moje duhovne oči da razumijem Božju riječ.",
-          "Pomozi mi rasti u vjeri, ljubavi, svetosti, poslušnosti i poznavanju Gospodina.",
-          "Danas vjerom izjavljujem: Isus Krist je umro za moje grijehe. Isus Krist je bio pokopan. Isus Krist je trećega dana ustao iz svijeta mrtvih. I sada je Isus Krist živ. Isus Krist je moj Gospodin.",
-          "Od danas vjerujem da sam spašen. Moji su grijesi oprošteni i nanovo sam rođen.",
-          "Prešao sam iz smrti u život. Iz tame sam uveden u Božje kraljevstvo.",
-          "Više nisam rob grijeha. Pripadam Bogu. Dijete sam Božje.",
-          "Moje je ime zapisano u Knjizi života. Primio sam vječni život u Isusu Kristu.",
+          "Gospodine Bože, danas dolazim k Tebi s vjerom i otvorenim srcem.",
+          "Vjerujem da je Isus Krist Sin Božji; umro je na križu za moje grijehe, bio pokopan i treći dan uskrsnuo od mrtvih.",
+          "Vjerujem u svom srcu i priznajem svojim ustima da je Isus Krist Gospodin moga života.",
+          "Gospodine Isuse, primam Te kao svoga Gospodina i Spasitelja. Uđi u moje srce, oprosti mi, očisti me i učini da budem nanovo rođen.",
+          "Od danas izjavljujem da sam spašen, dijete Božje, prenesen iz tame u svjetlo i da sam primio vječni život u Kristu.",
+          "Duše Sveti, prebivaj u meni, poučavaj me, vodi me i pomozi mi rasti u vjeri, ljubavi, poslušnosti i poznavanju Gospodina.",
           "U ime Isusa Krista. Amen."
         ]
       },
       {
-        "id": "newbirth",
-        "title": "Što je novo rođenje?",
+        "id": "life",
+        "title": "Što je kršćanski život?",
         "content": [
-          "Novo rođenje znači da Bog čovjeka iznutra čini novim svojim životom. Isus je rekao: “Ako se tko ne rodi nanovo, ne može vidjeti kraljevstva Božjega” (Ivan 3:3). To nije vanjska religiozna promjena; to je novo duhovno stvorenje u Kristu.",
-          "Kada osoba povjeruje u Isusa Krista i primi Ga kao Gospodina, Bog oživljava njezin duh, oprašta joj, opravdava je i uvodi je u svoju obitelj. Biblija kaže: “Ako je tko u Kristu, novo je stvorenje; staro prođe, gle, novo nastade” (2. Korinćanima 5:17).",
-          "Nakon primanja spasenja vrlo je važno da novi vjernik čuje zdravo učenje kako bi njegova vjera od početka bila izgrađena na Božjoj riječi. Molimo vas da pažljivo poslušate svih šest dijelova učenja o novom rođenju."
-        ],
-        "videosTitle": "Učenja o novom rođenju — šest dijelova"
+          "Kršćanski život nije samo prihvaćanje religije ili odlazak u crkvu; kršćanski život je početak novog života s Isusom Kristom. Kada osoba povjeruje u Isusa, iznutra se nanovo rađa i ulazi u živi odnos s Bogom. Od tog trenutka više ne živi sama; Duh Božji prebiva u njoj i vodi je u rastu, poznavanju Boga, ljubavi, vjeri i poslušnosti.",
+          "Vjera u Isusa je početak puta, ali rast u vjeri zahtijeva pažnju, predanost i svakodnevni život s Bogom. Kao što dijete za rast treba hranu, brigu i pouku, tako i novi vjernik za duhovni rast treba Božju riječ, molitvu, štovanje, zdravo učenje i zajedništvo vjernika.",
+          "1. Čitanje Božje riječi: Božja riječ je hrana za ljudski duh. Ako vjernik želi postati jak u vjeri, Biblija mora imati važno mjesto u njegovu svakodnevnom životu. Pismo nam pokazuje tko je Bog, tko smo mi u Kristu, kako trebamo živjeti, kako se oduprijeti kušnjama i kako hodati u Božjoj volji.",
+          "Isus je rekao da čovjek ne živi samo o kruhu, nego o svakoj riječi koja izlazi iz Božjih usta. Kao što naše tijelo svaki dan treba hranu, tako i naš duh svaki dan treba Božju riječ.",
+          "2. Molitva i osobni odnos s Bogom: Molitva nije samo traženje stvari od Boga; molitva je razgovor, zajedništvo i odnos s nebeskim Ocem. Vjernik treba naučiti svaki dan razgovarati s Bogom, zahvaljivati Mu, slušati Njegov glas, tražiti vodstvo i moliti za druge.",
+          "Molitva aktivira vjeru, donosi mir srcu i drži vjernika snažnim u Božjoj prisutnosti. Onaj tko ozbiljno shvaća molitvu postaje snažniji protiv straha, kušnje, slabosti i duhovne hladnoće.",
+          "3. Štovanje Gospodina: Štovanje nije samo pjevanje pjesama; štovanje je čast, ljubav, predanje i usmjerenje srca prema Bogu. Kada štujemo Boga, naša se pažnja podiže s problema i usmjerava na veličinu, ljubav i silu Gospodina.",
+          "Štovanje mijenja ozračje srca. Ono nam pomaže dublje iskusiti Božju prisutnost, omekšava naše srce i jača našu vjeru. Vjernik treba štovanje smatrati važnim dijelom svakodnevnog života.",
+          "4. Biti ukorijenjen u crkvi: Crkva nije samo zgrada; crkva je duhovna obitelj vjernika. Bog nas nije spasio da živimo sami; uveo nas je u Tijelo Kristovo. Svaki vjernik treba rasti u zdravoj, živoj i biblijskoj crkvi.",
+          "U crkvi primamo pouku, ohrabrenje, ispravak, molitvu, priliku za služenje i rast u ljubavi. Vjernik koji se odvoji od crkve postupno slabi, ali onaj koji ostaje u zajedništvu prima rast, zaštitu i duhovnu snagu.",
+          "5. Slušanje Riječi i zdravog učenja: Vjera dolazi od slušanja Božje riječi. Zato vjernik treba cijeniti zdravo učenje, biblijsko propovijedanje i duhovnu pouku. Sve što slušamo utječe na naše misli, vjeru i odluke.",
+          "Moramo paziti kakvo učenje primamo. Zdravo učenje približava nas Isusu, jača našu vjeru i čuva nas od prijevare, straha i pogrešnog razmišljanja.",
+          "6. Rast u vjeri i duhu: Kršćanska vjera treba rasti. Duhovni rast znači da osoba iz dana u dan postaje sličnija Kristu u ljubavi, oproštenju, strpljivosti, čistoći, mudrosti, poslušnosti i služenju. Rast se događa kada osoba nije samo slušatelj Riječi, nego i izvršitelj Riječi.",
+          "Prava vjera vidi se u svakodnevnom životu: u ponašanju, riječima, odlukama, odnosima, vjernosti Bogu i postojanosti u teškoćama.",
+          "7. Odgovornost vjernika prema svojoj vjeri: Svaki vjernik odgovoran je čuvati, razvijati i ozbiljno shvaćati svoju vjeru. Spasenje je Božji dar, ali duhovni rast zahtijeva našu suradnju s Duhom Svetim. Trebamo urediti vrijeme s Bogom, čitati Njegovu riječ, moliti, ostati u crkvi, primati pouku i udaljiti se od onoga što slabi našu vjeru.",
+          "Vjera je poput sjemena koje treba zalijevati. Ako prima pažnju, raste i donosi plod; ako se zanemari, slabi. Zato vjernik treba graditi život na Božjoj riječi, a ne na osjećajima, strahovima, prošlim navikama ili kulturi svijeta.",
+          "Kršćanski život je lijepo putovanje s Bogom: od spasenja prema rastu, od slabosti prema snazi, od neznanja prema spoznaji i od običnog života prema životu ispunjenom Božjim Duhom. Svaki novi vjernik treba znati da ga Bog voli, da ga je prihvatio i da ima divan plan za njegov život.",
+          "Za rast u ovom novom životu čitanje Božje riječi, molitva, štovanje, zajedništvo u crkvi, zdravo učenje i poslušnost Riječi moraju imati visoko mjesto u životu. Kada vjernik ozbiljno prihvati ova načela, jača u vjeri, raste u duhu i njegov život postupno pokazuje Kristove plodove."
+        ]
       },
       {
-        "id": "life",
-        "title": "Kršćanski život",
+        "id": "register",
+        "title": "Registracija i članstvo",
         "content": [
-          "Kršćanski život nije samo pridruživanje religioznoj skupini; to je novi život s Bogom, u Kristu i po Duhu Svetome. Novi vjernik treba naučiti razmišljati Božjom riječju, moliti s vjerom, slijediti vodstvo Duha Svetoga i rasti u ljubavi, svetosti, poslušnosti i služenju.",
-          "Isus je rekao: “Ako ostanete u mojoj riječi, zaista ste moji učenici; upoznat ćete istinu i istina će vas osloboditi” (Ivan 8:31-32). Zato se kršćanski život gradi ostajanjem u Riječi, molitvom, zajedništvom s crkvom, zdravim učenjem i svakodnevnom poslušnošću.",
-          "Nakon molitve spasenja, sljedeći korak je ispuniti obrazac za registraciju kako bismo vas mogli kontaktirati, moliti za vas, dati vam potrebna učenja i pratiti vas u rastu vjere."
+          "Registracija nakon molitve spasenja",
+          "Ako ste molili molitvu primanja spasenja ili želite saznati više o vjeri u Isusa Krista, molimo vas da ispunite obrazac u nastavku. Službeni tim Crkve Omid No 7 kontaktirat će vas s ljubavlju, moliti za vas i voditi vas na putu duhovnog rasta i učeništva.",
+          "Matej 28:19–20 — Isus nam je zapovjedio da stvaramo učenike i poučavamo ljude kako bi rasli na Njegovu putu."
         ]
+      },
+      {
+        "id": "videos",
+        "title": "Videozapisi o novom rođenju",
+        "content": [
+          "Kako bi vaša vjera od početka bila izgrađena na ispravnom temelju, pogledajte ovih šest učenja redom. Ona će vam pomoći razumjeti što je novo rođenje, što znači spasenje u Kristu i kako započeti novi život u vjeri."
+        ],
+        "videosTitle": "Šest dijelova učenja o novom rođenju"
       }
     ],
-    "registerText": "Registracija nakon molitve spasenja",
+    "registerText": "Otvori obrazac za registraciju crkve",
     "registerUrl": "https://docs.google.com/forms/d/133BVzudIVIHozGroo-EHJqLKutjzSdZ7c_dl0k-vCuI/viewform"
   },
   "videos": [
     [
-      "Part 1",
+      {
+        "fa": "قسمت اول — تولد تازه",
+        "en": "Part 1 — New Birth",
+        "hr": "1. dio — Novo rođenje"
+      },
       "https://youtu.be/u-G6r7rYNEE?is=kVQGp0SHDEh2wsOt"
     ],
     [
-      "Part 2",
+      {
+        "fa": "قسمت دوم — تولد تازه",
+        "en": "Part 2 — New Birth",
+        "hr": "2. dio — Novo rođenje"
+      },
       "https://youtu.be/_NNh_EZYKTk?is=Gyh8MLfaRzQujRYh"
     ],
     [
-      "Part 3",
+      {
+        "fa": "قسمت سوم — تولد تازه",
+        "en": "Part 3 — New Birth",
+        "hr": "3. dio — Novo rođenje"
+      },
       "https://youtu.be/NkhUL9CTWcs?is=G4x2M6ZPMU_xfjPn"
     ],
     [
-      "Part 4",
+      {
+        "fa": "قسمت چهارم — تولد تازه",
+        "en": "Part 4 — New Birth",
+        "hr": "4. dio — Novo rođenje"
+      },
       "https://youtu.be/LbJ1Fba5sww?is=LceLaTANRoEIJREm"
     ],
     [
-      "Part 5",
+      {
+        "fa": "قسمت پنجم — تولد تازه",
+        "en": "Part 5 — New Birth",
+        "hr": "5. dio — Novo rođenje"
+      },
       "https://youtu.be/BYyCOXIA944?is=Ws6yFVh83Cz8a8p2"
     ],
     [
-      "Part 6",
+      {
+        "fa": "قسمت ششم — تولد تازه",
+        "en": "Part 6 — New Birth",
+        "hr": "6. dio — Novo rođenje"
+      },
       "https://youtu.be/ByEg4dcb6zs?is=9bsHHvQ4TzluKrm0"
     ]
   ]

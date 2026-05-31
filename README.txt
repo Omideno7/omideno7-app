@@ -268,3 +268,10 @@ V44:
 - Uses app-v44.js and styles-v44.css for hard cache busting.
 Test URL:
 https://omideno7.github.io/omideno7-app/?v=44&reset=1
+
+V45:
+- Fixed Persian Bible crash: restored missing toFaDigits() helper.
+- Removed unsafe service worker update call that caused console warning/error.
+- Uses app-v45.js and styles-v45.css for cache busting.
+Test URL:
+https://omideno7.github.io/omideno7-app/?v=45&reset=1

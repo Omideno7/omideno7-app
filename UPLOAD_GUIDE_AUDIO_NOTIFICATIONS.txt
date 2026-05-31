@@ -1,0 +1,26 @@
+OMIDENO7 AUDIO + NOTIFICATIONS UPDATE
+
+Upload/replace these files in the GitHub repository:
+
+1) app-v45.js
+2) scripts/send-dynamic-notification.js
+3) .github/workflows/send-daily-word.yml
+4) .github/workflows/send-thanksgiving.yml
+5) .github/workflows/send-faith-declaration.yml
+
+Then update index.html last script version to:
+<script src="app-v45.js?v=45-audio-collapse-notifications-1"></script></body></html>
+
+What changed:
+- Spiritual audio cards are collapsed by default.
+- User taps a title to open player/actions/notes/share/speed.
+- OneSignal language tag is refreshed when the user changes language.
+- Daily Word, Thanksgiving, and Faith Declaration workflows send localized notifications to users tagged language=fa/en/hr.
+- The notification contains a short preview; tapping opens the right app page.
+
+Important:
+- GitHub Secrets must exist:
+  ONESIGNAL_APP_ID
+  ONESIGNAL_REST_API_KEY
+- Users must open the app once and enable notifications so OneSignal receives their language tag.
+- GitHub Actions schedules run in UTC.

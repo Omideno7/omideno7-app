@@ -1,0 +1,1 @@
+V57: Persian Bible text replaced with FarTPV / Mojdeh from CrossWire SWORD module; English text replaced with KJVA canonical books; English Apocrypha added as a separate section. Croatian Bible text is kept as the existing app text for now. Texts are displayed without intentional alteration except removal of markup/Strong tags for clean reading.

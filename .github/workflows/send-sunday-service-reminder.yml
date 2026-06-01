@@ -1,8 +1,8 @@
-name: Send Daily Word notification
+name: Send Sunday Service reminder
 on:
   schedule:
-    # 04:00 Europe/Zagreb: summer 02:00 UTC, winter 03:00 UTC.
-    - cron: '0 2,3 * * *'
+    # Sunday 19:30 Europe/Zagreb: summer 17:30 UTC, winter 18:30 UTC.
+    - cron: '30 17,18 * * 0'
   workflow_dispatch:
 jobs:
   send:
@@ -12,9 +12,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Send Daily Word notification
+      - name: Send Sunday Service reminder
         env:
-          NOTIFICATION_TYPE: daily-word
+          NOTIFICATION_TYPE: sunday-service-reminder
           APP_VERSION: '584'
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}

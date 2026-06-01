@@ -33,8 +33,8 @@ Avoid editing existing large feature files unless absolutely necessary.
 - More
 - Audio Spiritual Messages: Persian only
 - Apocrypha: Persian and English currently active; Croatian pending
-- Q&A: added in V59; visible as a Home card only from V59.2
-- Contact Us: added to More in V59.2
+- Q&A: added in V59; visible as a Home card only from V59.4
+- Contact Us: added to More in V59.4
 
 ## 4. Bottom navigation
 The bottom navigation currently has five primary tabs:
@@ -44,7 +44,7 @@ The bottom navigation currently has five primary tabs:
 - Word
 - More
 
-Do not add Q&A to the bottom navigation unless redesigning the whole navigation. From V59.2, Q&A is shown only as a card on Home. The More section contains Contact Us instead of Q&A.
+Do not add Q&A to the bottom navigation unless redesigning the whole navigation. From V59.4, Q&A is shown only as a card on Home. The More section contains Contact Us instead of Q&A.
 
 ## 5. Bible system
 - Persian Bible: FarTPV / Mojdeh structure was used.
@@ -88,7 +88,7 @@ Security approach:
 ## 9. Q&A V59 behavior
 The Q&A module is in `v59-qa-system.js`.
 It adds:
-- Home card only from V59.2
+- Home card only from V59.4
 - Q&A page
 - Submit question form
 - Published anonymous Q&A list
@@ -127,7 +127,7 @@ Suggested future version:
 - V61: clean repository audit and cleanup plan.
 
 
-## 13. Contact Us V59.2
+## 13. Contact Us V59.4
 The Contact Us card is injected into the More page by `v59-qa-system.js`.
 It intentionally replaced the former More-page Q&A card.
 The card is three-language and includes:
@@ -140,28 +140,11 @@ The card is three-language and includes:
 - Online meeting: https://join.freeconferencecall.com/omideno7church
 
 
-## V59.2 Q&A Admin and Contact Notes
+## V59.4 Q&A Admin and Contact Notes
 - The public Q&A card remains only on the Home page.
 - The Admin login is not shown to normal users. Admin may open it by visiting `https://omideno7.github.io/omideno7-app/?qa_admin=1` or using `#qa-admin`.
 - Contact card in More is intentionally limited to church email, Instagram, and YouTube. Personal phone number, address, web app link, and online meeting link are not shown there.
 
 
-## V59.3 — Install Guide and Admin App Entry
-
-### Added files
-- `v59-3-install-admin.js`: adds a three-language app installation guide on the Home page and updates the displayed app version to V59.3.
-- `admin.html`: stable separate admin entry page. Open `https://omideno7.github.io/omideno7-app/admin.html` in Safari and use Add to Home Screen to create an Omideno7 Admin icon. It redirects to `?qa_admin=1#qa-admin`.
-
-### Scope of change
-This update only adds the install guide and admin entry page. It does not modify Bible, Apocrypha, Audio, Plans, Fasting, Thanksgiving, Daily Word, Declarations, Notifications, or Supabase database schema.
-
-### User installation guidance
-- Android/Chrome: the app can show a native Install prompt if the browser exposes `beforeinstallprompt`; otherwise users use the browser menu > Install app / Add to Home screen.
-- iPhone/Safari: automatic installation is not possible; users must use Share > Add to Home Screen > Add.
-- Huawei/other browsers: users may need Add to Home screen / Add shortcut from the browser menu.
-
-### Admin installation guidance
-The admin should use the dedicated page: `admin.html`. This avoids the iOS Home Screen issue where query strings like `?qa_admin=1` may not be preserved. Security still depends on Supabase authentication with the church admin email.
-
-### Development rule reminder
-Future updates should continue to be modular. Add new capabilities in separate versioned files where possible, update `README.md` and `PROJECT_NOTES.md`, and avoid touching stable app sections unless specifically required.
+### V59.4 Loading Hotfix
+The install guide was changed to avoid continuous MutationObserver updates. Admin app entry remains `admin.html`.

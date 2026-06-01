@@ -182,3 +182,13 @@ The install guide was changed to avoid continuous MutationObserver updates. Admi
 - Removed old duplicate footer version output from Q&A script.
 - Footer now displays: App Version: V60.
 - No Bible, Audio, Plans, Notifications, Q&A database, or navigation logic was changed.
+
+
+## V61 — Fasting Topic Teaching and Full Scripture Fix
+- File added: `v61-fasting-topic-teachings.js`.
+- Scope: Fasting Journey only.
+- Purpose: when a user selects a fasting type/topic, the app displays a matching short teaching, complete Scripture texts, a short prayer, and a faith declaration.
+- Languages: Persian (`fa`), English (`en`), Croatian (`hr`).
+- This is an additive patch loaded after existing fasting scripts. It does not alter Bible, Q&A, Audio, Notifications, Plans data, or Supabase.
+- Future developers should keep fasting topic Scripture/teaching updates inside `v61-fasting-topic-teachings.js` or a later versioned fasting file.
+- Notification workflows remain in `.github/workflows/` and were not changed in V61.

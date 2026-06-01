@@ -5,7 +5,7 @@
 (function(){
   'use strict';
 
-  const VERSION = 'V59.2';
+  const VERSION = 'V59.5';
   const SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
   const ADMIN_EMAIL = 'omideno7church@gmail.com';
@@ -21,6 +21,17 @@
     publicAnswers: [],
     categories: []
   };
+
+
+
+  function isAdminEntry(){
+    try{
+      const params = new URLSearchParams(location.search || '');
+      const fromUrl = params.get('qa_admin') === '1' || params.get('admin_app') === '1' || location.hash === '#qa-admin';
+      if(fromUrl) localStorage.setItem('omideno7_admin_app','1');
+      return fromUrl || localStorage.getItem('omideno7_admin_app') === '1';
+    }catch(e){ return false; }
+  }
 
   const I18N = {
     fa: {
@@ -99,7 +110,6 @@
   }
 
   function openQA(tab){
-    if(tab === 'admin' && !adminRequested()) tab = 'answers';
     qaState.tab = tab || qaState.tab || 'answers';
     if(typeof window.showPage === 'function') window.showPage('qa');
     else {
@@ -111,13 +121,6 @@
     if(qaState.tab === 'admin') checkSession().then(()=>{ if(qaState.session) loadAdminQuestions(); });
   }
   window.openQA = openQA;
-
-  function adminRequested(){
-    try{
-      const params = new URLSearchParams(location.search);
-      return params.get('qa_admin') === '1' || location.hash === '#qa-admin';
-    }catch(e){ return false; }
-  }
 
   function injectEntryPoints(){
     const homeGrid = document.querySelector('#home .home-feature-grid');
@@ -162,8 +165,12 @@
     if(list){
       list.innerHTML = `
         <div class="contact-row"><strong>${esc(txt('contactEmail'))}:</strong> <a href="mailto:omideno7church@gmail.com">omideno7church@gmail.com</a></div>
+        <div class="contact-row"><strong>${esc(txt('contactWebsite'))}:</strong> <a href="https://omideno7.github.io/omideno7-app/" target="_blank" rel="noopener">omideno7.github.io/omideno7-app</a></div>
         <div class="contact-row"><strong>${esc(txt('contactInstagram'))}:</strong> <a href="https://www.instagram.com/omideno7" target="_blank" rel="noopener">@omideno7</a></div>
-        <div class="contact-row"><strong>${esc(txt('contactYoutube'))}:</strong> <a href="https://www.youtube.com/@omideno7" target="_blank" rel="noopener">omideno7</a></div>`;
+        <div class="contact-row"><strong>${esc(txt('contactYoutube'))}:</strong> <a href="https://www.youtube.com/@omideno7" target="_blank" rel="noopener">omideno7</a></div>
+        <div class="contact-row"><strong>${esc(txt('contactAddress'))}:</strong> Lastovska ulica 2A, Zagreb, Croatia</div>
+        <div class="contact-row"><strong>${esc(txt('contactPhone'))}:</strong> <a href="tel:+385917880824">+385 91 788 0824</a></div>
+        <div class="contact-row"><strong>${esc(txt('contactOnline'))}:</strong> <a href="https://join.freeconferencecall.com/omideno7church" target="_blank" rel="noopener">join.freeconferencecall.com/omideno7church</a></div>`;
     }
   }
 
@@ -194,7 +201,7 @@
     const root = document.getElementById('qaContent'); if(!root) return;
     const active = qaState.tab || 'answers';
     root.innerHTML = `<div class="section-title"><h2>${esc(txt('title'))}</h2></div>
-      <div class="hero-card"><h1>${esc(txt('title'))}</h1><p>${esc(txt('desc'))}</p><div class="qa-tabs"><button class="btn ${active==='ask'?'primary':'secondary'}" data-qa-tab="ask">${esc(txt('ask'))}</button><button class="btn ${active==='answers'?'primary':'secondary'}" data-qa-tab="answers">${esc(txt('answers'))}</button>${adminRequested()?`<button class="btn ${active==='admin'?'gold':'light'}" data-qa-tab="admin">${esc(txt('admin'))}</button>`:''}</div></div>
+      <div class="hero-card"><h1>${esc(txt('title'))}</h1><p>${esc(txt('desc'))}</p><div class="qa-tabs"><button class="btn ${active==='ask'?'primary':'secondary'}" data-qa-tab="ask">${esc(txt('ask'))}</button><button class="btn ${active==='answers'?'primary':'secondary'}" data-qa-tab="answers">${esc(txt('answers'))}</button>${isAdminEntry()?`<button class="btn ${active==='admin'?'gold':'light'}" data-qa-tab="admin">${esc(txt('admin'))}</button>`:''}</div></div>
       <div id="qaPanel"></div>`;
     root.querySelectorAll('[data-qa-tab]').forEach(b=>b.addEventListener('click',()=>openQA(b.dataset.qaTab)));
     if(active === 'ask') renderAsk();
@@ -347,9 +354,12 @@
 
   function boot(){
     ensurePage(); addStyles(); injectEntryPoints(); hookLanguageChanges(); patchVersion();
-    const params = new URLSearchParams(location.search);
-    if(adminRequested()){ setTimeout(()=>openQA('admin'), 400); }
-    else if(params.get('page') === 'qa'){ setTimeout(()=>openQA('answers'), 400); }
+    const params = new URLSearchParams(location.search || '');
+    if(isAdminEntry()){
+      setTimeout(()=>openQA('admin'), 450);
+    } else if(params.get('page') === 'qa'){
+      setTimeout(()=>openQA('answers'), 400);
+    }
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();

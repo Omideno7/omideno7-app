@@ -124,7 +124,7 @@ A future Clean Build should:
 - archive or delete unused hotfix files only after verification
 
 Suggested future version:
-- V61: clean repository audit and cleanup plan.
+- V61.1: clean repository audit and cleanup plan.
 
 
 ## 13. Contact Us V59.4
@@ -184,11 +184,18 @@ The install guide was changed to avoid continuous MutationObserver updates. Admi
 - No Bible, Audio, Plans, Notifications, Q&A database, or navigation logic was changed.
 
 
-## V61 — Fasting Topic Teaching and Full Scripture Fix
+## V61.1 — Fasting Topic Teaching and Full Scripture Fix
 - File added: `v61-fasting-topic-teachings.js`.
 - Scope: Fasting Journey only.
 - Purpose: when a user selects a fasting type/topic, the app displays a matching short teaching, complete Scripture texts, a short prayer, and a faith declaration.
 - Languages: Persian (`fa`), English (`en`), Croatian (`hr`).
 - This is an additive patch loaded after existing fasting scripts. It does not alter Bible, Q&A, Audio, Notifications, Plans data, or Supabase.
 - Future developers should keep fasting topic Scripture/teaching updates inside `v61-fasting-topic-teachings.js` or a later versioned fasting file.
-- Notification workflows remain in `.github/workflows/` and were not changed in V61.
+- Notification workflows remain in `.github/workflows/` and were not changed in V61.1.
+
+
+## V61.1
+- Fixed Fasting Journey Scripture toggles so verses remain open after tapping.
+- Fasting topic verses now start collapsed instead of forcing the first verse open.
+- Added a stable footer version cleanup for the More page only: App Version V61.1.
+- No changes to Bible, Audio, Q&A database, Notifications, Plans, or Apocrypha.

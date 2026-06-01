@@ -163,20 +163,22 @@ The install guide was changed to avoid continuous MutationObserver updates. Admi
 - More > Contact Us now shows only church email, Instagram, and YouTube. Phone number, address, website/app link, and online meeting link are intentionally hidden from this card.
 
 
-## V59.10 — Loading Stability Fix
+## V60 — Loading Stability Fix
 - Do not use `v59-7-version-lock.js`; it was removed from `index.html` because it could cause slow loading/freezing on mobile.
-- The app version is now static in `index.html`: App Version: V59.10.
+- The app version is now static in `index.html`: App Version: V60.
 - Install guide is now `v59-8-install-minimal.js`, a lightweight script with no continuous observers.
 - Keep Supabase Q&A and standalone `admin.html` unchanged.
 
 
-## V59.10 Notes
+## V60 Notes
 - Public Q&A answers are displayed per selected app language.
 - Answer text uses Supabase `text` fields; long pastoral answers are supported.
-- Duplicate footer version labels are cleaned and replaced with a single App Version: V59.10 label.
+- Duplicate footer version labels are cleaned and replaced with a single App Version: V60 label.
 - Supabase RLS may require the public answer select policy below for anon access to the security-invoker view.
 
 
-## V59.10 - Footer Version Display Fix
-- Fixed duplicate App Version labels in the More footer.
-- Scope limited to the footer version display only; no Bible, audio, plans, Q&A, notifications, or navigation logic changed.
+## V60 — Footer Version Final Fix
+- Fixed the More page footer to show only one App Version label.
+- Removed old duplicate footer version output from Q&A script.
+- Footer now displays: App Version: V60.
+- No Bible, Audio, Plans, Notifications, Q&A database, or navigation logic was changed.

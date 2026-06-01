@@ -5,7 +5,7 @@
 (function(){
   'use strict';
 
-  const VERSION = 'V59.9';
+  const VERSION = 'V60';
   const SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
   const ADMIN_EMAIL = 'omideno7church@gmail.com';
@@ -351,18 +351,7 @@
     }catch(e){ console.error('Q&A admin save error', e); if(statusEl) statusEl.textContent = txt('error') + ' ' + (e.message||''); }
   }
 
-  function patchVersion(){
-    try{
-      window.APP_VERSION = VERSION;
-      const footerMore = document.querySelector('#more .footer');
-      if(!footerMore) return;
-      footerMore.querySelectorAll('#appVersion,.app-version').forEach(el=>el.remove());
-      Array.from(footerMore.childNodes).forEach(node=>{
-        if(node.nodeType===3 && /App\s*Version/i.test(node.textContent||'')) node.remove();
-      });
-      footerMore.insertAdjacentHTML('beforeend', `<br><small id="appVersion" class="app-version">App Version: ${VERSION}</small>`);
-    }catch(e){}
-  }
+  function patchVersion(){ /* footer managed by v60-footer-version-final.js */ }
 
   function hookLanguageChanges(){
     let last = lang();

@@ -1,8 +1,9 @@
 # Omideno7 Church Web App
 
-Latest App Version: V59.10 — Loading Stability Fix
+Latest App Version: V60 — Footer Version Final Fix
 
-## V59.10 changes
+
+## V60 changes
 - Removed the V59.7 version-lock script that could slow or freeze the app.
 - Removed old V58 version label script from the page load list.
 - Kept Q&A system, standalone admin page, and simple Contact Us card.
@@ -15,9 +16,4 @@ Admin URL:
 https://omideno7.github.io/omideno7-app/admin.html?v=599
 
 
-V59.10: Fixed public Q&A answer display, normalized answer language filtering, and cleaned duplicate app version labels.
-
-
-## V59.10 - Footer Version Display Fix
-- Fixed duplicate App Version labels in the More footer.
-- Scope limited to the footer version display only; no Bible, audio, plans, Q&A, notifications, or navigation logic changed.
+V60: Fixed public Q&A answer display, normalized answer language filtering, and cleaned duplicate app version labels.

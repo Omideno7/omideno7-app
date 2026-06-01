@@ -5,7 +5,7 @@
 (function(){
   'use strict';
 
-  const VERSION = 'V59.5';
+  const VERSION = 'V59.6';
   const SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
   const ADMIN_EMAIL = 'omideno7church@gmail.com';
@@ -165,12 +165,8 @@
     if(list){
       list.innerHTML = `
         <div class="contact-row"><strong>${esc(txt('contactEmail'))}:</strong> <a href="mailto:omideno7church@gmail.com">omideno7church@gmail.com</a></div>
-        <div class="contact-row"><strong>${esc(txt('contactWebsite'))}:</strong> <a href="https://omideno7.github.io/omideno7-app/" target="_blank" rel="noopener">omideno7.github.io/omideno7-app</a></div>
         <div class="contact-row"><strong>${esc(txt('contactInstagram'))}:</strong> <a href="https://www.instagram.com/omideno7" target="_blank" rel="noopener">@omideno7</a></div>
-        <div class="contact-row"><strong>${esc(txt('contactYoutube'))}:</strong> <a href="https://www.youtube.com/@omideno7" target="_blank" rel="noopener">omideno7</a></div>
-        <div class="contact-row"><strong>${esc(txt('contactAddress'))}:</strong> Lastovska ulica 2A, Zagreb, Croatia</div>
-        <div class="contact-row"><strong>${esc(txt('contactPhone'))}:</strong> <a href="tel:+385917880824">+385 91 788 0824</a></div>
-        <div class="contact-row"><strong>${esc(txt('contactOnline'))}:</strong> <a href="https://join.freeconferencecall.com/omideno7church" target="_blank" rel="noopener">join.freeconferencecall.com/omideno7church</a></div>`;
+        <div class="contact-row"><strong>${esc(txt('contactYoutube'))}:</strong> <a href="https://www.youtube.com/@omideno7" target="_blank" rel="noopener">omideno7</a></div>`;
     }
   }
 

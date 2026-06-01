@@ -1,8 +1,8 @@
 {
   "name": "Omideno7 Admin",
   "short_name": "O7 Admin",
-  "description": "Omideno7 Church admin panel for Q&A",
-  "start_url": "./admin.html?admin_app=1&v=595",
+  "description": "Omideno7 Church standalone Q&A admin panel",
+  "start_url": "./admin.html?v=596",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f6faf8",

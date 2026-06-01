@@ -150,9 +150,14 @@ The card is three-language and includes:
 The install guide was changed to avoid continuous MutationObserver updates. Admin app entry remains `admin.html`.
 
 
-## V59.5 — Admin Home Screen Fix
+## V59.6 — Admin Home Screen Fix
 - Purpose: Fix the issue where `?qa_admin=1` works in Safari but is lost after Add to Home Screen.
 - Added `admin.webmanifest` with `start_url` pointing to `admin.html?admin_app=1&v=595`.
 - Updated `admin.html` to set `localStorage.omideno7_admin_app=1` and redirect to the Q&A admin panel.
 - Updated `v59-qa-system.js` to auto-open the admin tab when `qa_admin=1`, `admin_app=1`, `#qa-admin`, or `omideno7_admin_app` is present.
 - Normal users still do not see the admin button unless admin mode is activated.
+
+
+## V59.6
+- Admin panel changed to a standalone `admin.html` app so Home Screen installation opens admin directly instead of losing query parameters.
+- More > Contact Us now shows only church email, Instagram, and YouTube. Phone number, address, website/app link, and online meeting link are intentionally hidden from this card.

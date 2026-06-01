@@ -5,7 +5,7 @@
 (function(){
   'use strict';
 
-  const VERSION = 'V59.6';
+  const VERSION = 'V59.9';
   const SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
   const ADMIN_EMAIL = 'omideno7church@gmail.com';
@@ -248,20 +248,37 @@
     loadPublicAnswers();
   }
 
+  function normalizeAnswerLang(value){
+    const v = String(value || '').trim().toLowerCase();
+    if(['fa','فارسی','persian','farsi'].includes(v)) return 'fa';
+    if(['en','eng','english'].includes(v)) return 'en';
+    if(['hr','croatian','hrvatski'].includes(v)) return 'hr';
+    return v || '';
+  }
+
   async function loadPublicAnswers(){
     try{
       const sb=await initSupabase();
-      const {data, error} = await sb.from('qa_public_answers').select('*').order('published_at', {ascending:false}).limit(200);
-      if(error) throw error;
-      qaState.publicAnswers = data || [];
+      let result = await sb.from('qa_public_answers')
+        .select('id,created_at,published_at,language,category,public_question,answer')
+        .order('published_at', {ascending:false})
+        .limit(200);
+      if(result.error) throw result.error;
+      qaState.publicAnswers = (result.data || []).filter(r => r && r.public_question && r.answer);
       renderAnswersList();
-    }catch(e){ console.error('Q&A answers load error', e); const list=document.getElementById('qaAnswersList'); if(list) list.innerHTML = `<p class="status">${esc(txt('error'))}</p>`; }
+    }catch(e){
+      console.error('Q&A answers load error', e);
+      const list=document.getElementById('qaAnswersList');
+      if(list) list.innerHTML = `<p class="status">${esc(txt('error'))} ${esc(e.message||'')}</p>`;
+    }
   }
 
   function renderAnswersList(){
     const list = document.getElementById('qaAnswersList'); if(!list) return;
-    const l = lang(); const q=(qaState.search||'').toLowerCase(); const cat=qaState.category||'all';
-    let rows = (qaState.publicAnswers||[]).filter(r=>r.language===l || !r.language);
+    const l = normalizeAnswerLang(lang());
+    const q=(qaState.search||'').toLowerCase();
+    const cat=qaState.category||'all';
+    let rows = (qaState.publicAnswers||[]).filter(r=>normalizeAnswerLang(r.language)===l);
     if(cat !== 'all') rows = rows.filter(r=>r.category === cat);
     if(q) rows = rows.filter(r=>(String(r.public_question||'')+' '+String(r.answer||'')+' '+catLabel(r.category)).toLowerCase().includes(q));
     if(!rows.length){ list.innerHTML = `<p class="status">${esc(txt('noAnswers'))}</p>`; return; }
@@ -337,9 +354,13 @@
   function patchVersion(){
     try{
       window.APP_VERSION = VERSION;
-      document.querySelectorAll('#appVersion,.app-version').forEach(el=>el.textContent='App Version: '+VERSION);
       const footerMore = document.querySelector('#more .footer');
-      if(footerMore && !footerMore.querySelector('#appVersion')) footerMore.insertAdjacentHTML('beforeend', `<br><small id="appVersion" class="app-version">App Version: ${VERSION}</small>`);
+      if(!footerMore) return;
+      footerMore.querySelectorAll('#appVersion,.app-version').forEach(el=>el.remove());
+      Array.from(footerMore.childNodes).forEach(node=>{
+        if(node.nodeType===3 && /App\s*Version/i.test(node.textContent||'')) node.remove();
+      });
+      footerMore.insertAdjacentHTML('beforeend', `<br><small id="appVersion" class="app-version">App Version: ${VERSION}</small>`);
     }catch(e){}
   }
 

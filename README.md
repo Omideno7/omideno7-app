@@ -1,10 +1,10 @@
 # Omideno7 Church Web App
 
-Latest App Version: **V59.1 — Q&A Home Card + Contact Us in More**
+Latest App Version: **V59.2 — Q&A Home Card + Contact Us in More**
 
 Live app: https://omideno7.github.io/omideno7-app/
 
-## V59.1 changes
+## V59.2 changes
 - Q&A remains only as a Home page card.
 - Removed the Q&A card/entry from the More section.
 - Added a three-language Contact Us card in the More section.
@@ -14,3 +14,8 @@ Live app: https://omideno7.github.io/omideno7-app/
 
 ## Important
 Do not publish or share Supabase `service_role` keys. The app only uses the public publishable key.
+
+
+## V59.2
+- Q&A admin login is hidden from public users. Admin access: `?qa_admin=1` or `#qa-admin`.
+- More → Contact Us now shows only church email, Instagram, and YouTube. Phone, address, website, and online meeting links were removed from this card.

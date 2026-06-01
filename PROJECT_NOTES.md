@@ -33,8 +33,8 @@ Avoid editing existing large feature files unless absolutely necessary.
 - More
 - Audio Spiritual Messages: Persian only
 - Apocrypha: Persian and English currently active; Croatian pending
-- Q&A: added in V59; visible as a Home card only from V59.1
-- Contact Us: added to More in V59.1
+- Q&A: added in V59; visible as a Home card only from V59.2
+- Contact Us: added to More in V59.2
 
 ## 4. Bottom navigation
 The bottom navigation currently has five primary tabs:
@@ -44,7 +44,7 @@ The bottom navigation currently has five primary tabs:
 - Word
 - More
 
-Do not add Q&A to the bottom navigation unless redesigning the whole navigation. From V59.1, Q&A is shown only as a card on Home. The More section contains Contact Us instead of Q&A.
+Do not add Q&A to the bottom navigation unless redesigning the whole navigation. From V59.2, Q&A is shown only as a card on Home. The More section contains Contact Us instead of Q&A.
 
 ## 5. Bible system
 - Persian Bible: FarTPV / Mojdeh structure was used.
@@ -88,7 +88,7 @@ Security approach:
 ## 9. Q&A V59 behavior
 The Q&A module is in `v59-qa-system.js`.
 It adds:
-- Home card only from V59.1
+- Home card only from V59.2
 - Q&A page
 - Submit question form
 - Published anonymous Q&A list
@@ -127,7 +127,7 @@ Suggested future version:
 - V61: clean repository audit and cleanup plan.
 
 
-## 13. Contact Us V59.1
+## 13. Contact Us V59.2
 The Contact Us card is injected into the More page by `v59-qa-system.js`.
 It intentionally replaced the former More-page Q&A card.
 The card is three-language and includes:
@@ -138,3 +138,9 @@ The card is three-language and includes:
 - Address: Lastovska ulica 2A, Zagreb, Croatia
 - Phone: +385 91 788 0824
 - Online meeting: https://join.freeconferencecall.com/omideno7church
+
+
+## V59.2 Q&A Admin and Contact Notes
+- The public Q&A card remains only on the Home page.
+- The Admin login is not shown to normal users. Admin may open it by visiting `https://omideno7.github.io/omideno7-app/?qa_admin=1` or using `#qa-admin`.
+- Contact card in More is intentionally limited to church email, Instagram, and YouTube. Personal phone number, address, web app link, and online meeting link are not shown there.

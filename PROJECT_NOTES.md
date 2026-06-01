@@ -150,7 +150,7 @@ The card is three-language and includes:
 The install guide was changed to avoid continuous MutationObserver updates. Admin app entry remains `admin.html`.
 
 
-## V59.7 — Admin Home Screen Fix
+## V59.6 — Admin Home Screen Fix
 - Purpose: Fix the issue where `?qa_admin=1` works in Safari but is lost after Add to Home Screen.
 - Added `admin.webmanifest` with `start_url` pointing to `admin.html?admin_app=1&v=595`.
 - Updated `admin.html` to set `localStorage.omideno7_admin_app=1` and redirect to the Q&A admin panel.
@@ -158,12 +158,13 @@ The install guide was changed to avoid continuous MutationObserver updates. Admi
 - Normal users still do not see the admin button unless admin mode is activated.
 
 
-## V59.7
+## V59.6
 - Admin panel changed to a standalone `admin.html` app so Home Screen installation opens admin directly instead of losing query parameters.
 - More > Contact Us now shows only church email, Instagram, and YouTube. Phone number, address, website/app link, and online meeting link are intentionally hidden from this card.
 
 
-## V59.7 — Stable Version Label Fix
-- Added `v59-7-version-lock.js` as the single source for footer version text.
-- Replaced the install guide script with `v59-7-install-admin-stable.js`, which no longer writes to the version label.
-- Do not load old single-version hotfixes together with this version.
+## V59.8 — Loading Stability Fix
+- Do not use `v59-7-version-lock.js`; it was removed from `index.html` because it could cause slow loading/freezing on mobile.
+- The app version is now static in `index.html`: App Version: V59.8.
+- Install guide is now `v59-8-install-minimal.js`, a lightweight script with no continuous observers.
+- Keep Supabase Q&A and standalone `admin.html` unchanged.

@@ -1,7 +1,7 @@
 name: Send Faith Declaration notification
 on:
   schedule:
-    # 10:00 Europe/Zagreb: summer 08:00 UTC, winter 09:00 UTC.
+    # 10:00 Europe/Zagreb. Two UTC candidates cover summer/winter; JS guard sends only at true Zagreb 10:00.
     - cron: '0 8,9 * * *'
   workflow_dispatch:
 jobs:
@@ -15,7 +15,8 @@ jobs:
       - name: Send Faith Declaration notification
         env:
           NOTIFICATION_TYPE: faith-declaration
-          APP_VERSION: '584'
+          TARGET_LOCAL_HOUR: '10'
+          TARGET_LOCAL_MINUTE: '0'
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
         run: node scripts/send-dynamic-notification.js

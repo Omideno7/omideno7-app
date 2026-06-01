@@ -144,3 +144,24 @@ The card is three-language and includes:
 - The public Q&A card remains only on the Home page.
 - The Admin login is not shown to normal users. Admin may open it by visiting `https://omideno7.github.io/omideno7-app/?qa_admin=1` or using `#qa-admin`.
 - Contact card in More is intentionally limited to church email, Instagram, and YouTube. Personal phone number, address, web app link, and online meeting link are not shown there.
+
+
+## V59.3 — Install Guide and Admin App Entry
+
+### Added files
+- `v59-3-install-admin.js`: adds a three-language app installation guide on the Home page and updates the displayed app version to V59.3.
+- `admin.html`: stable separate admin entry page. Open `https://omideno7.github.io/omideno7-app/admin.html` in Safari and use Add to Home Screen to create an Omideno7 Admin icon. It redirects to `?qa_admin=1#qa-admin`.
+
+### Scope of change
+This update only adds the install guide and admin entry page. It does not modify Bible, Apocrypha, Audio, Plans, Fasting, Thanksgiving, Daily Word, Declarations, Notifications, or Supabase database schema.
+
+### User installation guidance
+- Android/Chrome: the app can show a native Install prompt if the browser exposes `beforeinstallprompt`; otherwise users use the browser menu > Install app / Add to Home screen.
+- iPhone/Safari: automatic installation is not possible; users must use Share > Add to Home Screen > Add.
+- Huawei/other browsers: users may need Add to Home screen / Add shortcut from the browser menu.
+
+### Admin installation guidance
+The admin should use the dedicated page: `admin.html`. This avoids the iOS Home Screen issue where query strings like `?qa_admin=1` may not be preserved. Security still depends on Supabase authentication with the church admin email.
+
+### Development rule reminder
+Future updates should continue to be modular. Add new capabilities in separate versioned files where possible, update `README.md` and `PROJECT_NOTES.md`, and avoid touching stable app sections unless specifically required.

@@ -1,23 +1,16 @@
 name: Send Morning Prayer reminder
-
 on:
   schedule:
-    # Europe/Zagreb 04:30, covering summer/winter time. JS verifies exact local time before sending.
-    - cron: '30 2,3 * * *'
+    - cron: '25 2,3 * * *'
   workflow_dispatch:
-
 jobs:
   send:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Send notification
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}

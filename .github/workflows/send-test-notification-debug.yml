@@ -29,8 +29,8 @@ jobs:
           set -e
           cat > payload.json <<EOF
           {
-            "app_id": "${ONESIGNAL_APP_ID}",
-            "included_segments": ["Subscribed Users"],
+            "app_id": "$ONESIGNAL_APP_ID",
+            "included_segments": ["All"],
             "headings": {
               "en": "Omideno7 test notification",
               "fa": "پیام تست کلیسای امیدنو۷",
@@ -45,7 +45,7 @@ jobs:
           }
           EOF
 
-          echo "Sending test notification to OneSignal..."
+          echo "Sending test notification to OneSignal using included_segments: All ..."
           HTTP_STATUS=$(curl -sS -o response.json -w "%{http_code}" \
             -X POST "https://onesignal.com/api/v1/notifications" \
             -H "Content-Type: application/json; charset=utf-8" \
@@ -67,4 +67,4 @@ jobs:
             exit 1
           fi
 
-          echo "Debug test notification request succeeded. Check OneSignal Delivery and the target devices."
+          echo "Debug test notification request succeeded. Check OneSignal Delivery and target devices."

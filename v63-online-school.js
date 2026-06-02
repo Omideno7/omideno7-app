@@ -413,17 +413,24 @@
     const L=lang();
     const A=adminLabels();
     const labels={
-      fa:{audioCheck:'شنیدن فایل صوتی', full:'متن کامل درس', key:'آیات کلیدی', note:'این بخش برای بررسی محتوای فعلی مدرسه است. برای تغییر متن‌ها، فایل محتوا باید اصلاح و نسخه جدید اپ ساخته شود.'},
-      en:{audioCheck:'Listen to audio', full:'Full written lesson', key:'Key Scriptures', note:'This area is for reviewing the current school content. To change texts, update the content file and publish a new app version.'},
-      hr:{audioCheck:'Slušaj audio', full:'Cijela pisana lekcija', key:'Ključni stihovi', note:'Ovaj dio služi za pregled trenutnog sadržaja škole. Za izmjene ažurirajte datoteku sadržaja i objavite novu verziju aplikacije.'}
+      fa:{audioCheck:'شنیدن فایل صوتی', full:'نمایش متن کامل درس', hide:'بستن متن کامل', key:'آیات کلیدی', note:'این بخش برای بررسی سریع و سبک محتوای مدرسه است. برای جلوگیری از هنگ شدن، متن کامل هر درس فقط وقتی روی دکمه آن بزنید باز می‌شود.', assignment:'تکلیف درس', exam:'سؤالات امتحان', speed:'سرعت پخش'},
+      en:{audioCheck:'Listen to audio', full:'Show full written lesson', hide:'Close full text', key:'Key Scriptures', note:'This is a fast review area for school content. To prevent freezing, each full lesson text opens only when you tap its button.', assignment:'Assignment', exam:'Exam questions', speed:'Playback speed'},
+      hr:{audioCheck:'Slušaj audio', full:'Prikaži cijelu pisanu lekciju', hide:'Zatvori cijeli tekst', key:'Ključni stihovi', note:'Ovo je lagani pregled sadržaja škole. Kako bi se spriječilo zamrzavanje, cijeli tekst lekcije otvara se samo kada dodirnete gumb.', assignment:'Zadatak', exam:'Ispitna pitanja', speed:'Brzina reprodukcije'}
     }[L];
+    const splitRefs=(txt)=>String(txt||'').split(/[؛;]+/).map(x=>x.trim()).filter(Boolean);
+    const refButtons=(txt)=>splitRefs(txt).map(r=>`<button type="button" class="school-btn light v6314-review-ref" data-review-ref="${esc(r)}">${esc(r)}</button>`).join(' ');
     adminArea.innerHTML=`<div class="school-card"><h3>${esc(schoolTxt('schoolReview'))}</h3><p class="school-muted">${esc(labels.note)}</p></div>
-    <div class="school-card"><h3>${esc(schoolTxt('lessonsContent'))}</h3>${lessons.map((l,idx)=>{ const auId='adminAudio-'+l.code; return `<details class="school-card"><summary><strong>${esc(l.classTitle)}</strong> — ${esc(l.title)}</summary>${l.keyScriptures?`<p><strong>${esc(labels.key)}:</strong> ${esc(l.keyScriptures)}</p>${keyScriptureButtons(l)}`:''}<p><strong>${esc(tr('audio'))}:</strong> ${l.audioAvailable?esc(l.audioFile||''):esc(tr('audioLater'))}</p>${l.audioAvailable&&l.audioFile?`<div class="school-card"><h4>${esc(labels.audioCheck)}</h4><audio id="${esc(auId)}" class="school-audio" controls preload="metadata" src="${esc(resolveSchoolAudio(l.audioFile))}"></audio><label style="display:block;margin-top:8px">${esc(A.audioSpeed)} <select data-admin-audio-speed="1" data-for-audio="${esc(auId)}"><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></label></div>`:''}<p><strong>${esc(tr('assignment'))}:</strong> ${nl(l.assignment)}</p><details><summary class="school-btn light" style="display:inline-block;cursor:pointer">${esc(labels.full)}</summary><div class="school-lesson-text" style="margin-top:12px;max-height:55vh;overflow:auto">${nl(l.text)}</div></details></details>`; }).join('')}</div>
-    <div class="school-card"><h3>${esc(schoolTxt('examContent'))}</h3><p>${examList().length} ${esc(tr('exam'))}</p>${examList().slice(0,50).map(q=>`<details class="school-card"><summary>${q.number}. ${esc(q.question)}</summary>${q.options.map(o=>`<p>${o.key}. ${esc(o.text)} ${o.key===q.correct?'✅':''}</p>`).join('')}<p><strong>${esc(tr('rightAnswer'))}:</strong> ${esc(q.correct)}</p></details>`).join('')}</div>`;
-    bindKeyScriptureButtons(adminArea);
+      <div class="school-card"><h3>${esc(schoolTxt('lessonsContent'))}</h3>
+      ${lessons.map((l,idx)=>{ const auId='adminAudio-'+l.code; return `<div class="school-card v6314-review-card" data-review-idx="${idx}"><h4>${esc(l.classTitle)} — ${esc(l.title)}</h4>${l.keyScriptures?`<p><strong>${esc(labels.key)}:</strong></p><div class="v6314-ref-list">${refButtons(l.keyScriptures)}</div><div class="v6314-ref-output" hidden></div>`:''}${l.audioAvailable&&l.audioFile?`<div class="school-card"><h4>${esc(labels.audioCheck)}</h4><audio id="${esc(auId)}" class="school-audio" controls preload="none" src="${esc(resolveSchoolAudio(l.audioFile))}"></audio><label style="display:block;margin-top:8px">${esc(labels.speed)} <select data-admin-audio-speed="1" data-for-audio="${esc(auId)}"><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></label></div>`:`<p class="school-muted">${esc(tr('audioLater'))}</p>`}<p><strong>${esc(labels.assignment)}:</strong> ${nl(l.assignment)}</p><button type="button" class="school-btn light v6314-show-text" data-review-text="${idx}">${esc(labels.full)}</button><div class="v6314-full-text school-lesson-text" hidden></div></div>`; }).join('')}</div>
+      <div class="school-card"><h3>${esc(labels.exam)}</h3><p>${examList().length} ${esc(tr('exam'))}</p><div style="max-height:55vh;overflow:auto">${examList().slice(0,50).map(q=>`<details class="school-card"><summary>${q.number}. ${esc(q.question)}</summary>${q.options.map(o=>`<p>${o.key}. ${esc(o.text)} ${o.key===q.correct?'✅':''}</p>`).join('')}<p><strong>${esc(tr('rightAnswer'))}:</strong> ${esc(q.correct)}</p></details>`).join('')}</div></div>`;
+    adminArea.querySelectorAll('.v6314-show-text').forEach(btn=>btn.addEventListener('click',()=>{
+      const idx=Number(btn.dataset.reviewText); const lesson=lessons[idx]; const holder=btn.closest('.v6314-review-card')?.querySelector('.v6314-full-text');
+      if(!holder||!lesson) return;
+      if(holder.hidden){ holder.innerHTML=nl(lesson.text); holder.hidden=false; btn.textContent=labels.hide; }
+      else { holder.hidden=true; btn.textContent=labels.full; }
+    }));
     bindAdminAudioSpeeds(adminArea);
   }
-
 
 async function showQaAdmin(){
     const L=lang();

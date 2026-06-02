@@ -20,3 +20,9 @@ https://omideno7.github.io/omideno7-app/admin.html?v=61
 - Fasting topic verses now start collapsed instead of forcing the first verse open.
 - Added a stable footer version cleanup for the More page only: App Version V61.1.
 - No changes to Bible, Audio, Q&A database, Notifications, Plans, or Apocrypha.
+
+## V61.3 — Back Button Cleanup + Install Card Restore
+- Hides the black floating Back button to prevent duplicate back controls.
+- Keeps one internal Back behavior and routes it through a safer one-step back handler where possible.
+- Restores the Home page Install App card with Persian, English, and Croatian text.
+- Does not modify Bible, Apocrypha, Audio, Plans, Fasting content, Q&A database, or Notifications.

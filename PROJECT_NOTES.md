@@ -199,3 +199,20 @@ The install guide was changed to avoid continuous MutationObserver updates. Admi
 - Fasting topic verses now start collapsed instead of forcing the first verse open.
 - Added a stable footer version cleanup for the More page only: App Version V61.1.
 - No changes to Bible, Audio, Q&A database, Notifications, Plans, or Apocrypha.
+
+## V61.3 — Back Button Cleanup + Install Card Restore
+Files added/changed:
+- `index.html`
+- `v61-3-back-install-fix.js`
+- `README.md`
+- `PROJECT_NOTES.md`
+
+Purpose:
+- Remove/hide the duplicated black floating Back button.
+- Keep a single internal Back experience and make it behave as a one-step return when possible.
+- Restore the Home page installation guide/card in three languages: Persian, English, Croatian.
+- The install button uses the browser PWA install prompt on supported Android/Chrome devices, and shows written instructions for iPhone/Huawei/other browsers.
+
+Boundaries:
+- This module must not change Bible, Apocrypha, Audio, Plans, Fasting teachings, Q&A, Supabase, OneSignal, or GitHub Actions workflows.
+- If navigation bugs remain in a specific feature, fix that feature with a targeted patch rather than rewriting global navigation.

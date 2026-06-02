@@ -1,37 +1,24 @@
-# Omideno7 Web App — V63 Online School Phase 1
+# Omideno7 WebApp V63.2 — Online School UI Hotfix
 
-This package adds the **Online School** module as an independent feature.
+This package keeps the V63.1 Online School Phase 1 functionality and fixes only the UI issues reported after testing:
+
+- The School button is forced into the same bottom navigation bar with the existing buttons.
+- No bottom navigation item is removed.
+- The Online School hero title is forced to bright white.
+- The hero subtitle is shown in a light white/gray tone for better readability.
+- No database structure, lessons, exam content, Q&A, Bible, Word, fasting plan, notifications, or Supabase logic is changed.
 
 ## Files
 
-- `index.html` — loads the new school module.
-- `v63-online-school.js` — Online School UI, Supabase Auth, lesson progress, notes, assignments, exam, and admin view.
-- `SCHOOL_SUPABASE_SQL_V63.sql` — SQL tables and RLS policies for Supabase.
-- `school-audio/` — Persian audio lessons with normalized file names.
-- `v62-14-daily-word-verse-toggle-fix.js` — preserved Daily Word fix.
-- `v62-9-plan-navigation-final-fix.js` — preserved Plans navigation fix.
+- `index.html`
+- `v63-online-school.js`
+- `SCHOOL_SUPABASE_SQL_V63.sql`
+- `v62-14-daily-word-verse-toggle-fix.js`
+- `v62-9-plan-navigation-final-fix.js`
+- `PROJECT_NOTES.md`
 
-## Important setup
+## Test URL
 
-1. Upload all files to the root of the GitHub Pages repository.
-2. Upload the full `school-audio` folder to the repository root.
-3. In Supabase, open SQL Editor and run `SCHOOL_SUPABASE_SQL_V63.sql` once.
-4. Make sure Supabase Authentication Email/Password is enabled.
-5. Test the school page from the bottom navigation.
+Use:
 
-## Design decisions
-
-- The School button is added to the bottom navigation without removing existing buttons.
-- Users must create an account and complete registration before seeing lessons.
-- Data is saved in Supabase, not only on the phone.
-- Persian audio is available with playback speed control.
-- English and Croatian show written lessons only, with audio-unavailable notice.
-- Each lesson requires 15 notes and a submitted assignment before the next lesson unlocks.
-- The final exam unlocks after all lessons are complete.
-- Pass mark is 80%.
-- If a user scores below 80%, one retry is allowed.
-- Admin email: omideno7church@gmail.com.
-
-## No changes intended
-
-This package does not modify Daily Word content, Q&A, Bible, notifications, fasting content, or existing audio messages.
+`https://omideno7.github.io/omideno7-app/?v=632`

@@ -223,3 +223,21 @@ Boundaries:
 - Removed loading of the older `v61-1-footer-stable.js` from `index.html`.
 - The More page footer now displays only one line: `App Version: V61.4`.
 - This update is limited to footer/version display only and should not affect Bible, Audio, Plans, Fasting, Q&A, Notifications, or navigation.
+
+## V61.5 — Navigation, Install Card, Footer Version Stabilization
+
+Files added/updated:
+- `index.html`
+- `v61-5-nav-install-footer-fix.js`
+- `README.md`
+- `PROJECT_NOTES.md`
+
+Purpose:
+- Fix inconsistent back button behavior without touching Bible, Audio, Plans, Q&A, Notifications, or Fasting data.
+- Hide old/floating black back buttons and provide one managed back button per non-home page.
+- Restore the Home page install card as a collapsed card. The user opens the guide manually; Android/Chrome can use the install prompt if supported, while iPhone/iPad and Huawei/other browsers receive instructions.
+- Force the More page footer to display only one version line: `App Version: V61.5`.
+
+Development note:
+- This is an overlay hotfix. It does not delete old files from the repository. Old version scripts may still exist in GitHub, but this version should override their visible back/install/footer behavior.
+- Repository cleanup should be handled later in a dedicated cleanup/audit release, not inside feature hotfixes.

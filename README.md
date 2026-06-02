@@ -31,3 +31,10 @@ https://omideno7.github.io/omideno7-app/admin.html?v=61
 ## Latest App Version: V61.4
 - Fixed footer App Version display so only one version appears in the More page.
 - No changes to Bible, Audio, Plans, Fasting, Q&A database, or Notifications.
+
+## Latest App Version: V61.5 — Navigation, Install Card, Footer Version Fix
+
+- Unified the visible back button behavior and hides old/floating black back buttons.
+- Restored a collapsed three-language Install App card on the Home page with Android, iPhone/iPad, Huawei/other browser guidance.
+- Stabilized the footer version display so the More page should show only one version label: App Version: V61.5.
+- No Bible, Apocrypha, Audio, Plans, Fasting data, Q&A database, or Notification workflow changes are included in this hotfix.

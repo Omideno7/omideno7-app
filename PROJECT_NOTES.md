@@ -1,17 +1,13 @@
-# PROJECT NOTES — V63.10
+# Project Notes — V63.11
 
-## Scope
-Admin and school-management refinement only. No Bible, notifications, daily word, public plans, or general user sections were intentionally changed.
+Scope: Small hotfix after V63.10.
 
-## Changes
-- Unified admin panel keeps School Management and Q&A separate.
-- Q&A no longer shows student-list tabs inside the Q&A screen.
-- Q&A is grouped by language: Persian, English, Croatian.
-- Admin can answer, mark for public publish, and save responses.
-- School content review now includes audio playback speed controls.
-- School content review now turns key scripture references into clickable buttons with related text display.
-- Pending student and pending Q&A counters added.
-- Optional `school_admin_events` SQL added for admin awareness of registrations.
+Implemented:
+- iPhone bottom navigation safe-area correction.
+- Mobile admin layout improvements.
+- Clickable key scripture buttons in admin content review.
+- Volume control added beside audio playback speed.
 
-## Important
-If Q&A rows do not show correctly, confirm the actual Supabase table/column names for the Q&A system. The app currently checks common table names, including `qa_questions`.
+Not included in this hotfix:
+- New audio-message categories such as “Sowing, Watering and Harvest” or “Effective Prayer”. These require new audio files and a separate content structure.
+- Full cloud sync for non-school user content such as Thanksgiving notes. Recommended as a separate Supabase-backed phase to avoid breaking existing local-storage features.

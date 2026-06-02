@@ -1,19 +1,11 @@
-# Omideno7 Web App V63.10
+# Omidno7 WebApp V63.11
 
-این نسخه فقط بخش ادمین مدرسه/پرسش‌وپاسخ و بررسی محتوای مدرسه را تقویت می‌کند.
+Hotfix focused on the admin/mobile school interface.
 
-## تغییرات
-- پنل ادمین با دو ورودی اصلی: مدیریت مدرسه و پرسش‌وپاسخ.
-- در بخش پرسش‌وپاسخ، سوالات به سه دسته فارسی، انگلیسی و کرواتی جدا می‌شوند.
-- در پرسش‌وپاسخ ادمین، پاسخ، وضعیت انتشار و ذخیره پاسخ اضافه شد.
-- در بررسی محتوای مدرسه، آیات کلیدی به صورت دکمه نمایش داده می‌شوند و با کلیک متن مرتبط نمایش داده می‌شود.
-- در بررسی صوت‌های مدرسه، کنترل سرعت پخش اضافه شد.
-- شمارنده دانشجویان در انتظار تأیید و سوالات در انتظار پاسخ در پنل ادمین اضافه شد.
-- بخش‌های عمومی اپ تغییر نکرده‌اند.
+Changes:
+- Bottom navigation adjusted for iPhone safe area so it does not conflict with the iOS home indicator.
+- Admin pages made more mobile-friendly and less horizontally crowded.
+- Admin school content review: key scripture references are clickable inline and open their verse text when available from the app Bible data.
+- Audio players in school/admin now include playback speed and volume controls.
 
-## لینک‌ها
-اپ اصلی: `?v=6310`
-ادمین: `/admin.html` یا `?v=6310&admin=1&school_admin=1`
-
-## Supabase
-بعد از آپلود، فایل `SCHOOL_SUPABASE_SQL_V63.sql` را دوباره اجرا کنید تا جدول اختیاری رویدادهای ادمین ساخته شود.
+No changes were made to Q&A logic, school registration, Supabase tables, notifications, Daily Word, or existing stored user data.

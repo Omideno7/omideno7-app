@@ -1,48 +1,14 @@
-# Omideno7 Church Web App
+# Omideno7 Web App — V62.5
 
-Latest App Version: V61.1 — Fasting Topic Teaching and Full Scripture Fix
+Daily Word updated from the complete structured May 2026 message file.
 
-## V61.1 changes
-- Added `v61-fasting-topic-teachings.js`.
-- Fasting Journey now shows topic-specific short teaching, full related Scriptures, prayer, and faith declaration.
-- Supports Persian, English, and Croatian.
-- This update does not change Bible, Audio, Q&A, Notifications, Apocrypha, or other app sections.
+Changes:
+- Daily Word uses the clean structured message data for 31 days.
+- Further Study references are clickable.
+- Clicking a reference opens the full verse/passage text.
+- English uses the structured KJV-style text from the prepared file.
+- Persian and Croatian UI/titles/messages remain available; verse lookup uses app Bible data when loaded.
+- No source, author, publisher, ad, contact, or external reference text is displayed in the app.
+- Fasting plan back button fix remains included.
 
-Test URL:
-https://omideno7.github.io/omideno7-app/?v=61
-
-Admin URL:
-https://omideno7.github.io/omideno7-app/admin.html?v=61
-
-
-## V61.1
-- Fixed Fasting Journey Scripture toggles so verses remain open after tapping.
-- Fasting topic verses now start collapsed instead of forcing the first verse open.
-- Added a stable footer version cleanup for the More page only: App Version V61.1.
-- No changes to Bible, Audio, Q&A database, Notifications, Plans, or Apocrypha.
-
-## V61.3 — Back Button Cleanup + Install Card Restore
-- Hides the black floating Back button to prevent duplicate back controls.
-- Keeps one internal Back behavior and routes it through a safer one-step back handler where possible.
-- Restores the Home page Install App card with Persian, English, and Croatian text.
-- Does not modify Bible, Apocrypha, Audio, Plans, Fasting content, Q&A database, or Notifications.
-
-
-## Latest App Version: V61.4
-- Fixed footer App Version display so only one version appears in the More page.
-- No changes to Bible, Audio, Plans, Fasting, Q&A database, or Notifications.
-
-## Latest App Version: V61.5 — Navigation, Install Card, Footer Version Fix
-
-- Unified the visible back button behavior and hides old/floating black back buttons.
-- Restored a collapsed three-language Install App card on the Home page with Android, iPhone/iPad, Huawei/other browser guidance.
-- Stabilized the footer version display so the More page should show only one version label: App Version: V61.5.
-- No Bible, Apocrypha, Audio, Plans, Fasting data, Q&A database, or Notification workflow changes are included in this hotfix.
-
-## V61.7 — Notification Local Time + Footer Stability
-
-- Daily Word, Faith Declaration, and Thanksgiving notifications now use OneSignal local-time delivery.
-- Morning prayer and Sunday service reminders use Europe/Zagreb as the source of truth and mention Central European Time.
-- Meeting reminders no longer say “in 30 minutes” to avoid confusion if delivery is delayed.
-- A lightweight app helper updates OneSignal user tags for language and timezone.
-- Footer version display is stabilized as `App Version: V61.7`.
+Upload these files to the repository root only.

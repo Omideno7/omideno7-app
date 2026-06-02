@@ -1,38 +1,19 @@
-# Omideno7 WebApp V63.9 — School Admin and Written Lessons Update
+# Omideno7 Web App V63.10
 
-Files included:
-- index.html
-- v63-online-school.js
-- v63-5-navigation-admin-audio-fix.js
-- v63-9-admin-and-more-polish.js
-- SCHOOL_SUPABASE_SQL_V63.sql
-- admin.html
-- admin.webmanifest
-- existing V62 Daily Word and navigation support scripts
+این نسخه فقط بخش ادمین مدرسه/پرسش‌وپاسخ و بررسی محتوای مدرسه را تقویت می‌کند.
 
-What changed:
-- Full written lessons from the trilingual lesson spreadsheet are embedded for all 8 school lessons.
-- Student lesson pages now show a button for the full written lesson.
-- Persian audio remains MP3 from Supabase Storage.
-- Admin content review now includes audio players so the admin can listen to each lesson audio.
-- Admin panel is more organized with School Management and Q&A access.
-- Approval flow remains: students cannot access classes until admin approves them.
-- Student dashboard shows an approval confirmation and certificate information.
-- More page includes a small multilingual list of recent app features and version V63.9.
-- admin.html is added as an installable admin entry point.
+## تغییرات
+- پنل ادمین با دو ورودی اصلی: مدیریت مدرسه و پرسش‌وپاسخ.
+- در بخش پرسش‌وپاسخ، سوالات به سه دسته فارسی، انگلیسی و کرواتی جدا می‌شوند.
+- در پرسش‌وپاسخ ادمین، پاسخ، وضعیت انتشار و ذخیره پاسخ اضافه شد.
+- در بررسی محتوای مدرسه، آیات کلیدی به صورت دکمه نمایش داده می‌شوند و با کلیک متن مرتبط نمایش داده می‌شود.
+- در بررسی صوت‌های مدرسه، کنترل سرعت پخش اضافه شد.
+- شمارنده دانشجویان در انتظار تأیید و سوالات در انتظار پاسخ در پنل ادمین اضافه شد.
+- بخش‌های عمومی اپ تغییر نکرده‌اند.
 
-Storage expected:
-Supabase Storage bucket: school-audio (public)
-Expected MP3 files:
-class-01-fa.mp3
-class-02-fa.mp3
-class-03-fa.mp3
-class-04a-fa.mp3
-class-04b-fa.mp3
-class-05-fa.mp3
-class-06-07-fa.mp3
+## لینک‌ها
+اپ اصلی: `?v=6310`
+ادمین: `/admin.html` یا `?v=6310&admin=1&school_admin=1`
 
-Admin link:
-https://omideno7.github.io/omideno7-app/admin.html
-or
-https://omideno7.github.io/omideno7-app/?v=639&admin=1&school_admin=1
+## Supabase
+بعد از آپلود، فایل `SCHOOL_SUPABASE_SQL_V63.sql` را دوباره اجرا کنید تا جدول اختیاری رویدادهای ادمین ساخته شود.

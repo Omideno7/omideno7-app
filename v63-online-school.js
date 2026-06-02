@@ -244,27 +244,127 @@
   function examResultHtml(att){ return `<div class="school-card ${att.passed?'school-result-good':'school-result-bad'}"><h2>${esc(tr('exam'))}</h2><p><strong>${esc(tr('score'))}:</strong> ${att.correct_count}/${att.total_questions}</p><p><strong>${esc(tr('percent'))}:</strong> ${att.score_percent}%</p><p><strong>${att.passed?esc(tr('pass')):esc(tr('fail'))}</strong></p><button class="school-btn" id="loadExamReview">${esc(tr('review'))}</button></div><div id="examReview"></div>`; }
   async function bindExamReview(att){ }
   document.addEventListener('click', async e=>{ if(e.target&&e.target.id==='loadExamReview'){ const att=attempts[attempts.length-1]; const {data,error}=await sb.from('school_exam_answers').select('*').eq('attempt_id',att.id).order('question_number'); if(error){showStatus(error.message,true);return;} const qs=examList(); document.getElementById('examReview').innerHTML=(data||[]).map(a=>{ const q=qs.find(x=>x.number===a.question_number); const selected=q?.options.find(o=>o.key===a.selected_answer)?.text||''; const right=q?.options.find(o=>o.key===a.correct_answer)?.text||''; return `<div class="school-question ${a.is_correct?'school-result-good':'school-result-bad'}"><h4>${a.question_number}. ${esc(a.question_text)}</h4><p>${esc(tr('selected'))}: ${esc(a.selected_answer)} ${esc(selected)}</p><p>${esc(tr('rightAnswer'))}: ${esc(a.correct_answer)} ${esc(right)}</p></div>`; }).join(''); }});
-  function adminHtml(){
+  function adminLabels(){
     const L=lang();
-    const labels={
-      fa:{title:'پنل مدیریت کلیسای امیدنو۷', school:'مدیریت مدرسه', qa:'پرسش و پاسخ', students:'لیست دانشجویان', content:'بررسی محتوای مدرسه', desc:'از این بخش می‌توانید مدرسه، دانشجویان، تکالیف، امتحان و پرسش‌وپاسخ را مدیریت کنید.'},
-      en:{title:'Omidno7 Admin Dashboard', school:'School Management', qa:'Q&A', students:'Student List', content:'Review School Content', desc:'Use this area to manage the school, students, assignments, exams, and questions and answers.'},
-      hr:{title:'Admin panel Omidno7', school:'Upravljanje školom', qa:'Pitanja i odgovori', students:'Popis polaznika', content:'Pregled sadržaja škole', desc:'Ovdje možete upravljati školom, polaznicima, zadacima, ispitima i pitanjima i odgovorima.'}
-    }[L]||{};
-    return `<div class="school-card"><h2>${esc(labels.title)}</h2><p class="school-muted">${esc(labels.desc)}</p><div class="school-grid"><button class="school-btn gold" id="adminSchoolHome">🎓 ${esc(labels.school)}</button><button class="school-btn" id="loadAdminQa">❓ ${esc(labels.qa)}</button></div></div><div class="school-card"><h3>${esc(labels.school)}</h3><div class="school-tabs"><button class="school-tab active" id="loadAdminStudents">${esc(labels.students)}</button><button class="school-tab" id="loadSchoolContentReview">${esc(labels.content)}</button></div><div id="adminSchoolArea"></div></div>`;
+    return {
+      fa:{title:'پنل مدیریت کلیسای امیدنو۷', school:'مدیریت مدرسه', qa:'پرسش و پاسخ', students:'لیست دانشجویان', content:'بررسی محتوای مدرسه', desc:'از این بخش می‌توانید مدرسه، دانشجویان، تکالیف، امتحان و پرسش‌وپاسخ را مدیریت کنید.', schoolIntro:'مدیریت مدرسه', qaIntro:'مدیریت پرسش‌ها', qaList:'لیست سوالات', qFa:'سوالات فارسی', qEn:'English Questions', qHr:'Hrvatska pitanja', pending:'در انتظار بررسی', answered:'پاسخ داده شده', published:'منتشر شده', notPublished:'منتشر نشده', publishFlag:'انتشار عمومی', saveAnswer:'ذخیره پاسخ', askReceived:'پیام دریافت سؤال برای کاربر', studentPendingCount:'دانشجویان در انتظار تأیید', qaPendingCount:'سؤال‌های در انتظار پاسخ', noItems:'موردی وجود ندارد', verseContent:'متن آیه', showVerse:'نمایش آیات', audioSpeed:'سرعت پخش', backAdmin:'بازگشت به پنل ادمین'},
+      en:{title:'Omidno7 Admin Dashboard', school:'School Management', qa:'Q&A', students:'Student List', content:'Review School Content', desc:'Use this area to manage the school, students, assignments, exams, and questions and answers.', schoolIntro:'School Management', qaIntro:'Question Management', qaList:'Question List', qFa:'Persian Questions', qEn:'English Questions', qHr:'Croatian Questions', pending:'Pending Review', answered:'Answered', published:'Published', notPublished:'Not Published', publishFlag:'Publish Publicly', saveAnswer:'Save Answer', askReceived:'User submission acknowledgement', studentPendingCount:'Students pending approval', qaPendingCount:'Questions pending answer', noItems:'No items found', verseContent:'Verse Text', showVerse:'Show Scriptures', audioSpeed:'Playback Speed', backAdmin:'Back to Admin'},
+      hr:{title:'Admin panel Omidno7', school:'Upravljanje školom', qa:'Pitanja i odgovori', students:'Popis polaznika', content:'Pregled sadržaja škole', desc:'Ovdje možete upravljati školom, polaznicima, zadacima, ispitima i pitanjima i odgovorima.', schoolIntro:'Upravljanje školom', qaIntro:'Upravljanje pitanjima', qaList:'Popis pitanja', qFa:'Perzijska pitanja', qEn:'Engleska pitanja', qHr:'Hrvatska pitanja', pending:'Čeka pregled', answered:'Odgovoreno', published:'Objavljeno', notPublished:'Nije objavljeno', publishFlag:'Javno objavi', saveAnswer:'Spremi odgovor', askReceived:'Potvrda primitka pitanja', studentPendingCount:'Polaznici čekaju odobrenje', qaPendingCount:'Pitanja čekaju odgovor', noItems:'Nema stavki', verseContent:'Tekst stiha', showVerse:'Prikaži stihove', audioSpeed:'Brzina reprodukcije', backAdmin:'Natrag na admin'}
+    }[L];
   }
-  async function bindAdmin(){
-    document.getElementById('adminSchoolHome')?.addEventListener('click',loadAdminStudents);
+  function getRefList(txt){ return String(txt||'').split(/[؛;]+/).map(x=>x.trim()).filter(Boolean); }
+  function keyScriptureButtons(l){
+    const A=adminLabels();
+    const refs=getRefList(l.keyScriptures);
+    if(!refs.length) return '';
+    return `<div class="school-key-refs"><p><strong>${esc(A.showVerse)}:</strong></p><div class="school-ref-buttons">${refs.map(r=>`<button type="button" class="school-btn light school-ref-btn" data-school-ref="${esc(r)}" data-lesson-code="${esc(l.code)}">${esc(r)}</button>`).join('')}</div><div class="school-ref-output" id="refOut-${esc(l.code)}"></div></div>`;
+  }
+  function findRefTextInLesson(lesson, ref){
+    const text=String(lesson?.text||'');
+    const clean=String(ref||'').replace(/\s+/g,' ').trim();
+    if(!text) return '';
+    const idx=text.indexOf(clean);
+    if(idx>=0){
+      const start=Math.max(0, idx-220), end=Math.min(text.length, idx+clean.length+420);
+      return text.slice(start,end).trim();
+    }
+    // If exact reference is not found, show a helpful section from the lesson where the reference is taught.
+    const first=clean.split(/[\s:،,؛;-]+/)[0];
+    const idx2=first?text.indexOf(first):-1;
+    if(idx2>=0){
+      const start=Math.max(0, idx2-180), end=Math.min(text.length, idx2+520);
+      return text.slice(start,end).trim();
+    }
+    return '';
+  }
+  function bindKeyScriptureButtons(root=document){
+    root.querySelectorAll('[data-school-ref]').forEach(btn=>{
+      if(btn.dataset.boundRef) return;
+      btn.dataset.boundRef='1';
+      btn.addEventListener('click',()=>{
+        const code=btn.getAttribute('data-lesson-code');
+        const ref=btn.getAttribute('data-school-ref');
+        const lesson=lessonByCode(code);
+        const A=adminLabels();
+        const out=document.getElementById('refOut-'+code);
+        if(!out) return;
+        const found=findRefTextInLesson(lesson, ref);
+        out.innerHTML=`<div class="school-card" style="margin-top:10px"><h4>${esc(ref)}</h4><p class="school-muted">${esc(A.verseContent)}</p><div>${found?nl(found):nl(ref+'\n\n'+(lesson?.text||'').slice(0,900))}</div></div>`;
+        out.scrollIntoView({behavior:'smooth',block:'nearest'});
+      });
+    });
+  }
+  function bindAdminAudioSpeeds(root=document){
+    root.querySelectorAll('[data-admin-audio-speed]').forEach(sel=>{
+      if(sel.dataset.boundSpeed) return;
+      sel.dataset.boundSpeed='1';
+      sel.addEventListener('change',()=>{
+        const id=sel.getAttribute('data-for-audio');
+        const au=document.getElementById(id);
+        if(au) au.playbackRate=parseFloat(sel.value||'1');
+      });
+    });
+  }
+  async function getQaRows(){
+    const candidates=['qa_questions','questions','church_questions','qna_questions','public_questions'];
+    let rows=null, table=null, err=null;
+    for(const t of candidates){
+      try{
+        const r=await sb.from(t).select('*').order('created_at',{ascending:false}).limit(250);
+        if(!r.error && Array.isArray(r.data)){ rows=r.data; table=t; break; }
+        err=r.error;
+      }catch(e){ err=e; }
+    }
+    return {rows, table, err};
+  }
+  function qLang(q){
+    const v=String(q.language||q.lang||q.preferred_language||q.question_language||q.locale||'').toLowerCase();
+    if(v.includes('fa')||v.includes('persian')||v.includes('farsi')) return 'fa';
+    if(v.includes('hr')||v.includes('cro')||v.includes('hrv')) return 'hr';
+    if(v.includes('en')||v.includes('eng')) return 'en';
+    const text=String(q.question||q.question_text||q.text||q.body||'');
+    if(/[\u0600-\u06FF]/.test(text)) return 'fa';
+    if(/[čćžšđ]/i.test(text)) return 'hr';
+    return 'en';
+  }
+  function qIsAnswered(q){ return !!(q.answer||q.answer_text||q.response||q.status==='published'||q.status==='answered'); }
+  async function updateAdminBadges(){
+    try{
+      const st=await sb.from('school_students').select('id,status');
+      const pending=(st.data||[]).filter(x=>x.status!=='approved').length;
+      const b=document.getElementById('pendingStudentsBadge'); if(b) b.textContent=String(pending);
+    }catch(e){}
+    try{
+      const q=await getQaRows();
+      const pending=(q.rows||[]).filter(x=>!qIsAnswered(x)).length;
+      const b=document.getElementById('pendingQaBadge'); if(b) b.textContent=String(pending);
+    }catch(e){}
+  }
+  function adminHtml(){
+    const labels=adminLabels();
+    return `<div class="school-card"><h2>${esc(labels.title)}</h2><p class="school-muted">${esc(labels.desc)}</p><div class="school-grid"><button class="school-btn gold" id="adminSchoolHome">🎓 ${esc(labels.school)} <span class="school-badge active" id="pendingStudentsBadge">0</span></button><button class="school-btn" id="loadAdminQa">❓ ${esc(labels.qa)} <span class="school-badge active" id="pendingQaBadge">0</span></button></div></div><div id="adminMainArea"></div>`;
+  }
+  function schoolAdminShell(){
+    const labels=adminLabels();
+    const area=document.getElementById('adminMainArea');
+    if(!area) return null;
+    area.innerHTML=`<div class="school-card"><h3>🎓 ${esc(labels.schoolIntro)}</h3><div class="school-tabs"><button class="school-tab active" id="loadAdminStudents">${esc(labels.students)}</button><button class="school-tab" id="loadSchoolContentReview">${esc(labels.content)}</button></div><div id="adminSchoolArea"></div></div>`;
     document.getElementById('loadAdminStudents')?.addEventListener('click',loadAdminStudents);
     document.getElementById('loadSchoolContentReview')?.addEventListener('click',showSchoolContentReview);
+    return document.getElementById('adminSchoolArea');
+  }
+  async function bindAdmin(){
+    document.getElementById('adminSchoolHome')?.addEventListener('click',()=>{ schoolAdminShell(); loadAdminStudents(); });
     document.getElementById('loadAdminQa')?.addEventListener('click',showQaAdmin);
-    setTimeout(loadAdminStudents,60);
+    setTimeout(()=>{ schoolAdminShell(); loadAdminStudents(); updateAdminBadges(); },80);
   }
   async function loadAdminStudents(){
     const {data,error}=await sb.from('school_students').select('*').order('registered_at',{ascending:false});
     if(error){showStatus(error.message,true);return;}
     adminStudents=data||[];
-    document.getElementById('adminSchoolArea').innerHTML=`<div class="school-card"><h3>${esc(schoolTxt('studentList'))}</h3><table class="school-admin-table"><thead><tr><th>${tr('fullName')}</th><th>${tr('email')}</th><th>${tr('status')}</th><th></th></tr></thead><tbody>${adminStudents.map(s=>`<tr><td>${esc(s.full_name||'')}</td><td>${esc(s.email||'')}</td><td><span class="school-badge ${s.status==='approved'?'done':'active'}">${esc(statusLabel(s.status))}</span></td><td><button class="school-btn light" data-admin-student="${esc(s.user_id)}">${tr('review')}</button></td></tr>`).join('')}</tbody></table><div id="adminStudentDetails"></div></div>`;
+    const adminArea=document.getElementById('adminSchoolArea')||schoolAdminShell();
+    if(!adminArea) return;
+    adminArea.innerHTML=`<div class="school-card"><h3>${esc(schoolTxt('studentList'))}</h3><table class="school-admin-table"><thead><tr><th>${tr('fullName')}</th><th>${tr('email')}</th><th>${tr('status')}</th><th></th></tr></thead><tbody>${adminStudents.map(s=>`<tr><td>${esc(s.full_name||'')}</td><td>${esc(s.email||'')}</td><td><span class="school-badge ${s.status==='approved'?'done':'active'}">${esc(statusLabel(s.status))}</span></td><td><button class="school-btn light" data-admin-student="${esc(s.user_id)}">${tr('review')}</button></td></tr>`).join('')}</tbody></table><div id="adminStudentDetails"></div></div>`;
     document.querySelectorAll('[data-admin-student]').forEach(b=>b.addEventListener('click',()=>loadAdminStudent(b.dataset.adminStudent)));
   }
   function statusLabel(v){
@@ -307,61 +407,79 @@
     detail.querySelectorAll('[data-assignment-status]').forEach(sel=>sel.addEventListener('change',async()=>{ await sb.from('school_assignments').update({status:sel.value}).eq('id',sel.dataset.assignmentStatus); showStatus(tr('saved')); }));
   }
   function showSchoolContentReview(){
+    const adminArea=document.getElementById('adminSchoolArea')||schoolAdminShell();
+    if(!adminArea) return;
     const lessons=lessonList();
     const L=lang();
+    const A=adminLabels();
     const labels={
       fa:{audioCheck:'شنیدن فایل صوتی', full:'متن کامل درس', key:'آیات کلیدی', note:'این بخش برای بررسی محتوای فعلی مدرسه است. برای تغییر متن‌ها، فایل محتوا باید اصلاح و نسخه جدید اپ ساخته شود.'},
       en:{audioCheck:'Listen to audio', full:'Full written lesson', key:'Key Scriptures', note:'This area is for reviewing the current school content. To change texts, update the content file and publish a new app version.'},
       hr:{audioCheck:'Slušaj audio', full:'Cijela pisana lekcija', key:'Ključni stihovi', note:'Ovaj dio služi za pregled trenutnog sadržaja škole. Za izmjene ažurirajte datoteku sadržaja i objavite novu verziju aplikacije.'}
     }[L];
-    document.getElementById('adminSchoolArea').innerHTML=`<div class="school-card"><h3>${esc(schoolTxt('schoolReview'))}</h3><p class="school-muted">${esc(labels.note)}</p></div>
-    <div class="school-card"><h3>${esc(schoolTxt('lessonsContent'))}</h3>${lessons.map(l=>`<details class="school-card"><summary><strong>${esc(l.classTitle)}</strong> — ${esc(l.title)}</summary>${l.keyScriptures?`<p><strong>${esc(labels.key)}:</strong> ${esc(l.keyScriptures)}</p>`:''}<p><strong>${esc(tr('audio'))}:</strong> ${l.audioAvailable?esc(l.audioFile||''):esc(tr('audioLater'))}</p>${l.audioAvailable&&l.audioFile?`<div class="school-card"><h4>${esc(labels.audioCheck)}</h4><audio class="school-audio" controls preload="metadata" src="${esc(resolveSchoolAudio(l.audioFile))}"></audio></div>`:''}<p><strong>${esc(tr('assignment'))}:</strong> ${nl(l.assignment)}</p><details><summary class="school-btn light" style="display:inline-block;cursor:pointer">${esc(labels.full)}</summary><div class="school-lesson-text" style="margin-top:12px;max-height:55vh;overflow:auto">${nl(l.text)}</div></details></details>`).join('')}</div>
+    adminArea.innerHTML=`<div class="school-card"><h3>${esc(schoolTxt('schoolReview'))}</h3><p class="school-muted">${esc(labels.note)}</p></div>
+    <div class="school-card"><h3>${esc(schoolTxt('lessonsContent'))}</h3>${lessons.map((l,idx)=>{ const auId='adminAudio-'+l.code; return `<details class="school-card"><summary><strong>${esc(l.classTitle)}</strong> — ${esc(l.title)}</summary>${l.keyScriptures?`<p><strong>${esc(labels.key)}:</strong> ${esc(l.keyScriptures)}</p>${keyScriptureButtons(l)}`:''}<p><strong>${esc(tr('audio'))}:</strong> ${l.audioAvailable?esc(l.audioFile||''):esc(tr('audioLater'))}</p>${l.audioAvailable&&l.audioFile?`<div class="school-card"><h4>${esc(labels.audioCheck)}</h4><audio id="${esc(auId)}" class="school-audio" controls preload="metadata" src="${esc(resolveSchoolAudio(l.audioFile))}"></audio><label style="display:block;margin-top:8px">${esc(A.audioSpeed)} <select data-admin-audio-speed="1" data-for-audio="${esc(auId)}"><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></label></div>`:''}<p><strong>${esc(tr('assignment'))}:</strong> ${nl(l.assignment)}</p><details><summary class="school-btn light" style="display:inline-block;cursor:pointer">${esc(labels.full)}</summary><div class="school-lesson-text" style="margin-top:12px;max-height:55vh;overflow:auto">${nl(l.text)}</div></details></details>`; }).join('')}</div>
     <div class="school-card"><h3>${esc(schoolTxt('examContent'))}</h3><p>${examList().length} ${esc(tr('exam'))}</p>${examList().slice(0,50).map(q=>`<details class="school-card"><summary>${q.number}. ${esc(q.question)}</summary>${q.options.map(o=>`<p>${o.key}. ${esc(o.text)} ${o.key===q.correct?'✅':''}</p>`).join('')}<p><strong>${esc(tr('rightAnswer'))}:</strong> ${esc(q.correct)}</p></details>`).join('')}</div>`;
+    bindKeyScriptureButtons(adminArea);
+    bindAdminAudioSpeeds(adminArea);
   }
 
 
 async function showQaAdmin(){
     const L=lang();
+    const A=adminLabels();
     const labels={
-      fa:{title:'پرسش و پاسخ', loading:'در حال جستجوی سؤال‌ها...', empty:'فعلاً سؤالی پیدا نشد یا نام جدول پرسش‌وپاسخ با این نسخه هماهنگ نیست.', answer:'پاسخ', publish:'ذخیره و انتشار', status:'وضعیت', tableMissing:'برای اتصال کامل Q&A، اگر این بخش خالی بود، نام جدول Supabase پرسش‌وپاسخ را برای من بفرست تا دقیق هماهنگ کنم.'},
-      en:{title:'Questions and Answers', loading:'Searching questions...', empty:'No questions were found, or the Q&A table name is not matched in this version.', answer:'Answer', publish:'Save and Publish', status:'Status', tableMissing:'For full Q&A connection, if this area is empty, send me the Supabase table name used for Q&A.'},
-      hr:{title:'Pitanja i odgovori', loading:'Tražim pitanja...', empty:'Nema pronađenih pitanja ili naziv Q&A tablice nije usklađen u ovoj verziji.', answer:'Odgovor', publish:'Spremi i objavi', status:'Status', tableMissing:'Za potpuno povezivanje Q&A, ako je ovaj dio prazan, pošaljite naziv Supabase tablice za Q&A.'}
+      fa:{title:'پرسش و پاسخ', loading:'در حال جستجوی سؤال‌ها...', empty:'فعلاً سؤالی پیدا نشد یا نام جدول پرسش‌وپاسخ با این نسخه هماهنگ نیست.', answer:'پاسخ', publish:'ذخیره پاسخ', status:'وضعیت', tableMissing:'اگر این بخش خالی بود، نام جدول Supabase پرسش‌وپاسخ را برای من بفرست تا دقیق هماهنگ کنم.', name:'فرستنده', category:'زبان', receivedMsg:'وقتی کاربر سؤال را ارسال کند، در اپ پیام «سؤال شما دریافت شد و در حال بررسی است» نمایش داده می‌شود. این بخش برای پاسخ و انتشار عمومی سؤال است.'},
+      en:{title:'Questions and Answers', loading:'Searching questions...', empty:'No questions were found, or the Q&A table name is not matched in this version.', answer:'Answer', publish:'Save Answer', status:'Status', tableMissing:'If this area is empty, send me the Supabase table name used for Q&A.', name:'Sender', category:'Language', receivedMsg:'When a user submits a question, the app shows that the question was received and is under review. This panel is for answering and publishing questions.'},
+      hr:{title:'Pitanja i odgovori', loading:'Tražim pitanja...', empty:'Nema pronađenih pitanja ili naziv Q&A tablice nije usklađen u ovoj verziji.', answer:'Odgovor', publish:'Spremi odgovor', status:'Status', tableMissing:'Ako je ovaj dio prazan, pošaljite naziv Supabase tablice za Q&A.', name:'Pošiljatelj', category:'Jezik', receivedMsg:'Kada korisnik pošalje pitanje, aplikacija prikazuje da je pitanje primljeno i da je u pregledu. Ovaj panel služi za odgovor i objavu pitanja.'}
     }[L];
-    const area=document.getElementById('adminSchoolArea');
-    area.innerHTML=`<div class="school-card"><h3>${esc(labels.title)}</h3><p class="school-muted">${esc(labels.loading)}</p></div>`;
-    const candidates=['qa_questions','questions','church_questions','qna_questions','public_questions'];
-    let rows=null, table=null, err=null;
-    for(const t of candidates){
-      try{
-        const r=await sb.from(t).select('*').order('created_at',{ascending:false}).limit(100);
-        if(!r.error && Array.isArray(r.data)){ rows=r.data; table=t; break; }
-        err=r.error;
-      }catch(e){ err=e; }
-    }
-    if(!rows){
-      area.innerHTML=`<div class="school-card"><h3>${esc(labels.title)}</h3><p>${esc(labels.empty)}</p><p class="school-muted">${esc(labels.tableMissing)}</p><p class="school-muted">${esc(err?.message||'')}</p></div>`;
+    const main=document.getElementById('adminMainArea');
+    if(!main) return;
+    main.innerHTML=`<div class="school-card"><h3>❓ ${esc(A.qaIntro)}</h3><p class="school-muted">${esc(labels.loading)}</p></div>`;
+    const found=await getQaRows();
+    if(!found.rows){
+      main.innerHTML=`<div class="school-card"><h3>❓ ${esc(labels.title)}</h3><p>${esc(labels.empty)}</p><p class="school-muted">${esc(labels.tableMissing)}</p><p class="school-muted">${esc(found.err?.message||'')}</p></div>`;
       return;
     }
-    area.innerHTML=`<div class="school-card"><h3>${esc(labels.title)}</h3><p class="school-muted">Table: ${esc(table)}</p>${rows.length?rows.map((q,i)=>{
-      const id=q.id||q.uuid||q.question_id||'';
-      const question=q.question||q.question_text||q.text||q.body||'';
-      const answer=q.answer||q.answer_text||q.response||'';
-      const status=q.status||q.published_status||'';
-      const name=q.name||q.full_name||q.user_name||q.email||'';
-      return `<details class="school-card"><summary><strong>${i+1}. ${esc(question).slice(0,120)}</strong></summary><p><strong>${esc(tr('fullName'))}:</strong> ${esc(name||'-')}</p><p><strong>${esc(labels.status)}:</strong> ${esc(status||'-')}</p><p>${nl(question)}</p><label>${esc(labels.answer)}<textarea style="width:100%;min-height:150px" data-qa-answer="${esc(id)}">${esc(answer||'')}</textarea></label><button class="school-btn gold" data-qa-save="${esc(id)}">${esc(labels.publish)}</button></details>`;
-    }).join(''):`<p>${esc(labels.empty)}</p>`}</div>`;
-    area.querySelectorAll('[data-qa-save]').forEach(btn=>btn.addEventListener('click',async()=>{
-      const id=btn.getAttribute('data-qa-save');
-      const txt=area.querySelector(`[data-qa-answer="${CSS.escape(id)}"]`)?.value||'';
-      const payload={answer:txt,status:'published',updated_at:new Date().toISOString()};
-      let r=await sb.from(table).update(payload).eq('id',id);
-      if(r.error){
-        // try alternate column used in some setups
-        r=await sb.from(table).update({answer_text:txt,status:'published',updated_at:new Date().toISOString()}).eq('id',id);
-      }
-      if(r.error) showStatus(r.error.message,true); else showStatus(tr('saved'));
-    }));
+    const rows=found.rows||[];
+    function renderLang(filter){
+      const filtered=rows.filter(q=>qLang(q)===filter);
+      const title=filter==='fa'?A.qFa:filter==='hr'?A.qHr:A.qEn;
+      const list=filtered.map((q,i)=>{
+        const id=q.id||q.uuid||q.question_id||'';
+        const question=q.question||q.question_text||q.text||q.body||'';
+        const answer=q.answer||q.answer_text||q.response||'';
+        const status=q.status||q.published_status||'';
+        const name=q.name||q.full_name||q.user_name||q.email||'';
+        const published = String(status).toLowerCase()==='published' || q.is_published===true || q.published===true;
+        return `<details class="school-card"><summary><strong>${i+1}. ${esc(question).slice(0,120)}</strong></summary><p><strong>${esc(labels.name)}:</strong> ${esc(name||'-')}</p><p><strong>${esc(labels.category)}:</strong> ${esc(title)}</p><p><strong>${esc(labels.status)}:</strong> ${esc(status||'-')}</p><div>${nl(question)}</div><label>${esc(labels.answer)}<textarea style="width:100%;min-height:160px" data-qa-answer="${esc(id)}">${esc(answer||'')}</textarea></label><label style="display:flex;gap:8px;align-items:center;margin:10px 0"><input type="checkbox" data-qa-publish="${esc(id)}" ${published?'checked':''}> ${esc(A.publishFlag)}</label><button class="school-btn gold" data-qa-save="${esc(id)}">${esc(labels.publish)}</button></details>`;
+      }).join('') || `<p>${esc(A.noItems)}</p>`;
+      const container=document.getElementById('qaLangArea');
+      if(container) container.innerHTML=`<div class="school-card"><h3>${esc(title)}</h3>${list}</div>`;
+      bindQaSave(found.table);
+    }
+    main.innerHTML=`<div class="school-card"><h3>❓ ${esc(labels.title)}</h3><p class="school-muted">${esc(labels.receivedMsg)}</p><p class="school-muted">Table: ${esc(found.table)}</p><div class="school-tabs"><button class="school-tab active" data-qa-lang="fa">${esc(A.qFa)} <span class="school-badge active">${rows.filter(q=>qLang(q)==='fa').length}</span></button><button class="school-tab" data-qa-lang="en">${esc(A.qEn)} <span class="school-badge active">${rows.filter(q=>qLang(q)==='en').length}</span></button><button class="school-tab" data-qa-lang="hr">${esc(A.qHr)} <span class="school-badge active">${rows.filter(q=>qLang(q)==='hr').length}</span></button></div></div><div id="qaLangArea"></div>`;
+    main.querySelectorAll('[data-qa-lang]').forEach(btn=>btn.addEventListener('click',()=>{main.querySelectorAll('[data-qa-lang]').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderLang(btn.dataset.qaLang);}));
+    renderLang('fa');
+    updateAdminBadges();
   }
+  function bindQaSave(table){
+    const area=document.getElementById('qaLangArea')||document;
+    area.querySelectorAll('[data-qa-save]').forEach(btn=>{
+      if(btn.dataset.boundQa) return;
+      btn.dataset.boundQa='1';
+      btn.addEventListener('click',async()=>{
+        const id=btn.getAttribute('data-qa-save');
+        const txt=area.querySelector(`[data-qa-answer="${CSS.escape(id)}"]`)?.value||'';
+        const pub=area.querySelector(`[data-qa-publish="${CSS.escape(id)}"]`)?.checked;
+        let payload={answer:txt,status:pub?'published':'answered',is_published:!!pub,published:!!pub,updated_at:new Date().toISOString()};
+        let r=await sb.from(table).update(payload).eq('id',id);
+        if(r.error){ r=await sb.from(table).update({answer_text:txt,status:pub?'published':'answered',updated_at:new Date().toISOString()}).eq('id',id); }
+        if(r.error) showStatus(r.error.message,true); else {showStatus(tr('saved')); updateAdminBadges();}
+      });
+    });
+  }
+
 
     function boot(){ ensureUi(); }
   document.addEventListener('DOMContentLoaded', boot);

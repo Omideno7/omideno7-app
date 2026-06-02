@@ -1,12 +1,12 @@
 /* V63.9 Admin install and More page updates polish */
 (function(){
   'use strict';
-  const VERSION='V63.9';
+  const VERSION='V63.10';
   function lang(){ const l=localStorage.getItem('lang')||document.documentElement.lang||'fa'; return ['fa','en','hr'].includes(l)?l:'fa'; }
   const T={
-    fa:{title:'امکانات جدید اپ', version:'نسخه برنامه', items:['مدرسه آنلاین امیدنو۷ با ثبت‌نام و ورود شخصی','ذخیره پیشرفت، یادداشت‌ها، تکالیف و امتحان در Supabase','پنل مدیریت مدرسه با بررسی دانشجو، محتوا، صوت‌ها و امتحان','فایل‌های صوتی فارسی مدرسه با کنترل سرعت','متن کامل درس‌ها برای فارسی، انگلیسی و کرواتی','امکان دریافت گواهی رسمی پایان دوره پس از تکمیل مدرسه','دسترسی ادمین به بخش پرسش‌وپاسخ در پنل مدیریت']},
-    en:{title:'New App Features', version:'App Version', items:['Omidno7 Online School with personal registration and login','Progress, notes, assignments, and exam results saved in Supabase','School admin panel for students, content, audio, and exams','Persian school audio lessons with playback speed control','Full written lessons in Persian, English, and Croatian','Official completion certificate after finishing the school','Admin access to Q&A inside the management panel']},
-    hr:{title:'Nove mogućnosti aplikacije', version:'Verzija aplikacije', items:['Online škola Omidno7 s osobnom registracijom i prijavom','Napredak, bilješke, zadaci i rezultati ispita spremaju se u Supabase','Admin panel škole za polaznike, sadržaj, audio i ispite','Perzijske audio lekcije s kontrolom brzine reprodukcije','Cijele pisane lekcije na perzijskom, engleskom i hrvatskom','Službena potvrda nakon završetka škole','Admin pristup Q&A dijelu unutar upravljačkog panela']}
+    fa:{title:'امکانات جدید اپ', version:'نسخه برنامه', items:['مدرسه آنلاین امیدنو۷ با ثبت‌نام و ورود شخصی','ذخیره پیشرفت، یادداشت‌ها، تکالیف و امتحان در Supabase','پنل مدیریت مدرسه با بررسی دانشجو، محتوا، صوت‌ها و امتحان','فایل‌های صوتی فارسی مدرسه با کنترل سرعت','متن کامل درس‌ها برای فارسی، انگلیسی و کرواتی','امکان دریافت گواهی رسمی پایان دوره پس از تکمیل مدرسه','دسترسی ادمین به بخش پرسش‌وپاسخ در پنل مدیریت','پرسش‌وپاسخ دسته‌بندی‌شده بر اساس زبان و بررسی صوت‌ها در ادمین']},
+    en:{title:'New App Features', version:'App Version', items:['Omidno7 Online School with personal registration and login','Progress, notes, assignments, and exam results saved in Supabase','School admin panel for students, content, audio, and exams','Persian school audio lessons with playback speed control','Full written lessons in Persian, English, and Croatian','Official completion certificate after finishing the school','Admin access to Q&A inside the management panel','Language-filtered Q&A and audio review controls in admin']},
+    hr:{title:'Nove mogućnosti aplikacije', version:'Verzija aplikacije', items:['Online škola Omidno7 s osobnom registracijom i prijavom','Napredak, bilješke, zadaci i rezultati ispita spremaju se u Supabase','Admin panel škole za polaznike, sadržaj, audio i ispite','Perzijske audio lekcije s kontrolom brzine reprodukcije','Cijele pisane lekcije na perzijskom, engleskom i hrvatskom','Službena potvrda nakon završetka škole','Admin pristup Q&A dijelu unutar upravljačkog panela','Q&A filtriran po jeziku i audio provjera u admin panelu']}
   };
   function injectMore(){
     const footer=document.getElementById('mainFooter');

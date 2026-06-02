@@ -159,3 +159,42 @@ create policy "notifications_insert_admin" on public.school_notifications for in
 create policy "notifications_update_own" on public.school_notifications for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 
 grant select, insert, update on public.school_notifications to authenticated;
+
+
+-- V63.10 optional admin event log for school/admin dashboard.
+create table if not exists public.school_admin_events (
+  id uuid primary key default gen_random_uuid(),
+  event_type text not null,
+  related_user_id uuid references auth.users(id) on delete set null,
+  title text not null,
+  body text,
+  seen boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.school_admin_events enable row level security;
+drop policy if exists "admin_events_select_admin" on public.school_admin_events;
+drop policy if exists "admin_events_insert_authenticated" on public.school_admin_events;
+drop policy if exists "admin_events_update_admin" on public.school_admin_events;
+create policy "admin_events_select_admin" on public.school_admin_events for select to authenticated using ((auth.jwt()->>'email') = 'omideno7church@gmail.com');
+create policy "admin_events_insert_authenticated" on public.school_admin_events for insert to authenticated with check (auth.uid() is not null);
+create policy "admin_events_update_admin" on public.school_admin_events for update to authenticated using ((auth.jwt()->>'email') = 'omideno7church@gmail.com') with check ((auth.jwt()->>'email') = 'omideno7church@gmail.com');
+grant select, insert, update on public.school_admin_events to authenticated;
+
+create or replace function public.log_school_student_registration()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.school_admin_events(event_type, related_user_id, title, body)
+  values('school_registration', new.user_id, 'New school registration', coalesce(new.full_name,'') || ' - ' || coalesce(new.email,''));
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_school_student_registration on public.school_students;
+create trigger trg_school_student_registration
+after insert on public.school_students
+for each row execute function public.log_school_student_registration();

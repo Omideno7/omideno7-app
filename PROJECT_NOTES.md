@@ -1,1 +1,1 @@
-V62.11 update: Daily Word content blank issue fixed. The structured May 2026 daily word data now also populates legacy fields (ref, verse, message, declaration, prayer) so older app render code cannot overwrite the card with empty content. Further Study remains clickable in the structured renderer; if a local Bible verse is unavailable, the English verse text is shown. Plan navigation fix from V62.9 remains included.
+V62.12 fixes Daily Word blank-card issue by forcing a visible standalone renderer and preserving the plan-navigation fix.

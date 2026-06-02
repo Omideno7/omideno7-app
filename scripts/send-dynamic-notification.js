@@ -1,14 +1,8 @@
-/*
-  Omideno7 Church - Dynamic OneSignal notification sender
-  V61.10 Audience Target Fix
-  Important: Sends to OneSignal's "Subscribed Users" segment, not stale player IDs.
-*/
+'use strict';
 
-const https = require('https');
-
+const TYPE = process.env.NOTIFICATION_TYPE;
 const APP_ID = process.env.ONESIGNAL_APP_ID;
 const REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY;
-const TYPE = process.env.NOTIFICATION_TYPE;
 
 if (!APP_ID) throw new Error('ONESIGNAL_APP_ID is missing');
 if (!REST_API_KEY) throw new Error('ONESIGNAL_REST_API_KEY is missing');
@@ -16,148 +10,152 @@ if (!TYPE) throw new Error('NOTIFICATION_TYPE is missing');
 
 const APP_URL = 'https://omideno7.github.io/omideno7-app/';
 
-function basePayload({ headings, contents, url = APP_URL }) {
-  return {
-    app_id: APP_ID,
-    included_segments: ['Subscribed Users'],
-    headings,
-    contents,
-    url,
-  };
+function todaySeed() {
+  const d = new Date();
+  return Number(`${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`);
 }
 
-function buildPayload(type) {
-  const dailyWord = basePayload({
+function pick(items) {
+  return items[todaySeed() % items.length];
+}
+
+const messages = {
+  'daily-word': () => ({
     headings: {
-      en: 'Daily Word is ready',
       fa: 'کلام روزانه آماده است',
-      hr: 'Dnevna riječ je spremna',
+      en: 'Daily Word is ready',
+      hr: 'Dnevna riječ je spremna'
     },
     contents: {
-      en: 'Start your day with God’s Word. Open today’s message in the app.',
-      fa: 'روز خود را با کلام خدا شروع کن. پیام امروز را در اپ باز کن.',
-      hr: 'Započni dan Božjom riječju. Otvori današnju poruku u aplikaciji.',
+      fa: 'امروز را با کلام خدا آغاز کن. پیام روزانه تو آماده است.',
+      en: 'Start today with God’s Word. Your daily message is ready.',
+      hr: 'Započni dan Božjom riječju. Tvoja dnevna poruka je spremna.'
     },
-    url: `${APP_URL}#word`,
-  });
-
-  const faithDeclaration = basePayload({
+    url: `${APP_URL}?open=daily-word`
+  }),
+  'faith-declaration': () => ({
     headings: {
-      en: 'Faith Declaration',
-      fa: 'اعلان ایمان',
-      hr: 'Izjava vjere',
+      fa: 'اعلان ایمان امروز',
+      en: 'Today’s Faith Declaration',
+      hr: 'Današnja izjava vjere'
     },
     contents: {
-      en: 'Declare God’s Word over your life today.',
-      fa: 'امروز کلام خدا را بر زندگی خود اعلام کن.',
-      hr: 'Danas izgovori Božju riječ nad svojim životom.',
+      fa: pick([
+        'امروز با ایمان اعلام کن: من در مسیح پیروز هستم.',
+        'کلام خدا در دهان من زنده و مؤثر است.',
+        'من فرزند خدا هستم و در پیروزی زندگی می‌کنم.'
+      ]),
+      en: pick([
+        'Declare today: I am victorious in Christ.',
+        'God’s Word in my mouth is alive and powerful.',
+        'I am a child of God and I live in victory.'
+      ]),
+      hr: pick([
+        'Izjavi danas: Pobjednik sam u Kristu.',
+        'Božja riječ u mojim ustima je živa i snažna.',
+        'Dijete sam Božje i živim u pobjedi.'
+      ])
     },
-    url: `${APP_URL}#declarations`,
-  });
-
-  const thanksgiving = basePayload({
+    url: `${APP_URL}?open=faith-declaration`
+  }),
+  'thanksgiving': () => ({
     headings: {
-      en: 'Thanksgiving Practice',
-      fa: 'تمرین شکرگزاری',
-      hr: 'Vježba zahvaljivanja',
+      fa: 'تمرین شکرگزاری امروز',
+      en: 'Today’s Thanksgiving Practice',
+      hr: 'Današnja vježba zahvalnosti'
     },
     contents: {
-      en: 'Take a moment today to thank the Lord and record your thanksgiving.',
-      fa: 'امروز لحظه‌ای خداوند را شکر کن و شکرگزاری خود را ثبت کن.',
-      hr: 'Danas odvoji trenutak za zahvaljivanje Gospodinu i zapiši svoju zahvalnost.',
+      fa: 'امروز چند دقیقه وقت بگذار و برای حضور، کلام و محبت خدا شکرگزاری کن.',
+      en: 'Take a few minutes today to thank God for His presence, Word, and love.',
+      hr: 'Odvoji nekoliko minuta danas i zahvali Bogu za Njegovu prisutnost, Riječ i ljubav.'
     },
-    url: `${APP_URL}#thanksgiving`,
-  });
-
-  const morningPrayerReminder = basePayload({
+    url: `${APP_URL}?open=thanksgiving`
+  }),
+  'morning-prayer-reminder': () => ({
     headings: {
-      en: 'Morning Prayer Reminder',
       fa: 'یادآوری جلسه دعای صبحگاهی',
-      hr: 'Podsjetnik za jutarnju molitvu',
+      en: 'Morning Prayer Reminder',
+      hr: 'Podsjetnik za jutarnju molitvu'
     },
     contents: {
-      en: 'The morning prayer meeting starts at 5:00 AM Central European Time. Please be ready a few minutes early.',
-      fa: 'جلسه دعای صبحگاهی ساعت ۵:۰۰ صبح به وقت اروپای مرکزی آغاز می‌شود. لطفاً چند دقیقه زودتر آماده باشید.',
-      hr: 'Jutarnji molitveni sastanak počinje u 5:00 po srednjoeuropskom vremenu. Molimo budite spremni nekoliko minuta ranije.',
+      fa: 'جلسه دعای صبحگاهی امروز ساعت ۵:۰۰ صبح به وقت اروپای مرکزی آغاز می‌شود. لطفاً چند دقیقه زودتر آماده باشید.',
+      en: 'Today’s morning prayer meeting starts at 5:00 AM Central European Time. Please be ready a few minutes early.',
+      hr: 'Današnji jutarnji molitveni sastanak počinje u 5:00 po srednjoeuropskom vremenu. Molimo budite spremni nekoliko minuta ranije.'
     },
-    url: APP_URL,
-  });
-
-  const sundayServiceReminder = basePayload({
+    url: 'https://join.freeconferencecall.com/omideno7church'
+  }),
+  'sunday-service-reminder': () => ({
     headings: {
-      en: 'Sunday Service Reminder',
       fa: 'یادآوری جلسه کلیسا',
-      hr: 'Podsjetnik za nedjeljno bogoslužje',
+      en: 'Church Service Reminder',
+      hr: 'Podsjetnik za crkveni sastanak'
     },
     contents: {
-      en: 'The Sunday church meeting starts at 8:00 PM Central European Time. Please be ready a few minutes early.',
-      fa: 'جلسه یکشنبه کلیسا ساعت ۸:۰۰ شب به وقت اروپای مرکزی آغاز می‌شود. لطفاً چند دقیقه زودتر آماده باشید.',
-      hr: 'Nedjeljno bogoslužje počinje u 20:00 po srednjoeuropskom vremenu. Molimo budite spremni nekoliko minuta ranije.',
+      fa: 'جلسه کلیسا امشب ساعت ۸:۰۰ به وقت اروپای مرکزی آغاز می‌شود. با آمادگی و انتظار روحانی وارد جلسه شوید.',
+      en: 'Tonight’s church service starts at 8:00 PM Central European Time. Join with spiritual expectation and readiness.',
+      hr: 'Večerašnji crkveni sastanak počinje u 20:00 po srednjoeuropskom vremenu. Pridružite se s duhovnim očekivanjem i spremnošću.'
     },
-    url: APP_URL,
-  });
+    url: 'https://join.freeconferencecall.com/omideno7church'
+  })
+};
 
-  switch (type) {
-    case 'daily-word':
-      return { ...dailyWord, delayed_option: 'timezone', delivery_time_of_day: '7:00AM' };
-    case 'faith-declaration':
-      return { ...faithDeclaration, delayed_option: 'timezone', delivery_time_of_day: '10:00AM' };
-    case 'thanksgiving':
-      return { ...thanksgiving, delayed_option: 'timezone', delivery_time_of_day: '12:00PM' };
-    case 'morning-prayer-reminder':
-      return morningPrayerReminder;
-    case 'sunday-service-reminder':
-      return sundayServiceReminder;
-    case 'test':
-      return basePayload({
-        headings: { en: 'Omideno7 Test', fa: 'تست نوتیفیکیشن امیدنو۷', hr: 'Omideno7 test' },
-        contents: {
-          en: 'This is an immediate test notification from Omideno7 Church.',
-          fa: 'این یک پیام تست فوری از کلیسای امیدنو۷ است.',
-          hr: 'Ovo je trenutna testna obavijest iz crkve Omideno7.',
-        },
-      });
-    default:
-      throw new Error(`Unknown NOTIFICATION_TYPE: ${type}`);
-  }
+function isLocalTimeNotification(type) {
+  return ['daily-word', 'faith-declaration', 'thanksgiving'].includes(type);
 }
 
-function send(payload) {
-  const body = JSON.stringify(payload);
-  const options = {
-    hostname: 'api.onesignal.com',
-    path: '/notifications',
+function deliveryTimeFor(type) {
+  if (type === 'daily-word') return '07:00:00';
+  if (type === 'faith-declaration') return '10:00:00';
+  if (type === 'thanksgiving') return '12:00:00';
+  return null;
+}
+
+async function send() {
+  if (!messages[TYPE]) {
+    throw new Error(`Unknown NOTIFICATION_TYPE: ${TYPE}`);
+  }
+  const msg = messages[TYPE]();
+  const payload = {
+    app_id: APP_ID,
+    included_segments: ['All'],
+    headings: msg.headings,
+    contents: msg.contents,
+    url: msg.url
+  };
+
+  if (isLocalTimeNotification(TYPE)) {
+    payload.delayed_option = 'timezone';
+    payload.delivery_time_of_day = deliveryTimeFor(TYPE);
+  }
+
+  console.log('Sending OneSignal notification:', TYPE);
+  console.log('Target: included_segments = ["All"]');
+  if (payload.delayed_option) {
+    console.log(`Local-time delivery: ${payload.delivery_time_of_day}`);
+  }
+
+  const res = await fetch('https://onesignal.com/api/v1/notifications', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Key ${REST_API_KEY}`,
-      'Content-Length': Buffer.byteLength(body),
+      'Authorization': `Basic ${REST_API_KEY}`
     },
-  };
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => (data += chunk));
-      res.on('end', () => {
-        console.log(`OneSignal HTTP status: ${res.statusCode}`);
-        console.log('OneSignal response:', data);
-        if (res.statusCode < 200 || res.statusCode >= 300) {
-          return reject(new Error(`OneSignal HTTP error ${res.statusCode}`));
-        }
-        if (data.includes('"errors"')) {
-          return reject(new Error('OneSignal response contains errors.'));
-        }
-        resolve(data);
-      });
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
+    body: JSON.stringify(payload)
   });
+
+  const text = await res.text();
+  console.log('OneSignal HTTP status:', res.status);
+  console.log('OneSignal response:', text);
+
+  if (!res.ok) {
+    throw new Error(`OneSignal HTTP ${res.status}: ${text}`);
+  }
+  if (/"errors"/i.test(text)) {
+    throw new Error(`OneSignal response contains errors: ${text}`);
+  }
 }
 
-(async () => {
-  const payload = buildPayload(TYPE);
-  await send(payload);
-})();
+send().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

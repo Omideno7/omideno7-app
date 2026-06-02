@@ -1,1 +1,1 @@
-V63.15: Safe admin review override. Intercepts Review School Content before the old heavy renderer runs; renders lessons one by one and keeps the app responsive.
+V63.16: Clean recovery build. Removed problematic stacked school admin patches from V63.11–V63.15. Kept school, Q&A, MP3 audio paths, Supabase storage, and admin dashboard. Review School Content now lazy-loads lesson text to prevent app freeze.

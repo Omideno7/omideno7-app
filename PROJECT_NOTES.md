@@ -1,18 +1,24 @@
-# Project Notes — V63.6
+# Project Notes — V63.7
 
-Online School now requires admin approval before a student can access classes.
+Scope: Online School audio hotfix only.
 
-Workflow:
-1. User creates account and completes school registration form.
-2. Student record is stored in `school_students` with status `pending_review`.
-3. Student sees a waiting-for-approval message and cannot access lessons.
-4. Admin opens school admin panel, views full student profile, and approves the student.
-5. Student status becomes `approved`; class 1 becomes accessible.
+Supabase Storage bucket expected:
+- school-audio (public)
 
-Admin additions:
-- Student list section.
-- Full registration profile section.
-- Approval button.
-- School content review section for lessons, assignments, exam questions, and audio status.
+Expected files:
+- class-01-fa.m4a
+- class-02-fa.m4a
+- class-03-fa.m4a
+- class-04a-fa.m4a
+- class-04b-fa.m4a
+- class-05-fa.m4a
+- class-06-07-fa.m4a
 
-Other app modules were intentionally left unchanged.
+Classes 6 and 7 both use class-06-07-fa.m4a for now.
+
+
+## V63.8 School Audio MP3 Hotfix
+- Updated school audio paths from .m4a to .mp3.
+- Expected Supabase Storage bucket: school-audio.
+- Expected files: class-01-fa.mp3, class-02-fa.mp3, class-03-fa.mp3, class-04a-fa.mp3, class-04b-fa.mp3, class-05-fa.mp3, class-06-07-fa.mp3.
+- No other app sections changed.

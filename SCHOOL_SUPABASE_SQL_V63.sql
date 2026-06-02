@@ -21,7 +21,7 @@ create table if not exists public.school_students (
   pastor_name text not null,
   pastor_phone text not null,
   accepted_membership_requirement boolean not null default false,
-  status text not null default 'active',
+  status text not null default 'pending_review',
   registered_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -130,3 +130,8 @@ grant select, insert, update on public.school_notes to authenticated;
 grant select, insert, update on public.school_assignments to authenticated;
 grant select, insert on public.school_exam_attempts to authenticated;
 grant select, insert on public.school_exam_answers to authenticated;
+
+
+-- V63.6 approval gate: students cannot access classes until an admin approves them.
+alter table public.school_students alter column status set default 'pending_review';
+update public.school_students set status='pending_review', updated_at=now() where status='active';

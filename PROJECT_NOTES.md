@@ -1,12 +1,18 @@
-# V63.5 Notes
+# Project Notes — V63.6
 
-This update keeps V63.4 School UI and adds a small navigation/admin/audio fix.
+Online School now requires admin approval before a student can access classes.
 
-Do not delete existing app files. Upload/replace the files from this ZIP only.
+Workflow:
+1. User creates account and completes school registration form.
+2. Student record is stored in `school_students` with status `pending_review`.
+3. Student sees a waiting-for-approval message and cannot access lessons.
+4. Admin opens school admin panel, views full student profile, and approves the student.
+5. Student status becomes `approved`; class 1 becomes accessible.
 
-Admin link:
-`https://omideno7.github.io/omideno7-app/?v=635&school_admin=1`
+Admin additions:
+- Student list section.
+- Full registration profile section.
+- Approval button.
+- School content review section for lessons, assignments, exam questions, and audio status.
 
-Audio bucket:
-Supabase Storage bucket name: `school-audio`
-The app maps the local lesson audio names to the original Persian filenames uploaded by the user.
+Other app modules were intentionally left unchanged.

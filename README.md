@@ -1,13 +1,23 @@
-# Omideno7 WebApp V63.5
+# Omideno7 WebApp V63.6 — Online School Admin Approval Update
 
-Online School navigation/admin/audio hotfix.
+This package updates only the Online School module.
 
 Changes:
-- Back buttons now use a safer page stack.
-- Inside School, back from a lesson returns to My Lessons, not Home.
-- Inside School, back from Lessons/Exam/Admin returns to the School dashboard.
-- More/Home/other app pages should no longer jump unexpectedly to Home unless there is no previous page.
-- Admin school link support: `?v=635&school_admin=1`.
-- School audio source is prepared for Supabase Storage bucket `school-audio`.
+- Students must register first.
+- New school registrations are saved as `pending_review`.
+- Students cannot access classes until the school admin approves them.
+- Admin panel now shows a student list and full student registration profile.
+- Admin can approve a student to unlock access to classes.
+- Admin can review lessons, assignments, exam questions, and audio file status inside the school panel.
+- Bottom navigation, Daily Word, Bible, Q&A, notifications, and other app modules are not changed.
 
-Audio files are not inside this ZIP because they are large. Upload them to Supabase Storage bucket `school-audio` using their original Persian filenames.
+After uploading the files, run `SCHOOL_SUPABASE_SQL_V63.sql` again in Supabase SQL Editor so the new approval status default is applied.
+
+Test URL:
+https://omideno7.github.io/omideno7-app/?v=636
+
+Admin URL:
+https://omideno7.github.io/omideno7-app/?v=636&school_admin=1
+
+Admin email:
+omideno7church@gmail.com

@@ -1,1 +1,1 @@
-V63.14: Replaced heavy admin school content review rendering with lightweight/lazy rendering. Added stable verse buttons for review panel and improved bottom nav spacing. Daily Word trilingual consistency will be handled in a separate update after the new Excel is provided.
+V63.15: Safe admin review override. Intercepts Review School Content before the old heavy renderer runs; renders lessons one by one and keeps the app responsive.

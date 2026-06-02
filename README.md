@@ -1,3 +1,3 @@
-V63.14 - School admin stability hotfix
+# V63.15 School Admin Safe Review Fix
 
-Fixes freezing in school content review by rendering lesson content lazily, improves bottom navigation visibility, keeps Q&A and school data unchanged.
+This hotfix prevents the admin school content review page from freezing by replacing the heavy renderer with a lightweight, per-lesson renderer. Other app sections are not changed.

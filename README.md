@@ -1,1 +1,1 @@
-V62.12 Daily Word visible final fix. Upload these files to GitHub. Test with ?v=6212.
+V62.13 Daily Word cleanup: removes message number label, localizes Bible refs/verses, and fixes day 2 full FA/HR translation.

@@ -241,3 +241,29 @@ Purpose:
 Development note:
 - This is an overlay hotfix. It does not delete old files from the repository. Old version scripts may still exist in GitHub, but this version should override their visible back/install/footer behavior.
 - Repository cleanup should be handled later in a dedicated cleanup/audit release, not inside feature hotfixes.
+
+## V61.7 — Notification local-time update
+
+This update only touches the notification system and a small notification UI helper.
+
+Files added/updated:
+
+- `.github/workflows/send-daily-word.yml`
+- `.github/workflows/send-faith-declaration.yml`
+- `.github/workflows/send-thanksgiving.yml`
+- `.github/workflows/send-morning-prayer-reminder.yml`
+- `.github/workflows/send-sunday-service-reminder.yml`
+- `scripts/send-dynamic-notification.js`
+- `v61-7-notification-ui-footer-fix.js`
+- `NOTIFICATION_FIX_V61_7.md`
+
+Daily Word, Faith Declaration, and Thanksgiving are sent using OneSignal local timezone delivery:
+
+- Daily Word: 07:00 local time
+- Faith Declaration: 10:00 local time
+- Thanksgiving: 12:00 local time
+
+Morning Prayer and Sunday Service remain based on Europe/Zagreb / Central European Time.
+The text says the meeting starts at the official Central European Time instead of saying “in 30 minutes.”
+
+Duplicate scheduled campaigns in the OneSignal dashboard should be paused to prevent old or duplicate notifications.

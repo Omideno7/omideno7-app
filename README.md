@@ -38,3 +38,11 @@ https://omideno7.github.io/omideno7-app/admin.html?v=61
 - Restored a collapsed three-language Install App card on the Home page with Android, iPhone/iPad, Huawei/other browser guidance.
 - Stabilized the footer version display so the More page should show only one version label: App Version: V61.5.
 - No Bible, Apocrypha, Audio, Plans, Fasting data, Q&A database, or Notification workflow changes are included in this hotfix.
+
+## V61.7 — Notification Local Time + Footer Stability
+
+- Daily Word, Faith Declaration, and Thanksgiving notifications now use OneSignal local-time delivery.
+- Morning prayer and Sunday service reminders use Europe/Zagreb as the source of truth and mention Central European Time.
+- Meeting reminders no longer say “in 30 minutes” to avoid confusion if delivery is delayed.
+- A lightweight app helper updates OneSignal user tags for language and timezone.
+- Footer version display is stabilized as `App Version: V61.7`.

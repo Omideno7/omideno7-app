@@ -1,13 +1,15 @@
 {
-  "name": "Omideno7 Admin",
-  "short_name": "O7 Admin",
-  "description": "Omideno7 Church standalone Q&A admin panel",
-  "start_url": "./admin.html?v=596",
-  "scope": "./",
+  "name": "Omidno7 Admin",
+  "short_name": "Omidno7 Admin",
+  "start_url": "./admin.html",
   "display": "standalone",
-  "background_color": "#f6faf8",
-  "theme_color": "#0f5132",
+  "background_color": "#06146D",
+  "theme_color": "#06146D",
   "icons": [
-    {"src":"apple-touch-icon.png","sizes":"180x180","type":"image/png"}
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
   ]
 }

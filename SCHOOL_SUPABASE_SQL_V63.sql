@@ -135,3 +135,27 @@ grant select, insert on public.school_exam_answers to authenticated;
 -- V63.6 approval gate: students cannot access classes until an admin approves them.
 alter table public.school_students alter column status set default 'pending_review';
 update public.school_students set status='pending_review', updated_at=now() where status='active';
+
+
+-- V63.9 optional school notifications table.
+create table if not exists public.school_notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  type text not null default 'info',
+  title text not null,
+  body text not null,
+  seen boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.school_notifications enable row level security;
+
+drop policy if exists "notifications_select_own_or_admin" on public.school_notifications;
+drop policy if exists "notifications_insert_admin" on public.school_notifications;
+drop policy if exists "notifications_update_own" on public.school_notifications;
+
+create policy "notifications_select_own_or_admin" on public.school_notifications for select to authenticated using (user_id = auth.uid() or (auth.jwt()->>'email') = 'omideno7church@gmail.com');
+create policy "notifications_insert_admin" on public.school_notifications for insert to authenticated with check ((auth.jwt()->>'email') = 'omideno7church@gmail.com');
+create policy "notifications_update_own" on public.school_notifications for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+grant select, insert, update on public.school_notifications to authenticated;

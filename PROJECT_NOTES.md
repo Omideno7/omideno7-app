@@ -1,24 +1,19 @@
-# Project Notes — V63.7
+# PROJECT_NOTES — V63.9
 
-Scope: Online School audio hotfix only.
+V63.9 updates only school/admin/more-page metadata areas.
+No intentional changes to Bible, Daily Word, OneSignal notification workflows, or general Q&A user-facing form.
 
-Supabase Storage bucket expected:
-- school-audio (public)
+Changes:
+- Full written lessons from `omidno7_complete_written_lessons_trilingual.xlsx` were embedded in `v63-online-school.js`.
+- Lesson pages show full lesson through a clickable button/details block.
+- Admin school content review now has playable audio controls for Persian lesson MP3s.
+- Admin area now starts as a unified dashboard with School Management and Q&A access.
+- Q&A admin attempts to read known Supabase table names; if empty, the exact Q&A table name should be supplied for a precise connector patch.
+- Students remain locked until `school_students.status='approved'`.
+- Approval inserts an optional row in `school_notifications` if the SQL patch has been run.
+- Dashboard includes school introduction and certificate note.
+- More page includes a small multilingual update list before the version display.
+- Admin install entrypoint added: `admin.html` + `admin.webmanifest`.
 
-Expected files:
-- class-01-fa.m4a
-- class-02-fa.m4a
-- class-03-fa.m4a
-- class-04a-fa.m4a
-- class-04b-fa.m4a
-- class-05-fa.m4a
-- class-06-07-fa.m4a
-
-Classes 6 and 7 both use class-06-07-fa.m4a for now.
-
-
-## V63.8 School Audio MP3 Hotfix
-- Updated school audio paths from .m4a to .mp3.
-- Expected Supabase Storage bucket: school-audio.
-- Expected files: class-01-fa.mp3, class-02-fa.mp3, class-03-fa.mp3, class-04a-fa.mp3, class-04b-fa.mp3, class-05-fa.mp3, class-06-07-fa.mp3.
-- No other app sections changed.
+Important:
+Run `SCHOOL_SUPABASE_SQL_V63.sql` again in Supabase SQL Editor after upload to add the optional `school_notifications` table.

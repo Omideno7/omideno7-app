@@ -1,142 +1,224 @@
-/* Omideno7 Church - Dynamic OneSignal notification sender
- * V61.2: supports scheduled + manual notification types and Zagreb-time guard.
- * Required env:
- *   ONESIGNAL_APP_ID
- *   ONESIGNAL_REST_API_KEY
- *   NOTIFICATION_TYPE
- * Optional env for scheduled workflows:
- *   TARGET_LOCAL_HOUR, TARGET_LOCAL_MINUTE, TARGET_LOCAL_WEEKDAY (0=Sunday)
- */
+/*
+  Omideno7 dynamic notification sender — V61.7
+  Scope: notifications only. Does not change app UI.
 
+  Required GitHub Secrets:
+    ONESIGNAL_APP_ID
+    ONESIGNAL_REST_API_KEY
+
+  Supported NOTIFICATION_TYPE values:
+    daily-word
+    morning-prayer-reminder
+    faith-declaration
+    thanksgiving
+    sunday-service-reminder
+
+  Daily devotional messages are scheduled by OneSignal in the subscriber's local timezone:
+    daily-word: 07:00 local time
+    faith-declaration: 10:00 local time
+    thanksgiving: 12:00 local time
+
+  Live meeting reminders use Europe/Zagreb as the source of truth and mention
+  Central European Time in the message. If GitHub runs too late, the script skips
+  the reminder to avoid misleading users.
+*/
+
+const ONE_SIGNAL_API = 'https://onesignal.com/api/v1/notifications';
 const APP_URL = 'https://omideno7.github.io/omideno7-app/';
+const TZ = 'Europe/Zagreb';
+
 const TYPE = process.env.NOTIFICATION_TYPE;
-const IS_SCHEDULE = process.env.GITHUB_EVENT_NAME === 'schedule';
+const IS_MANUAL = process.env.GITHUB_EVENT_NAME === 'workflow_dispatch' || process.env.MANUAL_TEST === 'true';
 
-function normalizeType(type) {
-  return String(type || '').trim().toLowerCase().replace(/_/g, '-');
-}
+const APP_ID = process.env.ONESIGNAL_APP_ID;
+const API_KEY = process.env.ONESIGNAL_REST_API_KEY;
 
-function getZagrebParts() {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/Zagreb',
-    hourCycle: 'h23',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    weekday: 'short'
-  }).formatToParts(new Date());
-  const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
-  const weekdayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-  return {
-    hour: Number(map.hour),
-    minute: Number(map.minute),
-    weekday: weekdayMap[map.weekday]
-  };
-}
-
-function shouldSendNow() {
-  if (!IS_SCHEDULE) return true; // manual Run workflow should always test-send
-  const targetHour = process.env.TARGET_LOCAL_HOUR;
-  const targetMinute = process.env.TARGET_LOCAL_MINUTE;
-  const targetWeekday = process.env.TARGET_LOCAL_WEEKDAY;
-  if (targetHour == null || targetMinute == null) return true;
-  const now = getZagrebParts();
-  const hourOk = now.hour === Number(targetHour);
-  const minuteOk = now.minute === Number(targetMinute);
-  const weekdayOk = targetWeekday == null || now.weekday === Number(targetWeekday);
-  if (!hourOk || !minuteOk || !weekdayOk) {
-    console.log(`Skipped: Zagreb time is ${String(now.hour).padStart(2, '0')}:${String(now.minute).padStart(2, '0')} weekday=${now.weekday}; target=${targetHour}:${targetMinute}${targetWeekday != null ? ` weekday=${targetWeekday}` : ''}.`);
-    return false;
-  }
-  return true;
-}
-
-const NOTIFICATIONS = {
+const CONFIG = {
   'daily-word': {
-    url: APP_URL + '?open=daily-word',
-    headings: { en: 'Daily Word', fa: 'کلام روزانه', hr: 'Dnevna riječ' },
+    mode: 'local-time',
+    localTime: '07:00:00',
+    url: `${APP_URL}?open=daily-word`,
+    headings: {
+      en: 'Daily Word is ready',
+      fa: 'کلام روزانه آماده است',
+      hr: 'Dnevna riječ je spremna'
+    },
     contents: {
-      en: 'Your Daily Word is ready. Open it now and strengthen your faith today.',
-      fa: 'کلام روزانه امروز آماده است. آن را باز کنید و ایمان خود را تقویت نمایید.',
-      hr: 'Dnevna riječ je spremna. Otvorite je sada i ojačajte svoju vjeru danas.'
+      en: 'Start your day with the Word of God. Open today’s daily message.',
+      fa: 'روز خود را با کلام خدا آغاز کنید. پیام امروز را باز کنید و بخوانید.',
+      hr: 'Započnite dan s Božjom Riječi. Otvorite današnju dnevnu poruku.'
     }
   },
-  'thanksgiving': {
-    url: APP_URL + '?open=thanksgiving',
-    headings: { en: 'Thanksgiving Journey', fa: 'مسیر شکرگزاری', hr: 'Put zahvaljivanja' },
-    contents: {
-      en: 'Take a moment today to give thanks and write what God has done in your life.',
-      fa: 'امروز زمانی را برای شکرگزاری جدا کنید و آنچه خداوند در زندگی شما کرده است بنویسید.',
-      hr: 'Odvojite trenutak za zahvalnost i zapišite što je Bog učinio u vašem životu.'
-    }
-  },
+
   'faith-declaration': {
-    url: APP_URL + '?open=faith-declaration',
-    headings: { en: 'Faith Declaration', fa: 'اعلان ایمان', hr: 'Izjava vjere' },
+    mode: 'local-time',
+    localTime: '10:00:00',
+    url: `${APP_URL}?open=faith-declaration`,
+    headings: {
+      en: 'Faith declaration for today',
+      fa: 'اعلان ایمان امروز',
+      hr: 'Današnja izjava vjere'
+    },
     contents: {
-      en: 'Your faith declaration for today is ready. Speak the Word with boldness.',
-      fa: 'اعلان ایمان امروز آماده است. کلام خدا را با جسارت اعلام کنید.',
-      hr: 'Današnja izjava vjere je spremna. Govorite Božju riječ s odvažnošću.'
+      en: 'Speak the Word of God over your day. Open today’s declaration of faith.',
+      fa: 'کلام خدا را بر روز خود اعلام کنید. اعلان ایمان امروز را باز کنید.',
+      hr: 'Izgovorite Božju Riječ nad svojim danom. Otvorite današnju izjavu vjere.'
     }
   },
+
+  thanksgiving: {
+    mode: 'local-time',
+    localTime: '12:00:00',
+    url: `${APP_URL}?open=thanksgiving`,
+    headings: {
+      en: 'Thanksgiving time',
+      fa: 'زمان شکرگزاری',
+      hr: 'Vrijeme zahvaljivanja'
+    },
+    contents: {
+      en: 'Take a moment to thank the Lord and write your thanksgiving today.',
+      fa: 'لحظه‌ای برای شکرگزاری از خداوند وقت بگذارید و شکرگزاری امروز خود را بنویسید.',
+      hr: 'Odvojite trenutak da zahvalite Gospodinu i zapišete svoju zahvalnost danas.'
+    }
+  },
+
   'morning-prayer-reminder': {
-    url: APP_URL + '?open=morning-prayer',
-    headings: { en: 'Morning Prayer Reminder', fa: 'یادآوری دعای صبحگاهی', hr: 'Podsjetnik za jutarnju molitvu' },
+    mode: 'zagreb-window',
+    target: { hour: 4, minute: 30, days: 'daily', maxLateMinutes: 8 },
+    url: 'https://join.freeconferencecall.com/omideno7church',
+    headings: {
+      en: 'Morning prayer meeting',
+      fa: 'جلسه دعای صبحگاهی',
+      hr: 'Jutarnji molitveni sastanak'
+    },
     contents: {
-      en: 'Morning prayer starts in 30 minutes. Prepare your heart to pray with the church.',
-      fa: 'جلسه دعای صبحگاهی تا ۳۰ دقیقه دیگر آغاز می‌شود. قلب خود را برای دعا با کلیسا آماده کنید.',
-      hr: 'Jutarnja molitva počinje za 30 minuta. Pripremite svoje srce za molitvu s crkvom.'
+      en: 'Today’s morning prayer meeting starts at 5:00 AM Central European Time. Please prepare a few minutes early.',
+      fa: 'جلسه دعای صبحگاهی امروز ساعت ۵:۰۰ صبح به وقت اروپای مرکزی آغاز می‌شود. لطفاً چند دقیقه زودتر آماده باشید.',
+      hr: 'Današnji jutarnji molitveni sastanak počinje u 5:00 ujutro po srednjoeuropskom vremenu. Molimo budite spremni nekoliko minuta ranije.'
     }
   },
+
   'sunday-service-reminder': {
-    url: APP_URL + '?open=sunday-service',
-    headings: { en: 'Sunday Service Reminder', fa: 'یادآوری جلسه یکشنبه', hr: 'Podsjetnik za nedjeljnu službu' },
+    mode: 'zagreb-window',
+    target: { hour: 19, minute: 30, days: 'sunday', maxLateMinutes: 10 },
+    url: 'https://join.freeconferencecall.com/omideno7church',
+    headings: {
+      en: 'Sunday church service',
+      fa: 'جلسه کلیسای یکشنبه',
+      hr: 'Nedjeljna crkvena služba'
+    },
     contents: {
-      en: 'Sunday service starts in 30 minutes. Prepare to join the church gathering.',
-      fa: 'جلسه کلیسا تا ۳۰ دقیقه دیگر آغاز می‌شود. خود را برای حضور در جلسه آماده کنید.',
-      hr: 'Nedjeljna služba počinje za 30 minuta. Pripremite se za zajedništvo crkve.'
+      en: 'Today’s Sunday church service starts at 8:00 PM Central European Time. Please prepare your heart to worship.',
+      fa: 'جلسه کلیسای یکشنبه امروز ساعت ۸:۰۰ شب به وقت اروپای مرکزی آغاز می‌شود. دل خود را برای پرستش آماده کنید.',
+      hr: 'Današnja nedjeljna crkvena služba počinje u 20:00 po srednjoeuropskom vremenu. Pripremite svoje srce za štovanje.'
     }
   }
 };
 
-async function main() {
-  const type = normalizeType(TYPE);
-  if (!type) throw new Error('Missing NOTIFICATION_TYPE');
-  const notification = NOTIFICATIONS[type];
-  if (!notification) {
-    throw new Error(`Unknown NOTIFICATION_TYPE: ${type}. Supported: ${Object.keys(NOTIFICATIONS).join(', ')}`);
+function getZagrebParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: TZ,
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).formatToParts(date);
+  const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+  return {
+    weekday: map.weekday,
+    hour: Number(map.hour),
+    minute: Number(map.minute)
+  };
+}
+
+function minutesSinceMidnight({ hour, minute }) {
+  return hour * 60 + minute;
+}
+
+function shouldSendZagrebWindow(cfg) {
+  if (IS_MANUAL) return { ok: true, reason: 'Manual run: sending immediately for test.' };
+
+  const now = getZagrebParts();
+  if (cfg.target.days === 'sunday' && now.weekday !== 'Sun') {
+    return { ok: false, reason: `Not Sunday in ${TZ}. Current day: ${now.weekday}` };
   }
 
-  const appId = process.env.ONESIGNAL_APP_ID;
-  const apiKey = process.env.ONESIGNAL_REST_API_KEY;
-  if (!appId) throw new Error('Missing ONESIGNAL_APP_ID secret');
-  if (!apiKey) throw new Error('Missing ONESIGNAL_REST_API_KEY secret');
+  const current = minutesSinceMidnight(now);
+  const target = cfg.target.hour * 60 + cfg.target.minute;
+  const diff = current - target;
 
-  if (!shouldSendNow()) return;
+  if (diff < 0) {
+    return { ok: false, reason: `Too early in ${TZ}. Current ${now.hour}:${String(now.minute).padStart(2, '0')}, target ${cfg.target.hour}:${String(cfg.target.minute).padStart(2, '0')}.` };
+  }
 
-  const payload = {
-    app_id: appId,
+  if (diff > cfg.target.maxLateMinutes) {
+    return { ok: false, reason: `Too late in ${TZ}; skipping to avoid wrong reminder. Current ${now.hour}:${String(now.minute).padStart(2, '0')}, target ${cfg.target.hour}:${String(cfg.target.minute).padStart(2, '0')}, late by ${diff} minutes.` };
+  }
+
+  return { ok: true, reason: `Within allowed window in ${TZ}. Late by ${diff} minutes.` };
+}
+
+function buildPayload(cfg) {
+  const base = {
+    app_id: APP_ID,
     included_segments: ['Subscribed Users'],
-    headings: notification.headings,
-    contents: notification.contents,
-    url: notification.url
+    headings: cfg.headings,
+    contents: cfg.contents,
+    url: cfg.url,
+    data: { target: TYPE, source: 'github-actions-v61.7' }
   };
 
-  console.log(`Sending Omideno7 notification: ${type}`);
-  const res = await fetch('https://onesignal.com/api/v1/notifications', {
+  if (cfg.mode === 'local-time' && !IS_MANUAL) {
+    return {
+      ...base,
+      delayed_option: 'timezone',
+      delivery_time_of_day: cfg.localTime
+    };
+  }
+
+  return base;
+}
+
+async function main() {
+  if (!TYPE || !CONFIG[TYPE]) {
+    console.error(`Unknown NOTIFICATION_TYPE: ${TYPE}`);
+    console.error(`Allowed types: ${Object.keys(CONFIG).join(', ')}`);
+    process.exit(1);
+  }
+  if (!APP_ID || !API_KEY) {
+    console.error('Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY GitHub Secret.');
+    process.exit(1);
+  }
+
+  const cfg = CONFIG[TYPE];
+  console.log(`[Omideno7 notifications] type=${TYPE}`);
+
+  if (cfg.mode === 'zagreb-window') {
+    const gate = shouldSendZagrebWindow(cfg);
+    console.log(gate.reason);
+    if (!gate.ok) return;
+  } else {
+    console.log(IS_MANUAL
+      ? 'Manual run: sending immediately for test.'
+      : `Scheduling with OneSignal local timezone delivery at ${cfg.localTime}.`);
+  }
+
+  const payload = buildPayload(cfg);
+
+  const res = await fetch(ONE_SIGNAL_API, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Basic ${apiKey}`
+      Authorization: `Basic ${API_KEY}`
     },
     body: JSON.stringify(payload)
   });
+
   const body = await res.text();
   console.log(`OneSignal status: ${res.status}`);
   console.log(body);
-  if (!res.ok) throw new Error(`OneSignal request failed with HTTP ${res.status}`);
+
+  if (!res.ok) process.exit(1);
 }
 
 main().catch(err => {

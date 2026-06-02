@@ -1,16 +1,1 @@
-# Project Notes — V62.10
-
-## Scope
-Focused fix for Daily Word display.
-
-## Problem
-Daily Word page showed only the title and notification button. The daily message card did not render.
-
-## Cause
-The paragraph helper function was outside the Daily Word closure and referenced an internal escaping helper, causing rendering to fail.
-
-## Fix
-Moved the paragraph helper into the Daily Word module scope and bumped the cache query to V62.10.
-
-## Preserved
-The V62.9 plan/back navigation fix remains included. Other app sections were not modified.
+V62.11 update: Daily Word content blank issue fixed. The structured May 2026 daily word data now also populates legacy fields (ref, verse, message, declaration, prayer) so older app render code cannot overwrite the card with empty content. Further Study remains clickable in the structured renderer; if a local Bible verse is unavailable, the English verse text is shown. Plan navigation fix from V62.9 remains included.

@@ -1,14 +1,15 @@
-# Omideno7 Web App — V62.5
+# Omideno7 Web App — V62.7
 
-Daily Word updated from the complete structured May 2026 message file.
+This package keeps the V62.6 Daily Word today-display fix and adds a final targeted fix for the Fasting Journey back button.
 
-Changes:
-- Daily Word uses the clean structured message data for 31 days.
-- Further Study references are clickable.
-- Clicking a reference opens the full verse/passage text.
-- English uses the structured KJV-style text from the prepared file.
-- Persian and Croatian UI/titles/messages remain available; verse lookup uses app Bible data when loaded.
-- No source, author, publisher, ad, contact, or external reference text is displayed in the app.
-- Fasting plan back button fix remains included.
+## Files
+- `index.html`
+- `v62-6-daily-word-today-fix.js`
+- `v62-7-fasting-back-to-plan-list-final.js`
+- `README.md`
+- `PROJECT_NOTES.md`
 
-Upload these files to the repository root only.
+## V62.7 change
+Inside Plans > Fasting Journey, any Back button now returns directly to the main Plans list instead of returning to the top of the fasting journey or the app Home page.
+
+Other app sections are not intentionally changed.

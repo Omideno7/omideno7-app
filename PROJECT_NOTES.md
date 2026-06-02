@@ -1,13 +1,20 @@
-# PROJECT NOTES — V62.5
+# PROJECT NOTES — V62.7
 
-## Daily Word
-The Daily Word module was rebuilt as `v62-5-daily-word-may2026-structured-clickable.js` using a complete structured May 2026 message file prepared without author/publisher/contact/ad pages.
+## Current focused update
+V62.7 includes the V62.6 Daily Word today-display file and adds a final scoped navigation fix for the fasting plan.
 
-The module contains 31 daily entries and displays the entry according to the day of the month. If a new monthly file is not uploaded, the same 31-day set repeats by day number.
+## Fasting back behavior
+File: `v62-7-fasting-back-to-plan-list-final.js`
 
-Further Study references are now rendered as clickable buttons. When clicked, the full verse/passage is shown. For English, the structured file text is used. For Persian and Croatian, the module attempts to read the loaded in-app Bible data for the selected language and falls back to the English text if a local verse is unavailable.
+Purpose:
+- Applies only when the active page is `#plans` and the visible/selected plan is the fasting journey.
+- Intercepts internal Back controls and the old global back control before older handlers run.
+- Clears `selectedTeachingPlanV50` and resets `fastingJourneyViewV50` to `home`.
+- Calls `showPage('plans')` and `renderPlans()` so the user returns directly to the main list of plans.
 
-No source, publisher, author, advertisement, contact, or external-resource references are displayed in the app.
+Expected behavior:
+- Plans > Fasting Journey > Back = Plans list.
+- It should not jump to the fasting journey top/home screen first.
+- It should not jump to the app Home page.
 
-## Scope
-Only Daily Word display, Daily Word footer version, and the existing fasting-plan back-button fix are included in this package. Notifications, Q&A, Bible reader, audio messages, plans, and fasting content are otherwise untouched.
+Do not modify Bible, Q&A, notifications, audio, apocrypha, or other sections for this fix.

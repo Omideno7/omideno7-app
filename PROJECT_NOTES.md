@@ -216,3 +216,10 @@ Purpose:
 Boundaries:
 - This module must not change Bible, Apocrypha, Audio, Plans, Fasting teachings, Q&A, Supabase, OneSignal, or GitHub Actions workflows.
 - If navigation bugs remain in a specific feature, fix that feature with a targeted patch rather than rewriting global navigation.
+
+
+## V61.4 Footer Version Fix
+- Added `v61-4-footer-version-fix.js` as the last footer version manager.
+- Removed loading of the older `v61-1-footer-stable.js` from `index.html`.
+- The More page footer now displays only one line: `App Version: V61.4`.
+- This update is limited to footer/version display only and should not affect Bible, Audio, Plans, Fasting, Q&A, Notifications, or navigation.

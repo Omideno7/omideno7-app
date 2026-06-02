@@ -1,20 +1,9 @@
-# PROJECT NOTES — V62.7
+# PROJECT NOTES — V62.8
 
-## Current focused update
-V62.7 includes the V62.6 Daily Word today-display file and adds a final scoped navigation fix for the fasting plan.
+V62.8 fixes two scoped issues only.
 
-## Fasting back behavior
-File: `v62-7-fasting-back-to-plan-list-final.js`
+1. Daily Word: removed the blocking placeholder token from the structured daily word module and overrides the old renderDaily function after app load, so the current day's structured message is rendered.
 
-Purpose:
-- Applies only when the active page is `#plans` and the visible/selected plan is the fasting journey.
-- Intercepts internal Back controls and the old global back control before older handlers run.
-- Clears `selectedTeachingPlanV50` and resets `fastingJourneyViewV50` to `home`.
-- Calls `showPage('plans')` and `renderPlans()` so the user returns directly to the main list of plans.
+2. Fasting Back: the previous fix used the wrong localStorage key. The fasting journey uses `selectedPlanKeyV50`, not `selectedTeachingPlanV50`. V62.8 uses the correct key and forces any Back action inside the fasting journey to return to the Plans list.
 
-Expected behavior:
-- Plans > Fasting Journey > Back = Plans list.
-- It should not jump to the fasting journey top/home screen first.
-- It should not jump to the app Home page.
-
-Do not modify Bible, Q&A, notifications, audio, apocrypha, or other sections for this fix.
+No changes were made to notifications, Q&A, Bible content, audio messages, or Supabase.

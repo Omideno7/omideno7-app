@@ -1,5 +1,5 @@
 
-/* Omideno7 V63.2 - Online School Phase 1 UI hotfix
+/* Omideno7 V63.3 - Online School Auth/Register Hotfix
    Adds a secure, Supabase-powered Online School module.
    This file is self-contained and does not modify Bible, Daily Word, Q&A, Notifications, Plans, or Audio Messages.
 */
@@ -63,8 +63,20 @@
       const sec=document.createElement('section'); sec.id='school'; sec.className='page'; main.appendChild(sec);
     }
     const navInner=document.querySelector('.bottom-nav .nav-inner');
-    if(navInner && !navInner.querySelector('[data-page="school"]')){
-      const btn=document.createElement('button'); btn.className='nav-btn school-nav-btn'; btn.setAttribute('data-page','school'); btn.innerHTML=`<span class="icon">🎓</span><span class="school-nav-label">${esc(tr('nav'))}</span>`; navInner.appendChild(btn);
+    if(navInner){
+      let btn=navInner.querySelector('[data-page="school"]');
+      if(!btn){
+        btn=document.createElement('button');
+        btn.className='nav-btn school-nav-btn';
+        btn.setAttribute('data-page','school');
+        btn.innerHTML=`<span class="icon">🎓</span><span class="school-nav-label">${esc(tr('nav'))}</span>`;
+      }
+      const moreBtn=navInner.querySelector('[data-page="more"]');
+      if(moreBtn && btn.nextElementSibling!==moreBtn){
+        navInner.insertBefore(btn, moreBtn);
+      } else if(!moreBtn && !btn.parentNode){
+        navInner.appendChild(btn);
+      }
     }
     document.querySelectorAll('.school-nav-label').forEach(e=>e.textContent=tr('nav'));
     document.querySelectorAll('[data-page="school"]').forEach(btn=>{ btn.onclick=(ev)=>{ ev.preventDefault(); showSchool(); }; });
@@ -120,7 +132,34 @@
   function authHtml(){ return `<div class="school-grid"><div class="school-card"><h2>${esc(tr('login'))}</h2><p class="school-muted">${esc(tr('noAccess'))}</p><form id="schoolLogin" class="school-form"><label>${esc(tr('email'))}<input name="email" type="email" required></label><label>${esc(tr('password'))}<input name="password" type="password" required minlength="6"></label><button class="school-btn" type="submit">${esc(tr('signIn'))}</button></form></div><div class="school-card"><h2>${esc(tr('signup'))}</h2><form id="schoolSignup" class="school-form"><label>${esc(tr('email'))}<input name="email" type="email" required></label><label>${esc(tr('password'))}<input name="password" type="password" required minlength="6"></label><button class="school-btn gold" type="submit">${esc(tr('createAccount'))}</button></form></div></div>`; }
   function bindAuth(){
     document.getElementById('schoolLogin')?.addEventListener('submit', async e=>{ e.preventDefault(); const f=new FormData(e.target); showStatus(tr('loading')); const {error}=await sb.auth.signInWithPassword({email:f.get('email'), password:f.get('password')}); if(error) showStatus(error.message,true); else {await loadAll(); render();} });
-    document.getElementById('schoolSignup')?.addEventListener('submit', async e=>{ e.preventDefault(); const f=new FormData(e.target); showStatus(tr('loading')); const {data,error}=await sb.auth.signUp({email:f.get('email'), password:f.get('password')}); if(error) showStatus(error.message,true); else {session=data.session||session; showStatus(tr('accountCreated')); await loadAll(); render();} });
+    document.getElementById('schoolSignup')?.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const form=e.target;
+      const f=new FormData(form);
+      const email=String(f.get('email')||'').trim();
+      const password=String(f.get('password')||'');
+      if(!email||!password){ showStatus(tr('required'),true); return; }
+      showStatus(tr('loading'));
+      const {data,error}=await sb.auth.signUp({email, password});
+      if(error){ showStatus(error.message,true); return; }
+      session=data?.session||session;
+      if(session?.user){
+        showStatus(tr('accountCreated'));
+        await loadAll();
+        activeView='dashboard';
+        render();
+        return;
+      }
+      // If Supabase email confirmation is enabled, signUp returns no session.
+      // Keep the form visible and show a clear message instead of re-rendering and clearing the fields.
+      const lang=getLang();
+      const msg={
+        fa:'حساب ساخته شد، اما هنوز ورود فعال نشده است. اگر ایمیل تأیید دریافت کردید، آن را تأیید کنید و سپس با همین ایمیل و رمز وارد مدرسه شوید. اگر نمی‌خواهید تأیید ایمیل لازم باشد، در Supabase بخش Auth گزینه Confirm email را خاموش کنید.',
+        en:'Account created, but you are not signed in yet. If you received a confirmation email, confirm it, then sign in with the same email and password. To allow immediate access, disable Confirm email in Supabase Auth settings.',
+        hr:'Račun je izrađen, ali još niste prijavljeni. Ako ste primili potvrdni email, potvrdite ga i zatim se prijavite istim emailom i lozinkom. Za trenutačan pristup isključite Confirm email u Supabase Auth postavkama.'
+      }[lang]||'Account created. Please confirm your email and sign in.';
+      showStatus(msg);
+    });
   }
   function registrationHtml(){ const terms=schoolTerms(); return `<div class="school-card"><h2>${esc(tr('signup'))}</h2><p>${nl(terms.terms||'')}</p><form id="schoolRegistration" class="school-form"><div class="school-grid"><label>${esc(tr('fullName'))}*<input name="full_name" required></label><label>${esc(tr('phone'))}*<input name="phone" required></label><label>${esc(tr('country'))}*<input name="country" required></label><label>${esc(tr('city'))}*<input name="city" required></label><label>${esc(tr('language'))}*<select name="preferred_language" required><option value="fa">فارسی</option><option value="en">English</option><option value="hr">Hrvatski</option></select></label><label>${esc(tr('isBeliever'))}*<select name="is_believer"><option value="true">${esc(tr('yes'))}</option><option value="false">${esc(tr('no'))}</option></select></label><label>${esc(tr('yearsBeliever'))}*<input name="years_believer" required></label><label>${esc(tr('otherChurch'))}*<select name="is_member_of_another_church"><option value="false">${esc(tr('no'))}</option><option value="true">${esc(tr('yes'))}</option></select></label><label>${esc(tr('churchName'))}*<input name="church_name" required placeholder="${lang()==='fa'?'ندارم':'None'}"></label><label>${esc(tr('pastorName'))}*<input name="pastor_name" required placeholder="${lang()==='fa'?'ندارم':'None'}"></label><label>${esc(tr('pastorPhone'))}*<input name="pastor_phone" required placeholder="${lang()==='fa'?'ندارم':'None'}"></label></div><label>${esc(tr('testimony'))}*<textarea name="testimony" required></textarea></label><label><input type="checkbox" name="accepted" required> ${esc(terms.acceptance||tr('accept'))}</label><button class="school-btn gold" type="submit">${esc(tr('createAccount'))}</button></form></div>`; }
   function bindRegistration(){ document.getElementById('schoolRegistration')?.addEventListener('submit', async e=>{ e.preventDefault(); const f=new FormData(e.target); if(!f.get('accepted')){showStatus(tr('required'),true);return;} const row={user_id:uid(), full_name:f.get('full_name'), email:session.user.email, phone:f.get('phone'), country:f.get('country'), city:f.get('city'), preferred_language:f.get('preferred_language'), is_believer:f.get('is_believer')==='true', years_believer:f.get('years_believer'), testimony:f.get('testimony'), is_member_of_another_church:f.get('is_member_of_another_church')==='true', church_name:f.get('church_name'), pastor_name:f.get('pastor_name'), pastor_phone:f.get('pastor_phone'), accepted_membership_requirement:true, status:'active'}; showStatus(tr('loading')); const {error}=await sb.from('school_students').upsert(row,{onConflict:'user_id'}); if(error) showStatus(error.message,true); else {await loadAll(); activeView='dashboard'; render();} }); }

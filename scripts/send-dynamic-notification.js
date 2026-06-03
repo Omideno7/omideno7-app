@@ -1,8 +1,10 @@
-/* Omideno7 V63.35 — Morning Prayer Croatia-time reminder
-   - Keeps OneSignal URL fix from V63.34: web_url only, no url field.
-   - Morning Prayer reminder is sent for one fixed meeting time:
-     05:00 Croatia time, reminder around 04:45 Croatia time.
-   - Uses workflow schedule checks for Europe/Zagreb so DST changes are handled.
+/* Omideno7 V63.36 — multilingual announcement notifications
+   Keeps V63.35 fixes:
+   - OneSignal web_url only; no url field.
+   - Morning Prayer reminder tied to 04:45 Europe/Zagreb.
+   Adds:
+   - app-announcement notifications for School and Q&A.
+   - language-targeted sends using OneSignal tags: app_language / language = fa, en, hr.
 */
 
 const APP_URL = 'https://omideno7.github.io/omideno7-app/';
@@ -12,14 +14,15 @@ const APP_ID = process.env.ONESIGNAL_APP_ID || process.env.ONE_SIGNAL_APP_ID || 
 const API_KEY = process.env.ONESIGNAL_API_KEY || process.env.ONE_SIGNAL_API_KEY || process.env.ONESIGNAL_REST_API_KEY || process.env.ONE_SIGNAL_REST_API_KEY;
 
 const type = process.argv[2] || process.env.NOTIFICATION_TYPE || 'daily-word';
+const announcementType = process.argv[3] || process.env.ANNOUNCEMENT_TYPE || 'qa';
+
 const FORCE_SEND = String(process.env.OMIDENO7_FORCE_SEND || process.env.FORCE_SEND || '').toLowerCase() === '1'
   || String(process.env.OMIDENO7_FORCE_SEND || process.env.FORCE_SEND || '').toLowerCase() === 'true';
 const CROATIA_REMINDER_GUARD = String(process.env.OMIDENO7_CROATIA_REMINDER || '').toLowerCase() === '1'
   || String(process.env.OMIDENO7_CROATIA_REMINDER || '').toLowerCase() === 'true';
 
 function todayDayNumber(){
-  const now = new Date();
-  return now.getUTCDate();
+  return new Date().getUTCDate();
 }
 
 function zagrebParts(date = new Date()){
@@ -52,8 +55,6 @@ function shouldSendMorningPrayerNow(){
   if(!CROATIA_REMINDER_GUARD) return {ok:true, reason:'Croatia guard disabled'};
 
   const z = zagrebParts();
-  // Target: 04:45 Croatia time, for the 05:00 Croatia morning prayer meeting.
-  // Window protects against small GitHub Actions delays.
   const ok = z.hour === 4 && z.minute >= 40 && z.minute <= 59;
   return {
     ok,
@@ -63,10 +64,10 @@ function shouldSendMorningPrayerNow(){
   };
 }
 
-function appUrlFor(type){
+function appUrlFor(type, subtype){
   const base = APP_URL.replace(/\/$/, '/');
   const params = new URLSearchParams();
-  params.set('v', '6335');
+  params.set('v', '6336');
 
   if(type === 'daily-word') params.set('open', 'word');
   if(type === 'faith-declaration') params.set('open', 'declarations');
@@ -74,7 +75,43 @@ function appUrlFor(type){
   if(type === 'morning-prayer-reminder') params.set('open', 'meetings');
   if(type === 'sunday-service-reminder') params.set('open', 'meetings');
 
+  if(type === 'app-announcement'){
+    if(subtype === 'school') params.set('open', 'school');
+    if(subtype === 'qa') params.set('open', 'more');
+    params.set('announcement', subtype || 'qa');
+  }
+
   return base + '?' + params.toString();
+}
+
+function announcementMessage(subtype){
+  if(subtype === 'school'){
+    return {
+      title: {
+        fa: 'مدرسه آنلاین کلیسای امیدنو۷ فعال شد',
+        en: 'Omid No 7 Online School is now open',
+        hr: 'Online škola Crkve Omid No 7 je otvorena'
+      },
+      body: {
+        fa: 'به مدرسه آنلاین کلیسای امیدنو۷ بپیوندید، در کلام رشد کنید و برای خدمت مؤثرتر آماده شوید.',
+        en: 'Join the Omid No 7 Online School, grow in the Word, and be equipped for a more effective life and ministry.',
+        hr: 'Pridružite se online školi Crkve Omid No 7, rastite u Božjoj riječi i budite opremljeni za učinkovitiji život i služenje.'
+      }
+    };
+  }
+
+  return {
+    title: {
+      fa: 'بخش پرسش و پاسخ فعال شد',
+      en: 'Questions & Answers is now open',
+      hr: 'Pitanja i odgovori su sada dostupni'
+    },
+    body: {
+      fa: 'اگر سوالی درباره ایمان، کتاب‌مقدس یا زندگی مسیحی دارید، در اپ کلیسای امیدنو۷ بپرسید و پاسخ را دریافت کنید.',
+      en: 'If you have a question about faith, the Bible, or Christian life, ask it in the Omid No 7 app and receive an answer.',
+      hr: 'Ako imate pitanje o vjeri, Bibliji ili kršćanskom životu, postavite ga u aplikaciji Omid No 7 i primite odgovor.'
+    }
+  };
 }
 
 function messageFor(type){
@@ -150,27 +187,37 @@ function messageFor(type){
     }
   };
 
+  if(type === 'app-announcement') return announcementMessage(announcementType);
   return messages[type] || messages['daily-word'];
 }
 
-function buildPayload(type){
-  const msg = messageFor(type);
+function languageFilters(lang){
+  // Users are tagged from the app with both app_language and language.
+  return [
+    { field: 'tag', key: 'app_language', relation: '=', value: lang },
+    { operator: 'OR' },
+    { field: 'tag', key: 'language', relation: '=', value: lang }
+  ];
+}
 
+function singleLanguagePayload(type, lang){
+  const msg = messageFor(type);
   const payload = {
     app_id: APP_ID,
     target_channel: 'push',
-    included_segments: ['All'],
-    headings: msg.title,
-    contents: msg.body,
-    web_url: appUrlFor(type),
+    filters: languageFilters(lang),
+    headings: { en: msg.title[lang] || msg.title.en || msg.title.fa || msg.title.hr },
+    contents: { en: msg.body[lang] || msg.body.en || msg.body.fa || msg.body.hr },
+    web_url: appUrlFor(type, announcementType),
     data: {
       app: 'omideno7',
       notification_type: type,
-      version: 'V63.35'
+      announcement_type: type === 'app-announcement' ? announcementType : undefined,
+      app_language: lang,
+      version: 'V63.36'
     }
   };
 
-  // Critical: do NOT set payload.url when web_url/app_url is set.
   if(msg.deliveryTime){
     payload.delayed_option = 'timezone';
     payload.delivery_time_of_day = msg.deliveryTime;
@@ -179,29 +226,33 @@ function buildPayload(type){
   return payload;
 }
 
-async function send(){
-  if(!API_KEY){
-    throw new Error('Missing OneSignal API key. Add ONESIGNAL_API_KEY or ONE_SIGNAL_API_KEY in GitHub Secrets.');
+function allSubscribersPayload(type){
+  const msg = messageFor(type);
+  const payload = {
+    app_id: APP_ID,
+    target_channel: 'push',
+    included_segments: ['All'],
+    headings: msg.title,
+    contents: msg.body,
+    web_url: appUrlFor(type, announcementType),
+    data: {
+      app: 'omideno7',
+      notification_type: type,
+      version: 'V63.36'
+    }
+  };
+
+  if(msg.deliveryTime){
+    payload.delayed_option = 'timezone';
+    payload.delivery_time_of_day = msg.deliveryTime;
   }
 
-  const guard = shouldSendMorningPrayerNow();
-  console.log('Morning Prayer Croatia-time guard:', guard.reason);
-  if(!guard.ok){
-    console.log('No notification sent. This is not an error.');
-    return;
-  }
+  return payload;
+}
 
-  const payload = buildPayload(type);
-
-  console.log('Omideno7 sending OneSignal notification:', type);
-  console.log('OneSignal App ID:', APP_ID ? '***' : 'missing');
-  console.log('Audience: target_channel="push", included_segments=["All"]');
-  console.log('Open URL field: web_url only');
-  if(payload.delivery_time_of_day){
-    console.log('Local delivery time:', payload.delivery_time_of_day);
-  } else {
-    console.log('Delivery: immediate');
-  }
+async function postToOneSignal(payload, label){
+  console.log('Sending OneSignal notification:', label);
+  console.log('Payload target:', payload.filters ? 'language filters' : 'All push subscribers');
 
   const res = await fetch(ONE_SIGNAL_API_URL, {
     method: 'POST',
@@ -219,6 +270,33 @@ async function send(){
   if(!res.ok){
     throw new Error('OneSignal HTTP ' + res.status + ': ' + text);
   }
+}
+
+async function send(){
+  if(!API_KEY){
+    throw new Error('Missing OneSignal API key. Add ONESIGNAL_API_KEY or ONE_SIGNAL_API_KEY in GitHub Secrets.');
+  }
+
+  const guard = shouldSendMorningPrayerNow();
+  console.log('Morning Prayer Croatia-time guard:', guard.reason);
+  if(!guard.ok){
+    console.log('No notification sent. This is not an error.');
+    return;
+  }
+
+  console.log('Omideno7 notification type:', type);
+  console.log('OneSignal App ID:', APP_ID ? '***' : 'missing');
+  console.log('Open URL field: web_url only');
+
+  if(type === 'app-announcement'){
+    console.log('Announcement type:', announcementType);
+    for(const lang of ['fa','en','hr']){
+      await postToOneSignal(singleLanguagePayload(type, lang), `app-announcement:${announcementType}:${lang}`);
+    }
+    return;
+  }
+
+  await postToOneSignal(allSubscribersPayload(type), type);
 }
 
 send().catch(err => {

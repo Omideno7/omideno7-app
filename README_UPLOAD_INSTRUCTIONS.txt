@@ -1,19 +1,19 @@
-Omideno7 V63.36 Complete App Announcement Notifications
+Omideno7 V63.36 Upload Package
 
-Upload/replace these files in the GitHub repository root, preserving folders:
+Upload/replace all files in this ZIP into the root of the GitHub repository, preserving folders:
 
-index.html
-v63-36-notification-language-sync.js
-scripts/send-dynamic-notification.js
-.github/workflows/send-app-announcement.yml
-.github/workflows/send-daily-word.yml
-.github/workflows/send-faith-declaration.yml
-.github/workflows/send-thanksgiving.yml
-.github/workflows/send-morning-prayer-reminder.yml
-.github/workflows/send-sunday-service-reminder.yml
+- index.html -> root
+- v63-31-bible-365-complete-fix.js -> root
+- v63-36-notification-language-sync.js -> root
+- v63-36-version-stability-lock.js -> root
+- OMIDENO7_APP_STATUS_REPORT.md -> root
+- scripts/send-dynamic-notification.js -> scripts/
+- .github/workflows/*.yml -> .github/workflows/
 
-After commit:
-1. Wait for GitHub Actions / Pages deployment to turn green.
-2. Open app once on devices so app_language is synced to OneSignal.
-3. Go to Actions -> Send App Announcement notification -> Run workflow.
-4. Choose announcement_type: qa or school.
+After uploading:
+1. Commit changes.
+2. Wait until GitHub Actions / Pages build turns green.
+3. Test the app with: https://omideno7.github.io/omideno7-app/?v=6336
+4. Open More and confirm the footer version stays stable: App Version: V63.36
+5. Run the app announcement workflow manually if needed:
+   Actions -> Send App Announcement notification -> Run workflow -> qa or school

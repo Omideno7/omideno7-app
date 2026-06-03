@@ -339,7 +339,7 @@
         const out=document.getElementById('refOut-'+code);
         if(!out) return;
         const found=findRefTextInLesson(lesson, ref);
-        out.innerHTML=`<div class="school-card" style="margin-top:10px"><h4>${esc(ref)}</h4><p class="school-muted">${esc(A.verseContent)}</p><div>${found?nl(found):nl(ref+'\n\n'+(lesson?.text||'').slice(0,900))}</div></div>`;
+        out.innerHTML=`<div class="school-card" style="margin-top:10px"><h4>${esc(formatSchoolRef(ref))}</h4><p class="school-muted">${esc(A.verseContent)}</p><div>${found?nl(found):nl(formatSchoolRef(ref)+'\n\n'+(lesson?.text||'').slice(0,900))}</div></div>`;
         out.scrollIntoView({behavior:'smooth',block:'nearest'});
       });
     });
@@ -528,23 +528,38 @@ async function showQaAdmin(){
   function qaPayloadAttempts(row, txt, pub){
     const now=new Date().toISOString();
     const attempts=[];
-    const answerKeys=['answer','answer_text','response','reply','admin_answer'];
-    const statusKeys=['status','published_status'];
-    const publishKeys=['is_published','published','public','visible'];
-    for(const ak of answerKeys){
+    const publishStatus=pub?'published':'answered';
+    const L=qLang(row)||lang();
+    const addIfExisting=(base, keys)=>{
+      const p={...base};
+      let any=false;
+      keys.forEach(k=>{ if(Object.prototype.hasOwnProperty.call(row,k)){ p[k]=base[k]; any=true; }});
+      if(any) attempts.push(p);
+    };
+    const allAnswerKeys=['answer','answer_text','response','reply','admin_answer','answer_body','admin_response','answer_fa','answer_en','answer_hr'];
+    for(const ak of allAnswerKeys){
       if(Object.prototype.hasOwnProperty.call(row, ak)){
         const p={}; p[ak]=txt;
         if(Object.prototype.hasOwnProperty.call(row,'updated_at')) p.updated_at=now;
-        for(const sk of statusKeys){ if(Object.prototype.hasOwnProperty.call(row,sk)) p[sk]=pub?'published':'answered'; }
-        for(const pk of publishKeys){ if(Object.prototype.hasOwnProperty.call(row,pk)) p[pk]=!!pub; }
+        if(Object.prototype.hasOwnProperty.call(row,'answered_at')) p.answered_at=now;
+        if(pub && Object.prototype.hasOwnProperty.call(row,'published_at')) p.published_at=now;
+        for(const sk of ['status','published_status','state']){ if(Object.prototype.hasOwnProperty.call(row,sk)) p[sk]=publishStatus; }
+        for(const pk of ['is_published','published','public','visible','show_public','is_public']){ if(Object.prototype.hasOwnProperty.call(row,pk)) p[pk]=!!pub; }
+        for(const ik of ['is_answered','answered']){ if(Object.prototype.hasOwnProperty.call(row,ik)) p[ik]=true; }
         attempts.push(p);
       }
     }
-    attempts.push({answer:txt,status:pub?'published':'answered',updated_at:now});
-    attempts.push({answer_text:txt,status:pub?'published':'answered',updated_at:now});
-    attempts.push({response:txt,status:pub?'published':'answered'});
+    // Common schemas used by the public Q&A card. These are tried one by one so an unknown column cannot break the final save.
+    attempts.push({answer:txt,status:publishStatus,is_published:!!pub,updated_at:now});
+    attempts.push({answer_text:txt,status:publishStatus,is_published:!!pub,updated_at:now});
+    attempts.push({response:txt,status:publishStatus,is_published:!!pub,updated_at:now});
+    attempts.push({admin_answer:txt,status:publishStatus,is_published:!!pub,updated_at:now});
+    attempts.push({['answer_'+L]:txt,status:publishStatus,is_published:!!pub,updated_at:now});
+    attempts.push({answer:txt,status:publishStatus,published:!!pub,updated_at:now});
+    attempts.push({answer_text:txt,status:publishStatus,published:!!pub,updated_at:now});
     attempts.push({answer:txt});
     attempts.push({answer_text:txt});
+    attempts.push({response:txt});
     return attempts;
   }
   function bindQaSave(table){
@@ -561,7 +576,15 @@ async function showQaAdmin(){
         let lastError=null;
         for(const payload of qaPayloadAttempts(row, txt, pub)){
           const r=await sb.from(table).update(payload).eq(idKey,id);
-          if(!r.error){ showStatus(tr('saved')); updateAdminBadges(); return; }
+          if(!r.error){
+            Object.assign(row, payload, {answer:txt, answer_text:txt, response:txt, status:pub?'published':'answered', is_published:!!pub, published:!!pub});
+            const ta=area.querySelector(`[data-qa-answer="${CSS.escape(id)}"]`); if(ta) ta.value=txt;
+            btn.textContent='✓ '+(pub?'Published':'Saved');
+            showStatus(tr('saved'));
+            updateAdminBadges();
+            setTimeout(()=>{ if(document.getElementById('adminMainArea')) showQaAdmin(); },700);
+            return;
+          }
           lastError=r.error;
           const msg=String(r.error.message||'');
           if(msg.includes('row-level security')||msg.includes('permission denied')||msg.includes('not allowed')) break;

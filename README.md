@@ -8,3 +8,6 @@ Changes:
 - Uses the app Bible data for verse text instead of loading all verses into the school page.
 - Displays scripture references in the selected app language: Persian, English, or Croatian.
 - Keeps the school content review lightweight to avoid freezing.
+
+
+V63.18: Fixed localized scripture reference title inside opened verse panels and refreshed Q&A admin save so saved answers update visibly after save. Built from stable V63.16/63.17 line.

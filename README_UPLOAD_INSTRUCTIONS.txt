@@ -1,25 +1,17 @@
-Omideno7 V63.32 Notifications Fix
+Omideno7 V63.34 Notifications URL Conflict Fix
 
-Upload/replace these files in your GitHub repository exactly with the same folder paths:
+Replace this file in GitHub:
 
-1) scripts/send-dynamic-notification.js
-2) .github/workflows/send-daily-word.yml
-3) .github/workflows/send-faith-declaration.yml
-4) .github/workflows/send-thanksgiving.yml
-5) .github/workflows/send-morning-prayer-reminder.yml
-6) .github/workflows/send-sunday-service-reminder.yml
+scripts/send-dynamic-notification.js
 
-Important:
-- Do not upload the ZIP itself into the repo. Unzip it first.
-- Keep the same folders: scripts and .github/workflows.
-- Existing GitHub Secrets must be present:
-  ONESIGNAL_APP_ID
-  ONESIGNAL_REST_API_KEY
+Reason:
+OneSignal returned HTTP 400:
+"Remove url field when setting app_url or web_url"
+
+This fix removes the old url field and uses web_url only.
 
 After upload:
-1) Commit changes.
-2) Wait for GitHub Actions / Pages build to finish.
-3) Go to Actions and open each notification workflow.
-4) If GitHub shows "Enable workflow", click Enable workflow.
-5) Run "Send Test Notification" or manually run one of these workflows using "Run workflow".
-6) Then wait for the scheduled times.
+1. Commit changes.
+2. Wait for GitHub Actions to finish.
+3. Run workflow manually: Send Morning Prayer reminder.
+4. If it is green, check OneSignal Messages/Delivery.

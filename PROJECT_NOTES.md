@@ -18,3 +18,7 @@ It overrides the previous daily-word renderer without changing school, Q&A, Supa
 
 ### V63.21
 Daily Word no longer shows Bible reading plans. School scripture display now Persian-localizes digits in Persian mode. A small Bible reading plan next-day helper is added. No database changes required.
+
+
+### V63.22
+Added a safe isolated patch `v63-22-bible-reading-plan-365.js` for the existing Bible > one-year reading plan. It uses the uploaded 365-day plan data, keeps Bible reader intact, and stores plan progress in localStorage for now. No Supabase or school/Q&A changes.

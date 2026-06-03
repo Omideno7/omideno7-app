@@ -29,3 +29,11 @@ V63.19: Fixes public Q&A visibility by saving allow_public=true and public_quest
 - Added a small next-day helper button for Bible reading plan pages.
 - Converted school scripture reference/verse digits to Persian numerals in Persian mode.
 - Kept patch isolated to avoid affecting school/Q&A/Supabase logic.
+
+
+## V63.22 — Bible Reading Plan 365
+- Added the uploaded 365-day Bible reading plan inside the existing Bible section.
+- Does not replace or remove Bible text.
+- One-year plan starts from Day 1 per user and advances only after pressing the completion button.
+- Readings are localized in Persian, English, and Croatian.
+- Full chapter text is loaded from the app Bible data for the selected day only to avoid heavy loading.

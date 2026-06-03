@@ -11,3 +11,6 @@ Changes:
 
 
 V63.18: Fixed localized scripture reference title inside opened verse panels and refreshed Q&A admin save so saved answers update visibly after save. Built from stable V63.16/63.17 line.
+
+
+V63.19: Fixes public Q&A visibility by saving allow_public=true and public_question for the existing qa_public_answers view schema. No SQL change required.

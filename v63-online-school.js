@@ -530,33 +530,39 @@ async function showQaAdmin(){
     const attempts=[];
     const publishStatus=pub?'published':'answered';
     const L=qLang(row)||lang();
-    const addIfExisting=(base, keys)=>{
-      const p={...base};
-      let any=false;
-      keys.forEach(k=>{ if(Object.prototype.hasOwnProperty.call(row,k)){ p[k]=base[k]; any=true; }});
-      if(any) attempts.push(p);
+    const sourceQuestion = row.public_question || row.question || row.question_text || row.text || row.body || row.title || '';
+    const addCommonPublicFields=(p)=>{
+      if(Object.prototype.hasOwnProperty.call(row,'updated_at')) p.updated_at=now;
+      if(Object.prototype.hasOwnProperty.call(row,'answered_at')) p.answered_at=now;
+      if(pub && Object.prototype.hasOwnProperty.call(row,'published_at')) p.published_at=now;
+      for(const sk of ['status','published_status','state']){ if(Object.prototype.hasOwnProperty.call(row,sk)) p[sk]=publishStatus; }
+      for(const pk of ['is_published','published','public','visible','show_public','is_public','allow_public']){
+        if(Object.prototype.hasOwnProperty.call(row,pk)) p[pk]=!!pub;
+      }
+      for(const ik of ['is_answered','answered']){ if(Object.prototype.hasOwnProperty.call(row,ik)) p[ik]=true; }
+      // The public app reads from qa_public_answers, which filters qa_questions by:
+      // status='published', allow_public=true, public_question not null, and answer not null.
+      if(Object.prototype.hasOwnProperty.call(row,'public_question')) p.public_question=sourceQuestion || row.public_question || '';
+      if(Object.prototype.hasOwnProperty.call(row,'public_answer')) p.public_answer=txt;
+      return p;
     };
     const allAnswerKeys=['answer','answer_text','response','reply','admin_answer','answer_body','admin_response','answer_fa','answer_en','answer_hr'];
     for(const ak of allAnswerKeys){
       if(Object.prototype.hasOwnProperty.call(row, ak)){
         const p={}; p[ak]=txt;
-        if(Object.prototype.hasOwnProperty.call(row,'updated_at')) p.updated_at=now;
-        if(Object.prototype.hasOwnProperty.call(row,'answered_at')) p.answered_at=now;
-        if(pub && Object.prototype.hasOwnProperty.call(row,'published_at')) p.published_at=now;
-        for(const sk of ['status','published_status','state']){ if(Object.prototype.hasOwnProperty.call(row,sk)) p[sk]=publishStatus; }
-        for(const pk of ['is_published','published','public','visible','show_public','is_public']){ if(Object.prototype.hasOwnProperty.call(row,pk)) p[pk]=!!pub; }
-        for(const ik of ['is_answered','answered']){ if(Object.prototype.hasOwnProperty.call(row,ik)) p[ik]=true; }
-        attempts.push(p);
+        attempts.push(addCommonPublicFields(p));
       }
     }
-    // Common schemas used by the public Q&A card. These are tried one by one so an unknown column cannot break the final save.
-    attempts.push({answer:txt,status:publishStatus,is_published:!!pub,updated_at:now});
-    attempts.push({answer_text:txt,status:publishStatus,is_published:!!pub,updated_at:now});
-    attempts.push({response:txt,status:publishStatus,is_published:!!pub,updated_at:now});
-    attempts.push({admin_answer:txt,status:publishStatus,is_published:!!pub,updated_at:now});
-    attempts.push({['answer_'+L]:txt,status:publishStatus,is_published:!!pub,updated_at:now});
-    attempts.push({answer:txt,status:publishStatus,published:!!pub,updated_at:now});
-    attempts.push({answer_text:txt,status:publishStatus,published:!!pub,updated_at:now});
+    // Strongest match for the existing public view schema.
+    attempts.push(addCommonPublicFields({answer:txt,status:publishStatus,allow_public:!!pub,public_question:sourceQuestion,updated_at:now}));
+    // Other common schemas; tried one by one so an unknown column cannot break saving.
+    attempts.push(addCommonPublicFields({answer:txt,status:publishStatus,is_published:!!pub,updated_at:now}));
+    attempts.push(addCommonPublicFields({answer_text:txt,status:publishStatus,is_published:!!pub,updated_at:now}));
+    attempts.push(addCommonPublicFields({response:txt,status:publishStatus,is_published:!!pub,updated_at:now}));
+    attempts.push(addCommonPublicFields({admin_answer:txt,status:publishStatus,is_published:!!pub,updated_at:now}));
+    attempts.push(addCommonPublicFields({['answer_'+L]:txt,status:publishStatus,is_published:!!pub,updated_at:now}));
+    attempts.push(addCommonPublicFields({answer:txt,status:publishStatus,published:!!pub,updated_at:now}));
+    attempts.push(addCommonPublicFields({answer_text:txt,status:publishStatus,published:!!pub,updated_at:now}));
     attempts.push({answer:txt});
     attempts.push({answer_text:txt});
     attempts.push({response:txt});

@@ -6,3 +6,6 @@ Key scripture rendering pulls from window.bibleReaderData when available, so ver
 
 
 V63.18: Fixed localized scripture reference title inside opened verse panels and refreshed Q&A admin save so saved answers update visibly after save. Built from stable V63.16/63.17 line.
+
+
+V63.19: Public Q&A visibility fix: admin save now writes fields required by qa_public_answers view.

@@ -322,46 +322,7 @@ Every time a new app feature, notification, workflow, Bible feature, school feat
 6. Test instructions
 
 
----
 
-## V63.37 — Professional Cloud Account & Backup Foundation
+## Emergency Rollback Note
 
-Date: 2026-06-03
-
-Purpose:
-- Add a safe cloud backup foundation without changing the working app sections.
-- Preserve current localStorage behavior while adding Supabase backup for signed-in users.
-- Prepare the app for professional account-based features: personal dashboard, prayer requests, testimonies, secure chat, and cross-device recovery.
-
-Files added:
-- `supabase-v63-37-cloud-backup.sql`
-- `v63-37-cloud-backup-sync.js`
-- `v63-37-version-stability-lock.js`
-
-Database tables added by SQL:
-- `user_profiles`
-- `user_app_settings`
-- `bible365_progress`
-
-Security:
-- Row Level Security is enabled on all three new tables.
-- Users can only select, insert, and update their own rows using `auth.uid() = user_id`.
-- Existing school, Q&A, Bible, Daily Word, notifications, and admin tables are not modified.
-
-Behavior:
-- If the user is signed in through Supabase, the app backs up language and Bible 365 progress to Supabase.
-- If the user is not signed in, the app continues using localStorage exactly as before.
-- If Supabase is unavailable or the SQL has not been installed yet, the app continues working and fails silently.
-- This version does not move notes, homework, chat, Q&A, or school records yet. Those remain future phases.
-
-Testing checklist:
-1. Run `supabase-v63-37-cloud-backup.sql` once in Supabase SQL Editor.
-2. Upload all V63.37 files and commit.
-3. Open `https://omideno7.github.io/omideno7-app/?v=6337`.
-4. Confirm Home, Word, Book, School, More, notifications, and Bible 365 still work.
-5. Sign in as a user and change Bible 365 day.
-6. Confirm `bible365_progress` receives the selected/current day.
-7. Delete/reinstall app or test in another browser, sign in again, and confirm progress can restore from cloud.
-
-Next planned phase:
-- V63.38 — Personal Spiritual Dashboard using the account and cloud backup foundation.
+V63.37 Cloud Backup Foundation SQL tables may exist in Supabase, but the app has been restored to the last stable V63.36 front-end if this package is uploaded. Cloud backup should be reintroduced later using a diagnostic/manual-sync version after confirming no JavaScript conflicts.

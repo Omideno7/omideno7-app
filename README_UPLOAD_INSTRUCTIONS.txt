@@ -1,22 +1,19 @@
-Omideno7 V63.35 — Morning Prayer Croatia-time Reminder
+Omideno7 V63.36 Complete App Announcement Notifications
 
-Upload/replace exactly these files:
+Upload/replace these files in the GitHub repository root, preserving folders:
 
-1) scripts/send-dynamic-notification.js
-2) .github/workflows/send-morning-prayer-reminder.yml
+index.html
+v63-36-notification-language-sync.js
+scripts/send-dynamic-notification.js
+.github/workflows/send-app-announcement.yml
+.github/workflows/send-daily-word.yml
+.github/workflows/send-faith-declaration.yml
+.github/workflows/send-thanksgiving.yml
+.github/workflows/send-morning-prayer-reminder.yml
+.github/workflows/send-sunday-service-reminder.yml
 
-What it does:
-- Morning prayer meeting starts at 05:00 Croatia time (Europe/Zagreb).
-- Notification is sent around 04:45 Croatia time.
-- It is sent immediately to all push subscribers at that same real-world time.
-- This means Iran, Malaysia, Australia, Canada, USA, etc. receive it at their own local equivalent of 04:45 Croatia time.
-- The workflow has two UTC schedules for summer/winter time, and the script checks Europe/Zagreb local time before sending, so it avoids the DST problem.
-
-Manual test:
-- Go to GitHub Actions.
-- Open Send Morning Prayer reminder.
-- Click Run workflow.
-- Manual runs force immediate sending for testing.
-
-Automatic behavior:
-- Scheduled runs only send during the 04:40–04:59 Europe/Zagreb reminder window.
+After commit:
+1. Wait for GitHub Actions / Pages deployment to turn green.
+2. Open app once on devices so app_language is synced to OneSignal.
+3. Go to Actions -> Send App Announcement notification -> Run workflow.
+4. Choose announcement_type: qa or school.

@@ -1,22 +1,31 @@
 'use strict';
 
 /*
-  Omideno7 V63.32 — OneSignal scheduled notifications fix
-  - Sends push notifications through the current OneSignal Create Message API.
-  - Supports localized FA/EN/HR titles and contents.
-  - Uses timezone delivery for Daily Word, Faith Declaration, and Thanksgiving.
-  - Keeps meeting reminders as immediate notifications when the GitHub Action runs.
+  Omideno7 V63.33 — OneSignal audience targeting fix
+  Fixes "no subscribed recipients" errors by:
+  1) Using the same public OneSignal App ID as the web app.
+  2) Targeting the default OneSignal segment "All" instead of relying on "Subscribed Users".
+  3) Keeping target_channel="push" so only push-capable subscriptions are used.
+  4) Keeping local-time delivery for Daily Word, Faith Declaration, and Thanksgiving.
 */
 
 const TYPE = process.env.NOTIFICATION_TYPE;
-const APP_ID = process.env.ONESIGNAL_APP_ID;
 const REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY;
+
+// Public OneSignal App ID used inside the Omideno7 web app.
+// Keeping this fixed prevents GitHub Secrets from accidentally pointing to a different OneSignal app with zero subscribers.
+const APP_ID = '33aa00cc-1a85-42bf-9f68-949d81f37620';
+const SECRET_APP_ID = process.env.ONESIGNAL_APP_ID || '';
 
 const APP_URL = 'https://omideno7.github.io/omideno7-app/';
 
-if (!APP_ID) throw new Error('ONESIGNAL_APP_ID is missing in GitHub Secrets');
 if (!REST_API_KEY) throw new Error('ONESIGNAL_REST_API_KEY is missing in GitHub Secrets');
 if (!TYPE) throw new Error('NOTIFICATION_TYPE is missing');
+
+if (SECRET_APP_ID && SECRET_APP_ID !== APP_ID) {
+  console.warn('WARNING: GitHub Secret ONESIGNAL_APP_ID is different from the app public OneSignal ID.');
+  console.warn('The script will use the web app OneSignal App ID:', APP_ID);
+}
 
 function todaySeed() {
   const d = new Date();
@@ -27,7 +36,7 @@ function pick(items) {
   return items[todaySeed() % items.length];
 }
 
-function safeUrl(path) {
+function appUrl(path) {
   return APP_URL + path;
 }
 
@@ -43,7 +52,7 @@ const messages = {
       fa: 'امروز را با کلام خدا آغاز کن. پیام روزانه تو آماده است.',
       hr: 'Započni dan Božjom riječju. Tvoja dnevna poruka je spremna.'
     },
-    url: safeUrl('?open=daily-word')
+    url: appUrl('?open=daily-word')
   }),
 
   'faith-declaration': () => ({
@@ -69,7 +78,7 @@ const messages = {
         'Dijete sam Božje i živim u pobjedi.'
       ])
     },
-    url: safeUrl('?open=faith-declaration')
+    url: appUrl('?open=faith-declaration')
   }),
 
   'thanksgiving': () => ({
@@ -83,7 +92,7 @@ const messages = {
       fa: 'امروز چند دقیقه وقت بگذار و برای حضور، کلام و محبت خدا شکرگزاری کن.',
       hr: 'Odvoji nekoliko minuta danas i zahvali Bogu za Njegovu prisutnost, Riječ i ljubav.'
     },
-    url: safeUrl('?open=thanksgiving')
+    url: appUrl('?open=thanksgiving')
   }),
 
   'morning-prayer-reminder': () => ({
@@ -126,36 +135,43 @@ function deliveryTimeFor(type) {
   return null;
 }
 
-async function send() {
-  if (!messages[TYPE]) {
-    throw new Error(`Unknown NOTIFICATION_TYPE: ${TYPE}`);
-  }
-
-  const msg = messages[TYPE]();
+function buildPayload(type) {
+  const msg = messages[type]();
 
   const payload = {
     app_id: APP_ID,
+    // Use push channel and the default All segment. OneSignal will only deliver to push-subscribed subscriptions.
     target_channel: 'push',
-    included_segments: ['Subscribed Users'],
+    included_segments: ['All'],
     headings: msg.headings,
     contents: msg.contents,
     url: msg.url,
     web_url: msg.url,
     data: {
       source: 'github-actions',
-      notification_type: TYPE,
-      omideno7_version: 'V63.32'
+      notification_type: type,
+      omideno7_version: 'V63.33'
     }
   };
 
-  if (isLocalTimeNotification(TYPE)) {
+  if (isLocalTimeNotification(type)) {
     payload.delayed_option = 'timezone';
-    payload.delivery_time_of_day = deliveryTimeFor(TYPE);
-    payload.throttle_rate_per_minute = 0;
+    payload.delivery_time_of_day = deliveryTimeFor(type);
   }
 
+  return payload;
+}
+
+async function send() {
+  if (!messages[TYPE]) {
+    throw new Error(`Unknown NOTIFICATION_TYPE: ${TYPE}`);
+  }
+
+  const payload = buildPayload(TYPE);
+
   console.log('Omideno7 sending OneSignal notification:', TYPE);
-  console.log('Audience: included_segments = ["Subscribed Users"]');
+  console.log('OneSignal App ID:', APP_ID);
+  console.log('Audience: target_channel="push", included_segments=["All"]');
   if (payload.delayed_option) {
     console.log('Local-time delivery:', payload.delivery_time_of_day);
   }
@@ -181,9 +197,7 @@ async function send() {
   let parsed = null;
   try {
     parsed = JSON.parse(text);
-  } catch (e) {
-    // Keep going; OneSignal normally returns JSON.
-  }
+  } catch (e) {}
 
   if (parsed && parsed.errors) {
     throw new Error(`OneSignal response contains errors: ${JSON.stringify(parsed.errors)}`);

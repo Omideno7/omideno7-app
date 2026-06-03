@@ -14,3 +14,18 @@ V63.18: Fixed localized scripture reference title inside opened verse panels and
 
 
 V63.19: Fixes public Q&A visibility by saving allow_public=true and public_question for the existing qa_public_answers view schema. No SQL change required.
+
+
+## V63.20 Daily Word replacement
+- Replaces the daily devotional display with the final uploaded 31-day EN/FA/HR Excel data.
+- June 3 displays message 3; June 4 displays message 4, and so on by Europe/Zagreb day.
+- 31-day months use messages 1-31; 30-day months use messages 1-30.
+- Further Study references are clickable and show the full verse text provided in the uploaded sheet.
+- No source, publisher, author, contact, or promotion information is displayed.
+
+
+## V63.21
+- Removed one-year/two-year Bible reading plan from Daily Word card.
+- Added a small next-day helper button for Bible reading plan pages.
+- Converted school scripture reference/verse digits to Persian numerals in Persian mode.
+- Kept patch isolated to avoid affecting school/Q&A/Supabase logic.

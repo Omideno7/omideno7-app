@@ -9,3 +9,12 @@ V63.18: Fixed localized scripture reference title inside opened verse panels and
 
 
 V63.19: Public Q&A visibility fix: admin save now writes fields required by qa_public_answers view.
+
+
+## V63.20
+Daily Word now uses `v63-20-daily-word-final.js`, generated from `ROR_May_2026_church_app_FINAL_31_days_EN_FA_HR.xlsx`.
+It overrides the previous daily-word renderer without changing school, Q&A, Supabase, notifications, Bible, or plans logic.
+
+
+### V63.21
+Daily Word no longer shows Bible reading plans. School scripture display now Persian-localizes digits in Persian mode. A small Bible reading plan next-day helper is added. No database changes required.

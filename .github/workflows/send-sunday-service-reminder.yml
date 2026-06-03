@@ -1,17 +1,23 @@
 name: Send Sunday Service reminder
+
 on:
   schedule:
-    - cron: '25 17,18 * * 0'
+    - cron: '25 18 * * 0'
   workflow_dispatch:
+
 jobs:
   send:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Send notification
+
+      - name: Send sunday-service-reminder notification
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}

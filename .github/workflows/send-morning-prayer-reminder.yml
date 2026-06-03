@@ -1,25 +1,35 @@
 name: Send Morning Prayer reminder
 
 on:
+  # Morning prayer starts at 05:00 Europe/Zagreb.
+  # These two UTC schedules cover Croatia summer time and winter time.
+  # The script sends only when Europe/Zagreb local time is 04:40–04:59.
   schedule:
-    - cron: '25 2,3 * * *'
+    - cron: '45 2 * * *'
+    - cron: '45 3 * * *'
   workflow_dispatch:
 
 jobs:
   send:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Run actions/checkout@v4
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Run actions/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Send morning-prayer-reminder notification
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONE_SIGNAL_APP_ID: ${{ secrets.ONE_SIGNAL_APP_ID }}
+          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+          ONE_SIGNAL_API_KEY: ${{ secrets.ONE_SIGNAL_API_KEY }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+          ONE_SIGNAL_REST_API_KEY: ${{ secrets.ONE_SIGNAL_REST_API_KEY }}
           NOTIFICATION_TYPE: morning-prayer-reminder
-        run: node scripts/send-dynamic-notification.js
+          OMIDENO7_CROATIA_REMINDER: '1'
+          OMIDENO7_FORCE_SEND: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: node scripts/send-dynamic-notification.js morning-prayer-reminder

@@ -1,0 +1,37 @@
+name: Send App Announcement notification
+
+on:
+  workflow_dispatch:
+    inputs:
+      announcement_type:
+        description: 'Announcement type: qa or school'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - qa
+          - school
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run actions/checkout@v4
+        uses: actions/checkout@v4
+
+      - name: Run actions/setup-node@v4
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Send app announcement notification
+        env:
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONE_SIGNAL_APP_ID: ${{ secrets.ONE_SIGNAL_APP_ID }}
+          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+          ONE_SIGNAL_API_KEY: ${{ secrets.ONE_SIGNAL_API_KEY }}
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+          ONE_SIGNAL_REST_API_KEY: ${{ secrets.ONE_SIGNAL_REST_API_KEY }}
+          NOTIFICATION_TYPE: app-announcement
+          ANNOUNCEMENT_TYPE: ${{ github.event.inputs.announcement_type }}
+        run: node scripts/send-dynamic-notification.js app-announcement "${{ github.event.inputs.announcement_type }}"

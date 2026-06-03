@@ -14,7 +14,7 @@
   let activeView='dashboard';
   let activeLesson=null;
   let progress=[], notes=[], assignments=[], attempts=[];
-  let adminStudents=[], adminSelected=null;
+  let adminStudents=[], adminSelected=null, qaRowsCache=[];
 
   const UI={
     fa:{nav:'مدرسه', title:'مدرسه آنلاین امیدنو۷', subtitle:'آموزش بنیادین برای اعضای جدید و ایمانداران؛ پیش‌نیاز عضویت رسمی کلیسا.', login:'ورود', signup:'ثبت‌نام مدرسه', email:'ایمیل', password:'رمز عبور', createAccount:'ساخت حساب و ثبت‌نام', signIn:'ورود به مدرسه', logout:'خروج', fullName:'نام و نام خانوادگی', phone:'شماره تماس', country:'کشور', city:'شهر', language:'زبان انتخابی', isBeliever:'آیا ایماندار هستید؟', yes:'بله', no:'خیر', yearsBeliever:'چند سال است ایماندار هستید؟', testimony:'شهادت کوتاه ایمان آوردن', otherChurch:'آیا عضو کلیسای دیگری هستید؟', churchName:'نام کلیسا', pastorName:'نام شبان', pastorPhone:'شماره تماس شبان', accept:'شرایط مدرسه را می‌پذیرم', required:'لطفاً همه فیلدهای اجباری را کامل کنید.', saved:'ذخیره شد', loading:'در حال بارگذاری...', dashboard:'وضعیت من', lessons:'کلاس‌های من', exam:'امتحان نهایی', admin:'پنل مدیریت', locked:'قفل است', open:'باز کردن درس', completed:'تکمیل شد', current:'فعال', notes:'یادداشت‌های درس', note:'یادداشت', assignment:'تکلیف', submitAssignment:'ثبت تکلیف', completeLesson:'تکمیل درس', minNotes:'برای تکمیل درس باید ۱۵ یادداشت و تکلیف ثبت شود.', audio:'فایل صوتی درس', audioLater:'فایل صوتی این زبان هنوز آماده نیست. لطفاً متن درس را با دقت مطالعه کنید.', speed:'سرعت پخش', back:'بازگشت', nextUnlocked:'درس بعدی فعال شد.', finalExamLocked:'امتحان پس از تکمیل همه کلاس‌ها فعال می‌شود.', startExam:'شروع امتحان', submitExam:'ثبت امتحان', score:'نمره', correct:'درست', wrong:'غلط', percent:'درصد', pass:'قبول شده', fail:'نیاز به مرور دوباره', retry:'مرور کنید و یک بار دیگر امتحان بدهید.', selected:'پاسخ شما', rightAnswer:'جواب صحیح', noAccess:'برای ورود به مدرسه ابتدا ثبت‌نام و ورود لازم است.', accountCreated:'حساب ساخته شد. اگر ایمیل تأیید دریافت کردید، آن را تأیید کنید و سپس وارد شوید.', adminStudents:'دانشجویان', review:'بررسی', submitted:'ثبت شده', reviewed:'بررسی شده', followup:'نیاز به پیگیری', status:'وضعیت', updateStatus:'تغییر وضعیت'},
@@ -222,7 +222,7 @@
     const scriptureLabel={fa:'آیات کلیدی',en:'Key Scriptures',hr:'Ključni stihovi'}[lang()]||'Key Scriptures';
     const audio=(lang()==='fa'&&l.audioFile)?`<div class="school-card"><h3>${esc(tr('audio'))}</h3><audio id="schoolAudio" class="school-audio" controls preload="metadata" src="${esc(resolveSchoolAudio(l.audioFile))}"></audio><label>${esc(tr('speed'))}<select id="schoolSpeed"><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></label></div>`:`<div class="school-card"><h3>${esc(tr('audio'))}</h3><p>${esc(lang()==='en'?UI.en.audioLater:lang()==='hr'?UI.hr.audioLater:'فایل صوتی این زبان هنوز آماده نیست. لطفاً متن درس را با دقت مطالعه کنید.')}</p></div>`;
     return `<button class="school-btn light" id="backToLessons">${esc(tr('back'))}</button>
-    <div class="school-card"><span class="school-badge ${done?'done':'active'}">${done?tr('completed'):tr('current')}</span><h2>${esc(l.classTitle)}</h2><h3>${esc(l.title)}</h3>${l.keyScriptures?`<p><strong>${esc(scriptureLabel)}:</strong> ${esc(l.keyScriptures)}</p>`:''}<details class="school-card"><summary class="school-btn gold" style="display:inline-block;cursor:pointer">${esc(fullLabel)}</summary><div class="school-lesson-text" style="margin-top:14px;max-height:62vh;overflow:auto;padding:4px 2px">${nl(l.text)}</div></details></div>
+    <div class="school-card"><span class="school-badge ${done?'done':'active'}">${done?tr('completed'):tr('current')}</span><h2>${esc(l.classTitle)}</h2><h3>${esc(l.title)}</h3>${l.keyScriptures?`<p><strong>${esc(scriptureLabel)}:</strong></p>${keyScriptureButtons(l)}`:''}<details class="school-card"><summary class="school-btn gold" style="display:inline-block;cursor:pointer">${esc(fullLabel)}</summary><div class="school-lesson-text" style="margin-top:14px;max-height:62vh;overflow:auto;padding:4px 2px">${nl(l.text)}</div></details></div>
     ${audio}
     <div class="school-card"><h3>${esc(tr('notes'))}</h3><p class="school-muted">${esc(tr('minNotes'))}</p><div class="school-note-grid">${Array.from({length:l.minNotes},(_,i)=>`<label>${esc(tr('note'))} ${i+1}<textarea class="school-note" data-note-index="${i+1}">${esc(noteFor(code,i+1))}</textarea></label>`).join('')}</div><button class="school-btn" id="saveNotes">${esc(tr('saved'))}</button></div>
     <div class="school-card"><h3>${esc(tr('assignment'))}</h3><p>${nl(l.assignment)}</p><textarea id="assignmentText" style="width:100%;min-height:140px">${esc(a)}</textarea><br><button class="school-btn" id="saveAssignment">${esc(tr('submitAssignment'))}</button><button class="school-btn gold" id="completeLesson">${esc(tr('completeLesson'))}</button></div>`;
@@ -230,6 +230,7 @@
   function bindLesson(code){
     document.getElementById('backToLessons')?.addEventListener('click',()=>{activeLesson=null; activeView='lessons'; render();});
     document.getElementById('schoolSpeed')?.addEventListener('change',e=>{ const au=document.getElementById('schoolAudio'); if(au) au.playbackRate=parseFloat(e.target.value||'1'); });
+    bindKeyScriptureButtons(document.getElementById('schoolBody')||document);
     document.getElementById('saveNotes')?.addEventListener('click',()=>saveNotes(code));
     document.getElementById('saveAssignment')?.addEventListener('click',()=>saveAssignment(code));
     document.getElementById('completeLesson')?.addEventListener('click',()=>completeLesson(code));
@@ -253,28 +254,77 @@
     }[L];
   }
   function getRefList(txt){ return String(txt||'').split(/[؛;]+/).map(x=>x.trim()).filter(Boolean); }
+  function faDigitsToEn(v){
+    const m={'۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9','٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+    return String(v||'').replace(/[۰-۹٠-٩]/g,ch=>m[ch]||ch).replace(/ي/g,'ی').replace(/ك/g,'ک');
+  }
+  const SCHOOL_BOOKS={
+    'پیدایش':{code:'GEN',en:'Genesis',hr:'Postanak'},'مزامیر':{code:'PSA',en:'Psalms',hr:'Psalmi'},'امثال':{code:'PRO',en:'Proverbs',hr:'Izreke'},'اشعیا':{code:'ISA',en:'Isaiah',hr:'Izaija'},'دانیال':{code:'DAN',en:'Daniel',hr:'Daniel'},'حبقوق':{code:'HAB',en:'Habakkuk',hr:'Habakuk'},'یوئیل':{code:'JOL',en:'Joel',hr:'Joel'},
+    'متی':{code:'MAT',en:'Matthew',hr:'Matej'},'مرقس':{code:'MRK',en:'Mark',hr:'Marko'},'لوقا':{code:'LUK',en:'Luke',hr:'Luka'},'یوحنا':{code:'JHN',en:'John',hr:'Ivan'},'اعمال':{code:'ACT',en:'Acts',hr:'Djela'},'رومیان':{code:'ROM',en:'Romans',hr:'Rimljanima'},
+    'اول قرنتیان':{code:'1CO',en:'1 Corinthians',hr:'1 Korinćanima'},'۱ قرنتیان':{code:'1CO',en:'1 Corinthians',hr:'1 Korinćanima'},'دوم قرنتیان':{code:'2CO',en:'2 Corinthians',hr:'2 Korinćanima'},'۲ قرنتیان':{code:'2CO',en:'2 Corinthians',hr:'2 Korinćanima'},
+    'غلاطیان':{code:'GAL',en:'Galatians',hr:'Galaćanima'},'افسسیان':{code:'EPH',en:'Ephesians',hr:'Efežanima'},'فیلیپیان':{code:'PHP',en:'Philippians',hr:'Filipljanima'},'کولسیان':{code:'COL',en:'Colossians',hr:'Kološanima'},
+    'اول تسالونیکیان':{code:'1TH',en:'1 Thessalonians',hr:'1 Solunjanima'},'۱ تسالونیکیان':{code:'1TH',en:'1 Thessalonians',hr:'1 Solunjanima'},'اول تیموتائوس':{code:'1TI',en:'1 Timothy',hr:'1 Timoteju'},'۱ تیموتائوس':{code:'1TI',en:'1 Timothy',hr:'1 Timoteju'},'دوم تیموتائوس':{code:'2TI',en:'2 Timothy',hr:'2 Timoteju'},'۲ تیموتائوس':{code:'2TI',en:'2 Timothy',hr:'2 Timoteju'},
+    'عبرانیان':{code:'HEB',en:'Hebrews',hr:'Hebrejima'},'اول پطرس':{code:'1PE',en:'1 Peter',hr:'1 Petrova'},'۱ پطرس':{code:'1PE',en:'1 Peter',hr:'1 Petrova'},'دوم پطرس':{code:'2PE',en:'2 Peter',hr:'2 Petrova'},'۲ پطرس':{code:'2PE',en:'2 Peter',hr:'2 Petrova'},
+    'اول یوحنا':{code:'1JN',en:'1 John',hr:'1 Ivanova'},'۱ یوحنا':{code:'1JN',en:'1 John',hr:'1 Ivanova'},'سوم یوحنا':{code:'3JN',en:'3 John',hr:'3 Ivanova'},'۳ یوحنا':{code:'3JN',en:'3 John',hr:'3 Ivanova'},'یهودا':{code:'JUD',en:'Jude',hr:'Juda'},'مکاشفه':{code:'REV',en:'Revelation',hr:'Otkrivenje'}
+  };
+  function parseSchoolRef(ref){
+    const raw=faDigitsToEn(ref).replace(/–/g,'-').replace(/،/g,' ').replace(/\s+/g,' ').trim();
+    const keys=Object.keys(SCHOOL_BOOKS).sort((a,b)=>b.length-a.length);
+    const bookKey=keys.find(k=>raw.startsWith(faDigitsToEn(k)));
+    if(!bookKey) return null;
+    const meta=SCHOOL_BOOKS[bookKey];
+    const rest=raw.slice(faDigitsToEn(bookKey).length).trim();
+    const m=rest.match(/(\d+)\s*[:：]\s*(.+)$/);
+    if(!m) return null;
+    const chapter=parseInt(m[1],10);
+    const versePart=m[2].replace(/آیات?/g,'').replace(/و/g,',').replace(/\s+/g,'');
+    const verses=[];
+    versePart.split(',').filter(Boolean).forEach(part=>{
+      const rm=part.match(/^(\d+)-(\d+)$/);
+      if(rm){ const a=parseInt(rm[1],10), b=parseInt(rm[2],10); for(let i=Math.min(a,b); i<=Math.max(a,b); i++) verses.push(i); }
+      else { const n=parseInt(part,10); if(n) verses.push(n); }
+    });
+    return {raw, bookKey, ...meta, chapter, verses:[...new Set(verses)]};
+  }
+  function formatSchoolRef(ref){
+    const parsed=parseSchoolRef(ref), L=lang();
+    if(!parsed) return ref;
+    const name=L==='fa'?parsed.bookKey:(parsed[L]||parsed.en);
+    const nums=parsed.verses.length?parsed.verses.join(', '):'';
+    return `${name} ${parsed.chapter}${nums?':'+nums:''}`;
+  }
+  function getBibleTextForSchoolRef(ref){
+    const parsed=parseSchoolRef(ref), L=lang();
+    const data=window.bibleReaderData?.chapters;
+    if(!parsed||!data) return '';
+    const ch=data?.[parsed.code]?.[String(parsed.chapter)];
+    if(!ch) return '';
+    const arr=ch[L]||ch.en||ch.fa||ch.hr||[];
+    const verses=parsed.verses.length?parsed.verses:arr.map(x=>Number(x.v));
+    const lines=verses.map(v=>{
+      const item=arr.find(x=>Number(x.v)===Number(v));
+      return item?`${v}. ${item.t}`:'';
+    }).filter(Boolean);
+    return lines.join('\n');
+  }
   function keyScriptureButtons(l){
     const A=adminLabels();
     const refs=getRefList(l.keyScriptures);
     if(!refs.length) return '';
-    return `<div class="school-key-refs"><p><strong>${esc(A.showVerse)}:</strong></p><div class="school-ref-buttons">${refs.map(r=>`<button type="button" class="school-btn light school-ref-btn" data-school-ref="${esc(r)}" data-lesson-code="${esc(l.code)}">${esc(r)}</button>`).join('')}</div><div class="school-ref-output" id="refOut-${esc(l.code)}"></div></div>`;
+    return `<div class="school-key-refs"><p><strong>${esc(A.showVerse)}:</strong></p><div class="school-ref-buttons">${refs.map(r=>`<button type="button" class="school-btn light school-ref-btn" data-school-ref="${esc(r)}" data-lesson-code="${esc(l.code)}">${esc(formatSchoolRef(r))}</button>`).join('')}</div><div class="school-ref-output" id="refOut-${esc(l.code)}"></div></div>`;
   }
   function findRefTextInLesson(lesson, ref){
+    const bible=getBibleTextForSchoolRef(ref);
+    if(bible) return bible;
     const text=String(lesson?.text||'');
     const clean=String(ref||'').replace(/\s+/g,' ').trim();
     if(!text) return '';
-    const idx=text.indexOf(clean);
-    if(idx>=0){
-      const start=Math.max(0, idx-220), end=Math.min(text.length, idx+clean.length+420);
-      return text.slice(start,end).trim();
-    }
-    // If exact reference is not found, show a helpful section from the lesson where the reference is taught.
-    const first=clean.split(/[\s:،,؛;-]+/)[0];
+    const candidates=[clean, formatSchoolRef(clean), faDigitsToEn(clean)];
+    for(const c of candidates){ const idx=text.indexOf(c); if(idx>=0){ const start=Math.max(0, idx-220), end=Math.min(text.length, idx+c.length+420); return text.slice(start,end).trim(); } }
+    const parsed=parseSchoolRef(clean);
+    const first=parsed?parsed.bookKey:clean.split(/[\s:،,؛;-]+/)[0];
     const idx2=first?text.indexOf(first):-1;
-    if(idx2>=0){
-      const start=Math.max(0, idx2-180), end=Math.min(text.length, idx2+520);
-      return text.slice(start,end).trim();
-    }
+    if(idx2>=0){ const start=Math.max(0, idx2-180), end=Math.min(text.length, idx2+520); return text.slice(start,end).trim(); }
     return '';
   }
   function bindKeyScriptureButtons(root=document){
@@ -453,6 +503,7 @@ async function showQaAdmin(){
       return;
     }
     const rows=found.rows||[];
+    qaRowsCache=rows;
     function renderLang(filter){
       const filtered=rows.filter(q=>qLang(q)===filter);
       const title=filter==='fa'?A.qFa:filter==='hr'?A.qHr:A.qEn;
@@ -474,6 +525,28 @@ async function showQaAdmin(){
     renderLang('fa');
     updateAdminBadges();
   }
+  function qaPayloadAttempts(row, txt, pub){
+    const now=new Date().toISOString();
+    const attempts=[];
+    const answerKeys=['answer','answer_text','response','reply','admin_answer'];
+    const statusKeys=['status','published_status'];
+    const publishKeys=['is_published','published','public','visible'];
+    for(const ak of answerKeys){
+      if(Object.prototype.hasOwnProperty.call(row, ak)){
+        const p={}; p[ak]=txt;
+        if(Object.prototype.hasOwnProperty.call(row,'updated_at')) p.updated_at=now;
+        for(const sk of statusKeys){ if(Object.prototype.hasOwnProperty.call(row,sk)) p[sk]=pub?'published':'answered'; }
+        for(const pk of publishKeys){ if(Object.prototype.hasOwnProperty.call(row,pk)) p[pk]=!!pub; }
+        attempts.push(p);
+      }
+    }
+    attempts.push({answer:txt,status:pub?'published':'answered',updated_at:now});
+    attempts.push({answer_text:txt,status:pub?'published':'answered',updated_at:now});
+    attempts.push({response:txt,status:pub?'published':'answered'});
+    attempts.push({answer:txt});
+    attempts.push({answer_text:txt});
+    return attempts;
+  }
   function bindQaSave(table){
     const area=document.getElementById('qaLangArea')||document;
     area.querySelectorAll('[data-qa-save]').forEach(btn=>{
@@ -483,13 +556,21 @@ async function showQaAdmin(){
         const id=btn.getAttribute('data-qa-save');
         const txt=area.querySelector(`[data-qa-answer="${CSS.escape(id)}"]`)?.value||'';
         const pub=area.querySelector(`[data-qa-publish="${CSS.escape(id)}"]`)?.checked;
-        let payload={answer:txt,status:pub?'published':'answered',is_published:!!pub,published:!!pub,updated_at:new Date().toISOString()};
-        let r=await sb.from(table).update(payload).eq('id',id);
-        if(r.error){ r=await sb.from(table).update({answer_text:txt,status:pub?'published':'answered',updated_at:new Date().toISOString()}).eq('id',id); }
-        if(r.error) showStatus(r.error.message,true); else {showStatus(tr('saved')); updateAdminBadges();}
+        const row=qaRowsCache.find(q=>String(q.id||q.uuid||q.question_id||'')===String(id))||{};
+        const idKey=Object.prototype.hasOwnProperty.call(row,'id')?'id':Object.prototype.hasOwnProperty.call(row,'uuid')?'uuid':Object.prototype.hasOwnProperty.call(row,'question_id')?'question_id':'id';
+        let lastError=null;
+        for(const payload of qaPayloadAttempts(row, txt, pub)){
+          const r=await sb.from(table).update(payload).eq(idKey,id);
+          if(!r.error){ showStatus(tr('saved')); updateAdminBadges(); return; }
+          lastError=r.error;
+          const msg=String(r.error.message||'');
+          if(msg.includes('row-level security')||msg.includes('permission denied')||msg.includes('not allowed')) break;
+        }
+        showStatus((lastError&&lastError.message)||'Save failed',true);
       });
     });
   }
+
 
 
     function boot(){ ensureUi(); }

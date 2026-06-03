@@ -1,3 +1,10 @@
-V63.16 Clean School Stability Fix
+V63.17 — School stability, Q&A save, clickable key scriptures
 
-This version intentionally rolls back the stacked V63.11–V63.15 patch chain and keeps a clean V63.10 base with one corrected school stability patch. It fixes the Admin > Review School Content freeze by lazy-loading full lesson text only after the admin taps the lesson text button.
+Changes:
+- Keeps the clean stable V63.16 base.
+- Fixes admin Q&A answer saving with flexible column detection.
+- Adds optional Supabase Q&A admin update policies in SCHOOL_SUPABASE_SQL_V63.sql.
+- Makes key scriptures clickable in student lessons and admin school review.
+- Uses the app Bible data for verse text instead of loading all verses into the school page.
+- Displays scripture references in the selected app language: Persian, English, or Croatian.
+- Keeps the school content review lightweight to avoid freezing.

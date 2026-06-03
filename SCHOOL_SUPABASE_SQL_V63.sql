@@ -198,3 +198,21 @@ drop trigger if exists trg_school_student_registration on public.school_students
 create trigger trg_school_student_registration
 after insert on public.school_students
 for each row execute function public.log_school_student_registration();
+
+-- V63.17 optional Q&A admin update policies.
+-- Safe to run: it only applies if the Q&A table exists.
+do $$
+declare
+  tbl text;
+begin
+  foreach tbl in array array['qa_questions','questions','church_questions','qna_questions','public_questions'] loop
+    if to_regclass('public.' || tbl) is not null then
+      execute format('alter table public.%I enable row level security', tbl);
+      execute format('drop policy if exists qa_admin_select_%I on public.%I', tbl, tbl);
+      execute format('drop policy if exists qa_admin_update_%I on public.%I', tbl, tbl);
+      execute format('create policy qa_admin_select_%I on public.%I for select to authenticated using ((auth.jwt()->>''email'') = ''omideno7church@gmail.com'' or true)', tbl, tbl);
+      execute format('create policy qa_admin_update_%I on public.%I for update to authenticated using ((auth.jwt()->>''email'') = ''omideno7church@gmail.com'') with check ((auth.jwt()->>''email'') = ''omideno7church@gmail.com'')', tbl, tbl);
+      execute format('grant select, update on public.%I to authenticated', tbl);
+    end if;
+  end loop;
+end $$;

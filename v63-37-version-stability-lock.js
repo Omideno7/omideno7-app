@@ -1,52 +1,111 @@
-/* Omideno7 V63.37 — final version stability lock
-   Purpose: keep the More/footer version stable after older hotfix scripts try to change it.
+/* Omideno7 V63.37 — stronger final version stability lock
+   Purpose: force the More-page footer version to stay on V63.37 even if older scripts write V63.36.
+   Safe scope: only app-version/footer version labels.
 */
 (function(){
   'use strict';
+
   var VERSION = 'V63.37';
   var LABEL = 'App Version: ' + VERSION;
+  var STYLE_ID = 'om7-v6337-version-lock-style';
+
   window.APP_VERSION = VERSION;
   window.OMIDENO7_APP_VERSION = VERSION;
 
-  function cleanFooterVersion(){
-    try{
-      var footer = document.querySelector('#more .footer, #mainFooter');
-      if(!footer) return;
-      var nodes = footer.querySelectorAll('small.app-version,[data-app-version],#appVersion');
-      for(var i=0; i<nodes.length; i++){
-        if(nodes[i].id !== 'appVersion') nodes[i].remove();
-      }
-      var versionEl = footer.querySelector('#appVersion');
-      if(!versionEl){
-        versionEl = document.createElement('small');
-        versionEl.id = 'appVersion';
-        versionEl.className = 'app-version';
-        footer.appendChild(versionEl);
-      }
-      versionEl.className = 'app-version';
-      versionEl.setAttribute('data-app-version','v6337');
-      versionEl.textContent = LABEL;
+  function injectStyle(){
+    if(document.getElementById(STYLE_ID)) return;
+    var style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = '' +
+      '#appVersion,.app-version,[data-app-version]{' +
+      'display:inline-block!important;' +
+      'min-width:150px!important;' +
+      'min-height:18px!important;' +
+      'line-height:18px!important;' +
+      'white-space:nowrap!important;' +
+      'font-variant-numeric:tabular-nums!important;' +
+      '}';
+    document.head.appendChild(style);
+  }
 
-      var walker = document.createTreeWalker(footer, NodeFilter.SHOW_TEXT);
-      var textNodes = [];
-      while(walker.nextNode()) textNodes.push(walker.currentNode);
-      textNodes.forEach(function(node){
-        if(node.parentElement && node.parentElement.id === 'appVersion') return;
-        if(/App Version:\s*V\d+(?:\.\d+)?/i.test(node.nodeValue || '')){
-          node.nodeValue = (node.nodeValue || '').replace(/(?:\s*App Version:\s*V\d+(?:\.\d+)?\s*)+/gi, ' ');
+  function findFooter(){
+    return document.querySelector('#more .footer')
+      || document.querySelector('#mainFooter')
+      || document.querySelector('.footer')
+      || document.querySelector('#more')
+      || document.body;
+  }
+
+  function cleanTextNodes(scope){
+    try{
+      var walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
+      var nodes = [];
+      while(walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(function(node){
+        if(node.parentElement && (node.parentElement.id === 'appVersion' || node.parentElement.classList.contains('app-version'))) return;
+        var txt = node.nodeValue || '';
+        if(/App\s*Version\s*:\s*V\d+(?:\.\d+)?/i.test(txt)){
+          node.nodeValue = txt.replace(/\s*App\s*Version\s*:\s*V\d+(?:\.\d+)?\s*/gi, ' ');
         }
       });
     }catch(e){}
   }
 
-  function run(){
-    cleanFooterVersion();
-    setTimeout(cleanFooterVersion, 150);
-    setTimeout(cleanFooterVersion, 800);
+  function forceVersion(){
+    try{
+      injectStyle();
+      window.APP_VERSION = VERSION;
+      window.OMIDENO7_APP_VERSION = VERSION;
+
+      var footer = findFooter();
+      if(!footer) return;
+
+      // Remove duplicated version nodes except the final #appVersion.
+      document.querySelectorAll('small.app-version,[data-app-version]').forEach(function(el){
+        if(el.id !== 'appVersion' && /App\s*Version\s*:/i.test(el.textContent || '')) el.remove();
+      });
+
+      var versionEl = document.getElementById('appVersion');
+      if(!versionEl){
+        versionEl = document.createElement('small');
+        versionEl.id = 'appVersion';
+        versionEl.className = 'app-version';
+        versionEl.setAttribute('data-app-version','v6337-final');
+        if(footer.lastChild && footer.lastChild.nodeName !== 'BR') footer.appendChild(document.createElement('br'));
+        footer.appendChild(versionEl);
+      }
+
+      versionEl.className = 'app-version';
+      versionEl.setAttribute('data-app-version','v6337-final');
+      if(versionEl.textContent !== LABEL) versionEl.textContent = LABEL;
+
+      cleanTextNodes(footer);
+    }catch(e){}
   }
 
-  document.addEventListener('DOMContentLoaded', run);
-  window.addEventListener('load', run);
-  document.addEventListener('click', function(){ setTimeout(cleanFooterVersion, 120); }, true);
-  setInterval(cleanFooterVersion, 2500);
+  function runMany(){
+    forceVersion();
+    setTimeout(forceVersion, 100);
+    setTimeout(forceVersion, 400);
+    setTimeout(forceVersion, 1000);
+    setTimeout(forceVersion, 2500);
+  }
+
+  document.addEventListener('DOMContentLoaded', runMany);
+  window.addEventListener('load', runMany);
+  document.addEventListener('click', function(){ setTimeout(forceVersion, 100); }, true);
+
+  // Stronger than the V63.36 lock: keep this active, but only touches the version label.
+  setInterval(forceVersion, 1000);
+
+  try{
+    var obs = new MutationObserver(function(){ forceVersion(); });
+    function startObserver(){
+      var target = findFooter();
+      if(target) obs.observe(target, {childList:true, subtree:true, characterData:true});
+    }
+    document.addEventListener('DOMContentLoaded', startObserver);
+    setTimeout(startObserver, 500);
+    setTimeout(startObserver, 2000);
+  }catch(e){}
 })();

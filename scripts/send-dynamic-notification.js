@@ -1,6 +1,8 @@
-/* Omideno7 V63.34 — OneSignal URL conflict fix
-   Fixes OneSignal HTTP 400: Remove url field when setting app_url or web_url.
-   Sends push notifications to All push subscribers and uses web_url only.
+/* Omideno7 V63.35 — Morning Prayer Croatia-time reminder
+   - Keeps OneSignal URL fix from V63.34: web_url only, no url field.
+   - Morning Prayer reminder is sent for one fixed meeting time:
+     05:00 Croatia time, reminder around 04:45 Croatia time.
+   - Uses workflow schedule checks for Europe/Zagreb so DST changes are handled.
 */
 
 const APP_URL = 'https://omideno7.github.io/omideno7-app/';
@@ -10,16 +12,61 @@ const APP_ID = process.env.ONESIGNAL_APP_ID || process.env.ONE_SIGNAL_APP_ID || 
 const API_KEY = process.env.ONESIGNAL_API_KEY || process.env.ONE_SIGNAL_API_KEY || process.env.ONESIGNAL_REST_API_KEY || process.env.ONE_SIGNAL_REST_API_KEY;
 
 const type = process.argv[2] || process.env.NOTIFICATION_TYPE || 'daily-word';
+const FORCE_SEND = String(process.env.OMIDENO7_FORCE_SEND || process.env.FORCE_SEND || '').toLowerCase() === '1'
+  || String(process.env.OMIDENO7_FORCE_SEND || process.env.FORCE_SEND || '').toLowerCase() === 'true';
+const CROATIA_REMINDER_GUARD = String(process.env.OMIDENO7_CROATIA_REMINDER || '').toLowerCase() === '1'
+  || String(process.env.OMIDENO7_CROATIA_REMINDER || '').toLowerCase() === 'true';
 
 function todayDayNumber(){
   const now = new Date();
   return now.getUTCDate();
 }
 
+function zagrebParts(date = new Date()){
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Zagreb',
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    weekday: 'short',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(date);
+
+  const out = {};
+  for(const p of parts){
+    if(p.type !== 'literal') out[p.type] = p.value;
+  }
+  return {
+    hour: Number(out.hour),
+    minute: Number(out.minute),
+    weekday: out.weekday,
+    dateText: `${out.year}-${out.month}-${out.day} ${out.hour}:${out.minute} Europe/Zagreb`
+  };
+}
+
+function shouldSendMorningPrayerNow(){
+  if(FORCE_SEND) return {ok:true, reason:'manual workflow_dispatch force send'};
+  if(type !== 'morning-prayer-reminder') return {ok:true, reason:'not morning prayer'};
+  if(!CROATIA_REMINDER_GUARD) return {ok:true, reason:'Croatia guard disabled'};
+
+  const z = zagrebParts();
+  // Target: 04:45 Croatia time, for the 05:00 Croatia morning prayer meeting.
+  // Window protects against small GitHub Actions delays.
+  const ok = z.hour === 4 && z.minute >= 40 && z.minute <= 59;
+  return {
+    ok,
+    reason: ok
+      ? `Croatia local reminder window matched: ${z.dateText}`
+      : `Skipped: Croatia local time is ${z.dateText}; reminder window is 04:40-04:59 Europe/Zagreb`
+  };
+}
+
 function appUrlFor(type){
   const base = APP_URL.replace(/\/$/, '/');
   const params = new URLSearchParams();
-  params.set('v', '6334');
+  params.set('v', '6335');
 
   if(type === 'daily-word') params.set('open', 'word');
   if(type === 'faith-declaration') params.set('open', 'declarations');
@@ -78,14 +125,14 @@ function messageFor(type){
 
     'morning-prayer-reminder': {
       title: {
-        en: 'Morning Prayer',
-        fa: 'دعای صبحگاهی',
-        hr: 'Jutarnja molitva'
+        en: 'Omid No 7 Morning Prayer',
+        fa: 'جلسه صبحگاهی کلیسای امیدنو۷',
+        hr: 'Jutarnja molitva Crkve Omid No 7'
       },
       body: {
-        en: 'Join the morning prayer meeting and start your day with God.',
-        fa: 'به جلسه دعای صبحگاهی بپیوندید و روز خود را با خدا آغاز کنید.',
-        hr: 'Pridružite se jutarnjoj molitvi i započnite dan s Bogom.'
+        en: 'Join the Omid No 7 Church morning prayer meeting and begin today in fellowship with the Lord.',
+        fa: 'به جمع خانواده الهی در جلسه صبحگاهی کلیسای امیدنو۷ بپیوندید و مشارکت امروز خود را با خداوند آغاز کنید.',
+        hr: 'Pridružite se obitelji vjere na jutarnjoj molitvi Crkve Omid No 7 i započnite dan u zajedništvu s Gospodinom.'
       }
     },
 
@@ -119,13 +166,11 @@ function buildPayload(type){
     data: {
       app: 'omideno7',
       notification_type: type,
-      version: 'V63.34'
+      version: 'V63.35'
     }
   };
 
-  // Critical fix: do NOT set payload.url when web_url or app_url is set.
-  // OneSignal returns HTTP 400 if url exists together with app_url/web_url.
-
+  // Critical: do NOT set payload.url when web_url/app_url is set.
   if(msg.deliveryTime){
     payload.delayed_option = 'timezone';
     payload.delivery_time_of_day = msg.deliveryTime;
@@ -137,6 +182,13 @@ function buildPayload(type){
 async function send(){
   if(!API_KEY){
     throw new Error('Missing OneSignal API key. Add ONESIGNAL_API_KEY or ONE_SIGNAL_API_KEY in GitHub Secrets.');
+  }
+
+  const guard = shouldSendMorningPrayerNow();
+  console.log('Morning Prayer Croatia-time guard:', guard.reason);
+  if(!guard.ok){
+    console.log('No notification sent. This is not an error.');
+    return;
   }
 
   const payload = buildPayload(type);

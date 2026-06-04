@@ -1,13 +1,13 @@
-# Omideno7 App Status Report — V63.49f Restore Home Core Cards
+# Omideno7 App Status Report — V63.50 Emergency Clean Home Stability
 
 ## Fixed
-- Restored Home cards:
-  - Faith Declaration
-  - My Notes
-  - Saved Verses
-- Faith declaration integrates with rewards if available.
-- Notes and saved verses use localStorage fallback.
-- Trilingual FA / EN / HR.
+- Removed conflicting beta UI patch scripts from beta.html.
+- Restored New Birth / Salvation.
+- Restored Faith Declaration.
+- Restored My Notes.
+- Restored Saved Verses.
+- Stabilized Medal Guide.
+- Kept in-app registration form.
 
-## No SQL required
-Front-end beta patch only.
+## No new SQL required
+Uses existing V63.49 church_member_registrations table if already created.

@@ -1,11 +1,13 @@
-# Omideno7 App Status Report — V63.49e Exact New Birth Content Restore
+# Omideno7 App Status Report — V63.49f Restore Home Core Cards
 
 ## Fixed
-- Restored the user-provided `window.newBirthContentData` structure.
-- Kept original New Birth / Salvation flow and texts.
-- Registration button now opens the in-app registration form instead of Google Form.
-- Removed registration panel from More.
-- Restored six New Birth YouTube video links.
+- Restored Home cards:
+  - Faith Declaration
+  - My Notes
+  - Saved Verses
+- Faith declaration integrates with rewards if available.
+- Notes and saved verses use localStorage fallback.
+- Trilingual FA / EN / HR.
 
 ## No SQL required
-Uses existing V63.49 church_member_registrations table.
+Front-end beta patch only.

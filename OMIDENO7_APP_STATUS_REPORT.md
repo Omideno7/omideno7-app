@@ -1,10 +1,13 @@
-# Omideno7 App Status Report — V63.64 Faith Declaration Daily Fix
+# Omideno7 App Status Report — V63.65 Admin Approval School Panel Only
 
-## Fixed
-- Faith Declarations now use the current Europe/Zagreb day.
-- Declarations refresh on app load, app focus, visibility change, language change, and day change.
-- Only the Faith Declaration daily-date logic was changed.
-- No other app sections changed.
+## Changed
+- Replaced admin approval patch only.
+- Admin registration approval card is moved from More to School/Admin panel.
+- Buttons use stable event delegation.
+- Other app sections are untouched.
 
-## Test URL
-https://omideno7.github.io/omideno7-app/beta.html?v=6364
+## Upload
+- Replace only: v63-63-admin-registration-approval-beta.js
+
+## Optional SQL
+- supabase-v63-65-admin-registration-approval.sql

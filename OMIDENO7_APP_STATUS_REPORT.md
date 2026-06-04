@@ -1,16 +1,10 @@
-# Omideno7 App Status Report — V63.63 Admin Registration Approval
+# Omideno7 App Status Report — V63.64 Faith Declaration Daily Fix
 
-## Added
-- Admin-only church registration approval card in More.
-- Admin can list registration requests.
-- Admin can approve a user and activate meeting code 789987.
-- Uses secure Supabase RPC functions when SQL is installed.
+## Fixed
+- Faith Declarations now use the current Europe/Zagreb day.
+- Declarations refresh on app load, app focus, visibility change, language change, and day change.
+- Only the Faith Declaration daily-date logic was changed.
 - No other app sections changed.
 
-## Admin emails
-- omideno7church@gmail.com
-- yuhana1360@gmail.com
-
-## Required SQL
-Run:
-- supabase-v63-63-admin-registration-approval.sql
+## Test URL
+https://omideno7.github.io/omideno7-app/beta.html?v=6364

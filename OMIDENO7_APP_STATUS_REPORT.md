@@ -1,43 +1,39 @@
-# Omideno7 App Status Report — V63.40 Beta
+# Omideno7 App Status Report — V63.41 Beta
 
-## Stable public version
-The public app should remain stable on the V63.36/V63.39 line until beta testing is complete.
+## Current stable app
+Stable public app remains on the V63.36/V63.39 line. The public `index.html` is not changed by this Beta package.
 
-## Current beta goal
-V63.40 introduces a separate `beta.html` for Security & Cloud Diagnostic testing.
+## V63.41 Beta purpose
+This version tests automatic cloud save and restore before enabling it for all users.
 
-## What V63.40 adds
-- `beta.html` — isolated beta copy of the app.
-- `v63-40-security-cloud-diagnostic.js` — manual diagnostic panel in More.
-- `supabase-v63-40-secure-cloud-foundation.sql` — add-only tables and RLS policies.
-- `SECURITY_AUDIT_V63_40.md` — security notes and release gates.
-- `v63-40-beta-book-icon-fix.js` — restores book icon in beta bottom nav.
+## Scope
+- `beta.html` only
+- No effect on public users
+- Uses the existing Supabase client captured from the School system
+- Stores:
+  - user profile language
+  - user app settings
+  - Bible 365 current/selected day
+  - completed days when available
+  - notification state as true/false
+- Adds a Beta panel in More:
+  - enable/disable auto-save
+  - save now
+  - restore from cloud
+  - log display
 
-## What V63.40 intentionally does not do
-- Does not change `index.html`.
-- Does not automatically sync all users.
-- Does not touch Daily Word, School, Q&A, Notifications, or Bible 365 logic in the stable app.
-- Does not activate scoring/badges yet.
-
-## Testing URL
-`https://omideno7.github.io/omideno7-app/beta.html?v=6340`
-
-## Testing steps
-1. Open beta URL.
-2. Confirm stable UI loads.
-3. Go to More.
-4. Use the Cloud Diagnostic panel.
-5. Press Check account.
-6. If not signed in, sign in through School, then return to More.
-7. Press Test sync my data.
-8. Refresh Supabase tables.
-
-## Supabase tables for V63.40
-- `user_profiles`
-- `user_app_settings`
-- `bible365_progress`
-- `school_cloud_profiles`
-- `security_audit_log`
+## Security model
+- Supabase RLS remains the primary protection.
+- Users can only select/update their own rows.
+- Admin is controlled by `omideno7church@gmail.com` through `omideno7_is_admin()`.
+- No service role key or private secret is placed in frontend files.
 
 ## Next planned version
-V63.41 — Safe Cloud Backup Activation after beta diagnostics pass.
+V63.42 Beta — Offline Foundation:
+- open core app without internet
+- cache important app files
+- offline queue for changes
+- sync when online
+
+## Important
+The Beta diagnostic panels are for testing only. In stable release, user-facing cloud sync should run quietly and the technical panels should be hidden or admin-only.

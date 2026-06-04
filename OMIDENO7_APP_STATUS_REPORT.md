@@ -1,12 +1,16 @@
-# Omideno7 App Status Report — V63.61 New Birth Detail from Excel
+# Omideno7 App Status Report — V63.63 Admin Registration Approval
 
-## Fixed
-- New Birth card no longer opens registration directly.
-- New Birth detail page now shows five options.
-- Salvation and Christian Life content loaded from trilingual Excel source.
-- Supports FA/EN/HR.
-- Registration option opens existing in-app registration form.
+## Added
+- Admin-only church registration approval card in More.
+- Admin can list registration requests.
+- Admin can approve a user and activate meeting code 789987.
+- Uses secure Supabase RPC functions when SQL is installed.
 - No other app sections changed.
 
-## Test URL
-https://omideno7.github.io/omideno7-app/beta.html?v=6361
+## Admin emails
+- omideno7church@gmail.com
+- yuhana1360@gmail.com
+
+## Required SQL
+Run:
+- supabase-v63-63-admin-registration-approval.sql

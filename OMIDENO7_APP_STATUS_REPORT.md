@@ -1,39 +1,21 @@
-# Omideno7 App Status Report — V63.41 Beta
+# Omideno7 App Status Report — V63.42 Offline Foundation Beta
 
-## Current stable app
-Stable public app remains on the V63.36/V63.39 line. The public `index.html` is not changed by this Beta package.
+## Stable public app
+The public `index.html` remains unchanged. V63.42 is Beta-only.
 
-## V63.41 Beta purpose
-This version tests automatic cloud save and restore before enabling it for all users.
+## Completed before this version
+- V63.41G Beta: Cloud save/restore for user profile, app settings, and Bible365 progress works in Supabase.
+- Auto-save test writes selected day to `bible365_progress`.
 
-## Scope
-- `beta.html` only
-- No effect on public users
-- Uses the existing Supabase client captured from the School system
-- Stores:
-  - user profile language
-  - user app settings
-  - Bible 365 current/selected day
-  - completed days when available
-  - notification state as true/false
-- Adds a Beta panel in More:
-  - enable/disable auto-save
-  - save now
-  - restore from cloud
-  - log display
+## V63.42 scope
+Safe offline foundation without registering a public Service Worker:
+- Cache Storage stores already-loaded app assets.
+- localStorage stores a local offline snapshot.
+- localStorage stores a pending offline queue.
+- Optional sync of offline queue into Supabase table `offline_sync_queue`.
 
-## Security model
-- Supabase RLS remains the primary protection.
-- Users can only select/update their own rows.
-- Admin is controlled by `omideno7church@gmail.com` through `omideno7_is_admin()`.
-- No service role key or private secret is placed in frontend files.
+## Why no Service Worker yet?
+A root Service Worker could affect the public app. This first offline stage avoids that risk. After cache/queue tests are stable, V63.43 can test an isolated Service Worker path.
 
-## Next planned version
-V63.42 Beta — Offline Foundation:
-- open core app without internet
-- cache important app files
-- offline queue for changes
-- sync when online
-
-## Important
-The Beta diagnostic panels are for testing only. In stable release, user-facing cloud sync should run quietly and the technical panels should be hidden or admin-only.
+## Next
+V63.43 — Isolated Service Worker Offline Beta

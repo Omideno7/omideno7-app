@@ -10,7 +10,7 @@
 (function(){
 'use strict';
 
-var VERSION='V63.67 Daily Amen Popup + Audio Icon';
+var VERSION='V63.69 Stable Audio Icon';
 var SESSION_PREFIX='omideno7_v6367_amen_seen_';
 var TZ='Europe/Zagreb';
 
@@ -186,7 +186,7 @@ function css(){
     '#v6360AmenBox h3{margin:0 0 10px;font-size:22px;font-weight:950;color:#06146D;}',
     '#v6360AmenBox p{margin:0 0 18px;line-height:1.9;font-size:16px;font-weight:850;color:#24304F;}',
     '#v6360AmenBtn{border:0;border-radius:999px;background:#00B91F;color:#fff;font-weight:950;padding:12px 28px;min-width:130px;font-size:16px;box-shadow:0 8px 22px rgba(0,185,31,.25);cursor:pointer;}',
-    '.v6367-speaker-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:11px;background:#eef4ff;color:#06146D;margin-inline-end:8px;font-size:17px;vertical-align:middle;box-shadow:0 3px 10px rgba(6,20,109,.08);}',
+    '.v6369-audio-title::before{content:"🔊";display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:11px;background:#eef4ff;color:#06146D;margin-inline-end:8px;font-size:17px;vertical-align:middle;box-shadow:0 3px 10px rgba(6,20,109,.08);}',
     '.fa #v6360AmenBox{direction:rtl;text-align:center;}'
   ].join('\n');
   document.head.appendChild(st);
@@ -254,11 +254,12 @@ function addSpiritualAudioIcon(){
   if(!home)return;
   var regex=/پیام.?های صوتی روحانی|Spiritual Audio Messages|Spiritual Audio|Duhovne audio poruke|Duhovne audio|Audio/i;
   Array.prototype.slice.call(home.querySelectorAll('.card h2,.card h3,.feature-card h2,.feature-card h3')).forEach(function(h){
-    if(h.dataset.v6367Speaker==='1')return;
     var tx=(h.textContent||'').trim();
     if(regex.test(tx)){
-      h.dataset.v6367Speaker='1';
-      h.innerHTML='<span class="v6367-speaker-icon">🔊</span>'+esc(tx);
+      // Stable fix: do not rewrite innerHTML. Only add a CSS class.
+      // This prevents the speaker icon from blinking when other scripts re-render Home.
+      h.classList.add('v6369-audio-title');
+      h.dataset.v6369Speaker='1';
     }
   });
 }
@@ -268,12 +269,26 @@ function render(){
   addSpiritualAudioIcon();
 }
 
+function startAudioIconObserver(){
+  var home=document.getElementById('home');
+  if(!home || home.dataset.v6369AudioObserver==='1')return;
+  home.dataset.v6369AudioObserver='1';
+  try{
+    var obs=new MutationObserver(function(){
+      addSpiritualAudioIcon();
+    });
+    obs.observe(home,{childList:true,subtree:true});
+  }catch(e){}
+}
+
 document.addEventListener('DOMContentLoaded',function(){
   render();
+  startAudioIconObserver();
   setTimeout(showAmenPopup,650);
 });
 window.addEventListener('load',function(){
   render();
+  startAudioIconObserver();
   setTimeout(showAmenPopup,650);
 });
 document.addEventListener('click',function(){

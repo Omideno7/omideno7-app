@@ -1,10 +1,13 @@
-# Omideno7 App Status Report — V63.49c Restore Salvation Content Beta
+# Omideno7 App Status Report — V63.49d Home + Salvation + Fasting Fix Beta
 
 ## Fixed
-- Restored New Birth / Salvation teaching content in Home.
-- In-app registration form is preserved but only opens from the registration button.
-- Removed/hidden duplicate registration panel from More.
-- Added FA/EN/HR text for the restored salvation flow.
+- Registration form title simplified.
+- Incorrect "write none" hint removed.
+- More registration panel removed.
+- Medal guide renamed and stabilized.
+- Home daily encouragement card + startup popup restored.
+- Salvation/New Birth restored in Home with correct button flow.
+- Added fasting teaching card with verse buttons.
 
 ## No SQL required
-Uses existing V63.49 `church_member_registrations` table.
+Uses existing V63.49 registration table.

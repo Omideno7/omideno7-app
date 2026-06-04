@@ -1,10 +1,10 @@
-# Omideno7 App Status Report — V63.49b Clean Rewards + Home Beta
+# Omideno7 App Status Report — V63.49c Restore Salvation Content Beta
 
 ## Fixed
-- Removed duplicate Home welcome/growth card.
-- Hid older beta reward/rules panels that caused flicker.
-- Added one compact clean reward card in More.
-- Reduced medal-rule explanations to a small summary.
+- Restored New Birth / Salvation teaching content in Home.
+- In-app registration form is preserved but only opens from the registration button.
+- Removed/hidden duplicate registration panel from More.
+- Added FA/EN/HR text for the restored salvation flow.
 
 ## No SQL required
-Front-end beta patch only.
+Uses existing V63.49 `church_member_registrations` table.

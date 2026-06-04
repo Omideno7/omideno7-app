@@ -9,7 +9,7 @@
 (function(){
 'use strict';
 
-var VERSION='V63.62 Meeting Approval Strict';
+var VERSION='V63.62b Meeting Approval Strict — Hide Code Until Approved';
 var MEETING_URL='https://join.freeconferencecall.com/omideno7church';
 var ACCESS_CODE='2452236';
 var SECURITY_CODE='789987';
@@ -38,7 +38,7 @@ function T(k){
     securityCode:'کد امنیتی جلسه',
     openMeeting:'باز کردن جلسه',
     notApprovedTitle:'ثبت‌نام هنوز تأیید نشده است',
-    notApproved:'برای دریافت کد ورود به جلسه باید ابتدا ثبت‌نام کنید و سپس ادمین ثبت‌نام شما را تأیید کند. بعد از تأیید، کد ۷۸۹۹۸۷ در همین اپ نمایش داده می‌شود.',
+    notApproved:'برای دریافت کد ورود به جلسه باید ابتدا ثبت‌نام کنید و سپس ادمین ثبت‌نام شما را تأیید کند. بعد از تأیید، کد ورود جلسه در همین اپ برای شما نمایش داده می‌شود.',
     openForm:'باز کردن فرم ثبت‌نام',
     close:'بستن',
     noRecord:'رکورد تأییدشده برای این ایمیل/دستگاه پیدا نشد.',
@@ -54,7 +54,7 @@ function T(k){
     securityCode:'Meeting security code',
     openMeeting:'Open meeting',
     notApprovedTitle:'Registration is not approved yet',
-    notApproved:'To receive the meeting access code, please register first and wait for admin approval. After approval, code 789987 will be shown inside this app.',
+    notApproved:'To receive the meeting access code, please register first and wait for admin approval. After approval, the meeting access code will be shown inside this app.',
     openForm:'Open registration form',
     close:'Close',
     noRecord:'No approved record was found for this email/device.',
@@ -70,7 +70,7 @@ function T(k){
     securityCode:'Sigurnosni kod sastanka',
     openMeeting:'Otvori sastanak',
     notApprovedTitle:'Registracija još nije odobrena',
-    notApproved:'Za primanje koda za sastanak najprije se registrirajte i pričekajte odobrenje administratora. Nakon odobrenja, kod 789987 bit će prikazan u ovoj aplikaciji.',
+    notApproved:'Za primanje koda za sastanak najprije se registrirajte i pričekajte odobrenje administratora. Nakon odobrenja, kod za sastanak bit će prikazan u ovoj aplikaciji.',
     openForm:'Otvori registracijski obrazac',
     close:'Zatvori',
     noRecord:'Nije pronađen odobren zapis za ovaj e-mail/uređaj.',

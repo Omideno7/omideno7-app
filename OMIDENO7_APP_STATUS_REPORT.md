@@ -1,13 +1,12 @@
-# Omideno7 App Status Report — V63.65 Admin Approval School Panel Only
+# Omideno7 V63.66 Small Fixes Only
 
-## Changed
-- Replaced admin approval patch only.
-- Admin registration approval card is moved from More to School/Admin panel.
-- Buttons use stable event delegation.
-- Other app sections are untouched.
+## Fixed
+- Pending registration message no longer reveals the meeting security code.
+- Faith Declaration verse/details panel no longer closes immediately after click.
 
 ## Upload
-- Replace only: v63-63-admin-registration-approval-beta.js
+Replace only:
+- v63-62-meeting-approval-strict-beta.js
+- v63-64-faith-declaration-daily-fix-beta.js
 
-## Optional SQL
-- supabase-v63-65-admin-registration-approval.sql
+No SQL and no beta.html change required.

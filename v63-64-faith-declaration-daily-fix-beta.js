@@ -8,7 +8,7 @@
 (function(){
 'use strict';
 
-var VERSION='V63.64 Faith Declaration Daily Fix';
+var VERSION='V63.64b Faith Declaration Daily Fix — Keep Verse Open';
 var TZ='Europe/Zagreb';
 var lastDay=null;
 
@@ -179,8 +179,7 @@ document.addEventListener('visibilitychange',function(){
   if(!document.hidden){patchGlobals();render(true);}
 });
 window.addEventListener('focus',function(){patchGlobals();render(true);});
-document.addEventListener('click',function(){setTimeout(function(){patchGlobals();render(false);},150);},true);
-
+// Do not re-render on every click. Re-rendering immediately after a verse/details click closes the opened verse panel.
 setTimeout(function(){patchGlobals();render(true);},400);
 setTimeout(function(){patchGlobals();render(true);},1400);
 setTimeout(function(){patchGlobals();render(true);},3000);

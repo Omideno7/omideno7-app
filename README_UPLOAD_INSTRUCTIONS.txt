@@ -1,19 +1,21 @@
-Omideno7 V63.36 Upload Package
+Omideno7 V63.36 Stable + Bible 365 Mobile UI Cleanup
 
-Upload/replace all files in this ZIP into the root of the GitHub repository, preserving folders:
+Upload/replace all files in this ZIP into the root of the GitHub repository, keeping folders exactly as they are.
 
-- index.html -> root
-- v63-31-bible-365-complete-fix.js -> root
-- v63-36-notification-language-sync.js -> root
-- v63-36-version-stability-lock.js -> root
-- OMIDENO7_APP_STATUS_REPORT.md -> root
-- scripts/send-dynamic-notification.js -> scripts/
-- .github/workflows/*.yml -> .github/workflows/
+This package keeps the stable V63.36 app and adds two safe visual-only fixes for the Bible 365 page:
+1) v63-36-bible365-mobile-layout-fix.js
+   - centers the Bible 365 cards on mobile/tablet
+   - improves width and spacing
 
-After uploading:
-1. Commit changes.
-2. Wait until GitHub Actions / Pages build turns green.
-3. Test the app with: https://omideno7.github.io/omideno7-app/?v=6336
-4. Open More and confirm the footer version stays stable: App Version: V63.36
-5. Run the app announcement workflow manually if needed:
-   Actions -> Send App Announcement notification -> Run workflow -> qa or school
+2) v63-36-bible365-ui-cleanup-fix.js
+   - hides the "You have not started the plan" card
+   - hides the side title that was squeezing the reading content
+   - keeps the reading text centered and readable
+
+This package does NOT enable V63.37 cloud backup.
+It does NOT change Supabase tables.
+It does NOT change school, Daily Word, Q&A, notifications, or the Bible text data.
+
+After upload and Commit changes, wait for GitHub Actions Pages deployment to turn green.
+Then test:
+https://omideno7.github.io/omideno7-app/?v=6336clean

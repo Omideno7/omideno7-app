@@ -322,7 +322,18 @@ Every time a new app feature, notification, workflow, Bible feature, school feat
 6. Test instructions
 
 
+---
 
-## Emergency Rollback Note
+## V63.36 Bible 365 Mobile UI Cleanup
 
-V63.37 Cloud Backup Foundation SQL tables may exist in Supabase, but the app has been restored to the last stable V63.36 front-end if this package is uploaded. Cloud backup should be reintroduced later using a diagnostic/manual-sync version after confirming no JavaScript conflicts.
+Status: Stable visual hotfix prepared.
+
+Changes:
+- Added `v63-36-bible365-mobile-layout-fix.js` to center and widen Bible 365 cards on mobile/tablet.
+- Added `v63-36-bible365-ui-cleanup-fix.js` to hide the "not started" intro card and the side title that squeezed the reading text.
+- `index.html` loads both fixes after `v63-36-version-stability-lock.js`.
+- No Supabase Cloud Backup code is enabled in this package.
+- Existing stable features remain unchanged: school, Daily Word, Q&A, notifications, Bible 365 reader, and app announcement notifications.
+
+Test URL:
+`https://omideno7.github.io/omideno7-app/?v=6336clean`

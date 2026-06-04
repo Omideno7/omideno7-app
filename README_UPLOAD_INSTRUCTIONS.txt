@@ -1,17 +1,20 @@
-Omideno7 V63.39 — Stable Bible 365 Single Reader Fix
+Omideno7 V63.40 Secure Cloud Foundation Beta
 
-Upload/replace all files from this ZIP into the root of the GitHub repository, preserving folders.
-Then Commit changes and wait for GitHub Actions pages deployment to become green.
+IMPORTANT:
+This package does not replace the stable app index.html.
+Upload these files to the root of the GitHub repository:
 
-Test URL:
-https://omideno7.github.io/omideno7-app/?v=6339
+- beta.html
+- v63-40-security-cloud-diagnostic.js
+- v63-40-beta-book-icon-fix.js
+- supabase-v63-40-secure-cloud-foundation.sql
+- SECURITY_AUDIT_V63_40.md
+- OMIDENO7_APP_STATUS_REPORT.md
 
-What this fixes:
-1. Bible section should open without needing refresh.
-2. Bible > 365-day reading plan should show one single reader only.
-3. No duplicate lower card for Day 2 / Previous Day / Unlock next day.
-4. Daily Word must not show the 365-day selector.
-5. Home buttons must not open the 365-day selector.
-6. Normal Bible books/chapters must open again.
+Then run the SQL file one time in Supabase SQL Editor:
+supabase-v63-40-secure-cloud-foundation.sql
 
-Cloud Backup V63.37/V63.38 is not active in this package.
+Test beta here:
+https://omideno7.github.io/omideno7-app/beta.html?v=6340
+
+Do not replace index.html in this step. The public app remains stable while beta is tested.

@@ -1,19 +1,15 @@
-# Omideno7 App Status Report — V63.48 Rewards + Home Text Beta
+# Omideno7 App Status Report — V63.48c Medal Rules Upgrade Beta
 
-## Completed before
-- Security hardened to Free plan limit.
-- Only Security Advisor warning remaining: Leaked Password Protection, Pro-only.
-- Cloud backup/restore works.
-- Offline app base works.
-- Offline audio playback works.
+## Updated medal thresholds
+- Bronze: 100 points
+- Silver: 200 points
+- Gold: 500 points
+- Word Lover: 30 consecutive Daily Word days
+- Faithful Student: 7 School activity days
+- Prayer: 10 consecutive prayer days
+- Thanksgiving: 30 consecutive thanksgiving days
+- Active Faith: 21 consecutive confession days
+- Bible365 completion medal: 365 plan completed
 
-## V63.48
-- Adds rewards/points/medals system.
-- Adds welcome/encouragement card.
-- Corrects Home intro text.
-- Stores reward state in localStorage so existing backup system can include it.
-
-## Before stable
-- Decide where final progress card should appear: Home, More, or both.
-- Hide beta test log/details for public users.
-- Keep clean UI.
+## Notes
+This remains Beta. Before stable, rules should be integrated cleanly into the core rewards system.

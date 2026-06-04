@@ -1,10 +1,14 @@
-# Omideno7 App Status Report — V63.54 Stable Welcome + FCC Icon
+# Omideno7 App Status Report — V63.55 Single Stable Home Layer
+
+## Root fix
+Removed conflicting V63.52/V63.53/V63.54 layers from beta.html and replaced them with one stable Home UI layer.
 
 ## Fixed
-- Stopped welcome-card flicker by replacing V63.53 welcome behavior with a stable V63.54 card.
-- Added uploaded FreeConferenceCall icon as fcc-icon.jpg.
-- FCC icon is displayed small beside the Join Meeting button.
-- V63.53 script removed from beta.html loading path.
+- Welcome card flicker.
+- Startup welcome popup is trilingual.
+- New Birth / Salvation visible labels are trilingual.
+- FCC icon remains beside Join Meeting.
+- Medals card restored in More.
 
 ## No SQL required
 Front-end beta UI patch only.

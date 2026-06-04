@@ -1,10 +1,9 @@
-# Omideno7 App Status Report — V63.47b Offline Audio Playback Fix Beta
+# Omideno7 App Status Report — V63.47c Security Client Fix
 
-## Problem
-V63.47 detected and cached audio but playback could fail because the player still referenced the remote URL.
+## Fixed
+- Max security panel no longer fails immediately when School module client is not exposed.
+- Added stronger Supabase client discovery.
+- Added SQL hardening for security_audit_log and known SECURITY DEFINER functions.
 
-## Fix
-V63.47b stores audio blobs in IndexedDB and plays them through local blob URLs.
-
-## Stable app
-Unchanged.
+## Still important
+Run Supabase Security Advisor again after SQL and schema reload.

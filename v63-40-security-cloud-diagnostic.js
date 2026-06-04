@@ -27,7 +27,7 @@
       sync:'همگام‌سازی تستی اطلاعات من',
       clear:'پاک کردن گزارش تست',
       statusReady:'آماده تست. اول بررسی حساب را بزنید.',
-      noClient:'کلاینت Supabase در صفحه پیدا نشد. یعنی باید در مرحله بعد کلاینت مدرسه را به صورت کنترل‌شده برای بتا در دسترس کنیم.',
+      noClient:'کلاینت Supabase هنوز پیدا نشد. اول از بخش مدرسه وارد شوید؛ اگر باز هم خطا بود، فایل bridge باید قبل از v63-online-school لود شود.',
       notSigned:'کاربر وارد حساب نشده است. برای تست، اول در بخش مدرسه وارد شوید.',
       signed:'کاربر وارد شده است',
       dbOk:'اتصال و RLS پایه پاسخ داد.',
@@ -45,7 +45,7 @@
       sync:'Test sync my data',
       clear:'Clear test log',
       statusReady:'Ready for testing. Press Check account first.',
-      noClient:'No Supabase client was found on this page. Next step: expose the school Supabase client safely for beta.',
+      noClient:'No Supabase client found yet. Sign in through School first; if this remains, the bridge must load before v63-online-school.',
       notSigned:'No signed-in user. Sign in through School first.',
       signed:'Signed-in user detected',
       dbOk:'Database connection and basic RLS responded.',
@@ -98,6 +98,7 @@
   }
 
   function findSupabaseClient(){
+    try{ if(window.__om7SupabaseClients && window.__om7SupabaseClients.length){ return window.__om7SupabaseClients[0]; } }catch(e){}
     var candidates = ['supabaseClient','schoolSupabase','omideno7Supabase','supabaseDb','sb','SUPABASE_CLIENT'];
     for(var i=0;i<candidates.length;i++){
       var c = window[candidates[i]];

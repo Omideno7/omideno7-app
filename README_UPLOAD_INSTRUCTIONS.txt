@@ -1,20 +1,19 @@
-Omideno7 V63.40 Secure Cloud Foundation Beta
+Omideno7 V63.40b — Beta Supabase Client Bridge Hotfix
 
-IMPORTANT:
-This package does not replace the stable app index.html.
-Upload these files to the root of the GitHub repository:
+This hotfix keeps the public index.html untouched.
+Upload/replace ONLY these Beta files:
 
-- beta.html
-- v63-40-security-cloud-diagnostic.js
-- v63-40-beta-book-icon-fix.js
-- supabase-v63-40-secure-cloud-foundation.sql
-- SECURITY_AUDIT_V63_40.md
-- OMIDENO7_APP_STATUS_REPORT.md
+1) beta.html
+2) v63-40-supabase-client-bridge.js
+3) v63-40-security-cloud-diagnostic.js
+4) v63-40-beta-book-icon-fix.js
+5) supabase-v63-40-secure-cloud-foundation.sql (already run once; no need to rerun if it succeeded)
+6) SECURITY_AUDIT_V63_40.md
+7) OMIDENO7_APP_STATUS_REPORT.md
 
-Then run the SQL file one time in Supabase SQL Editor:
-supabase-v63-40-secure-cloud-foundation.sql
+After upload:
+Open: https://omideno7.github.io/omideno7-app/beta.html?v=6340b
+Go to School and sign in.
+Then go to More and press: Check account and connection.
 
-Test beta here:
-https://omideno7.github.io/omideno7-app/beta.html?v=6340
-
-Do not replace index.html in this step. The public app remains stable while beta is tested.
+This does not affect the main app users.

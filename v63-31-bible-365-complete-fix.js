@@ -8,7 +8,7 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.31';
+  var VERSION = 'V63.31 Bible365 Single Reader';
   var ROOT_ID = 'om7Bible365CompleteFixV6331';
   var LS_DAY = 'om7_bible365_selected_day_v6331';
 
@@ -335,21 +335,81 @@
   }
 
   function hideOldCards(scope){
-    if(!scope) return;
+    // The original V63.22 one-year-plan UI can still render under our new V63.31 reader.
+    // This cleanup hides ONLY the old duplicate Bible-365 blocks, never the new V63.31 root.
+    var root = document.getElementById(ROOT_ID);
+    var searchRoots = [];
+    if(scope) searchRoots.push(scope);
+    if(document.body) searchRoots.push(document.body);
+
+    function insideNewRoot(el){
+      return !el || el.id === ROOT_ID || !!(el.closest && el.closest('#' + ROOT_ID));
+    }
+
+    function hide(el){
+      if(!el || insideNewRoot(el) || el === document.body || el === document.documentElement) return;
+      el.style.display = 'none';
+      el.setAttribute('aria-hidden','true');
+      el.setAttribute('data-v6331-hidden-old-bible365','1');
+    }
+
     var selectors = [
       '.reading-plan-card',
       '.plan-day-card',
       '.bible365-manual-card',
+      '.reading-plan-full-text',
       '#om7Bible365SimpleSelector',
       '#om7Bible365LiveReaderV6329'
     ];
-    selectors.forEach(function(sel){
-      var nodes = scope.querySelectorAll(sel);
-      for(var i=0; i<nodes.length; i++){
-        if(nodes[i].id === ROOT_ID || nodes[i].closest('#' + ROOT_ID)) continue;
-        nodes[i].style.display = 'none';
-      }
+
+    searchRoots.forEach(function(base){
+      selectors.forEach(function(sel){
+        var nodes = base.querySelectorAll(sel);
+        for(var i=0; i<nodes.length; i++) hide(nodes[i]);
+      });
     });
+
+    // Hide old standalone Bible chapter cards outside our root.
+    // On this page our root already renders the desired chapter texts, so outside chapter cards are duplicates.
+    var oldChapterCards = document.querySelectorAll('.bible-chapter-card');
+    for(var c=0; c<oldChapterCards.length; c++){
+      if(!insideNewRoot(oldChapterCards[c])) hide(oldChapterCards[c]);
+    }
+
+    // Hide the old start/progress/navigation cards by text, including: "هنوز برنامه را شروع نکرده‌اید",
+    // "خواندم؛ روز بعد را باز کن", and older next/previous-day blocks.
+    var candidates = document.querySelectorAll('.card, .hero-card, .section-card, details, article, section');
+    for(var j=0; j<candidates.length; j++){
+      var el = candidates[j];
+      if(insideNewRoot(el)) continue;
+      var txt = (el.innerText || el.textContent || '').replace(/\s+/g,' ').trim();
+      if(!txt) continue;
+      if(/هنوز\s*برنامه\s*را\s*شروع\s*نکرده|شروع\s*برنامه|you\s*haven'?t\s*started|start\s*plan/i.test(txt)){
+        hide(el);
+        continue;
+      }
+      if(/خواندم.*روز\s*بعد|روز\s*بعد\s*را\s*باز\s*کن|I\s*read.*unlock|unlock\s*next/i.test(txt)){
+        hide(el);
+        continue;
+      }
+      if(/روز\s*\d+\s*از\s*۳?۶?۵|Day\s*\d+\s*of\s*365/i.test(txt)){
+        if(/خواندنی|باب|chapter|readings|روز\s*قبل|روز\s*بعد|previous|next/i.test(txt)){
+          hide(el);
+          continue;
+        }
+      }
+    }
+
+    // If old buttons remain, hide their nearest card.
+    var buttons = document.querySelectorAll('button, a');
+    for(var b=0; b<buttons.length; b++){
+      var btn = buttons[b];
+      if(insideNewRoot(btn)) continue;
+      var bt = (btn.innerText || btn.textContent || '').replace(/\s+/g,' ').trim();
+      if(/خواندم|روز\s*بعد\s*را\s*باز\s*کن|شروع\s*برنامه|I\s*read|unlock\s*next|start\s*plan/i.test(bt)){
+        hide(btn.closest('.card, .plan-day-card, .reading-plan-card, section, article, div'));
+      }
+    }
   }
 
   function install(){

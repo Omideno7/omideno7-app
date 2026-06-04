@@ -1,13 +1,17 @@
-Omideno7 V63.36 Stable + Bible 365 Final UI Centering Fix
+Omideno7 V63.39 — Stable Bible 365 Single Reader Fix
 
-Upload/Replace the files in this ZIP into the root of the GitHub repository.
-This package keeps V63.36 stable and replaces the Bible 365 script with a safer centered layout.
+Upload/replace all files from this ZIP into the root of the GitHub repository, preserving folders.
+Then Commit changes and wait for GitHub Actions pages deployment to become green.
 
-Main fix:
-- Removes/hides the old side heading that squeezed the content.
-- Removes old intro/start plan cards from the V63.22 plan.
-- Forces Bible 365 selector and Bible chapter text to full-width centered cards.
-- Does not enable V63.37 cloud backup.
+Test URL:
+https://omideno7.github.io/omideno7-app/?v=6339
 
-After upload and commit, test:
-https://omideno7.github.io/omideno7-app/?v=6336final365
+What this fixes:
+1. Bible section should open without needing refresh.
+2. Bible > 365-day reading plan should show one single reader only.
+3. No duplicate lower card for Day 2 / Previous Day / Unlock next day.
+4. Daily Word must not show the 365-day selector.
+5. Home buttons must not open the 365-day selector.
+6. Normal Bible books/chapters must open again.
+
+Cloud Backup V63.37/V63.38 is not active in this package.

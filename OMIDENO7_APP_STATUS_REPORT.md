@@ -337,3 +337,11 @@ Changes:
 
 Test URL:
 `https://omideno7.github.io/omideno7-app/?v=6336clean`
+
+
+## V63.39 — Stable Bible 365 Single Reader Fix
+- Replaced unstable DOM-injection Bible 365 fixes with a direct renderReadingPlan override.
+- Bible 365 reader now appears only inside Bible Reader one-year plan.
+- Removed duplicated old day cards and stopped Home/Daily Word contamination.
+- Removed repeated interval-based rendering to stop page jumping.
+- Kept notifications, school, Daily Word, Q&A and Supabase unchanged.

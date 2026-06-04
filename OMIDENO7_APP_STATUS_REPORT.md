@@ -1,12 +1,16 @@
-# Omideno7 App Status Report — V63.58 Final Stability Clean
+# Omideno7 App Status Report — V63.59 Welcome Meeting Registration
 
 ## Fixed
-- Stable Home welcome card.
-- Old competing welcome/daily/newbirth scripts removed from beta.html.
-- Daily encouragement message updates with selected language.
-- New Birth buttons and content open in FA/EN/HR.
-- More page hides beta/test/debug panels where safe.
-- Medals panel now shows visible medal badges.
-- Header/top App Version text is hidden.
-- Version appears only as small footer text in More.
-- App opens on Home.
+- Improved Home welcome meeting buttons only.
+- Bigger notification button with icon and visible status toast.
+- Bigger Join Meeting button.
+- Meeting Information button shows only schedule/time information.
+- Replaced Online Meetings button with Registration button.
+- Registration opens the existing in-app church registration form.
+- New users are told registration and admin approval are required.
+- Existing logged-in School users or previously registered/approved users can open FreeConferenceCall directly.
+- Trilingual FA/EN/HR.
+- No other app sections changed.
+
+## Test URL
+https://omideno7.github.io/omideno7-app/beta.html?v=6359

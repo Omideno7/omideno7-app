@@ -1,14 +1,12 @@
-# Omideno7 App Status Report — V63.55 Single Stable Home Layer
-
-## Root fix
-Removed conflicting V63.52/V63.53/V63.54 layers from beta.html and replaced them with one stable Home UI layer.
+# Omideno7 App Status Report — V63.56
 
 ## Fixed
-- Welcome card flicker.
-- Startup welcome popup is trilingual.
-- New Birth / Salvation visible labels are trilingual.
-- FCC icon remains beside Join Meeting.
-- Medals card restored in More.
+- Home daily message now follows selected language.
+- New Birth buttons now follow selected language.
+- New Birth content in EN/HR expanded.
+- Public meeting info no longer exposes join URL, access code, or security code.
+- Join meeting button asks user to register and wait for approval.
+- Registration success no longer shows security code publicly.
 
-## No SQL required
-Front-end beta UI patch only.
+## Next backend step
+Admin approval + email/SMS or approved-user-only access code display.

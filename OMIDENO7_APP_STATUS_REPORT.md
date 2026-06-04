@@ -1,21 +1,22 @@
-# Omideno7 App Status Report — V63.43 Offline School Lessons Beta
+# Omideno7 App Status Report — V63.44 Personal Cloud Backup Beta
 
 ## Stable app
-Stable public app remains unchanged.
+Public stable app remains unchanged.
 
 ## Completed
-- V63.41G: Cloud save/restore for Bible365 works.
-- V63.42: Basic offline cache and offline queue works.
+- V63.41G: Bible365 cloud save/restore works.
+- V63.42: Offline cache + offline queue works.
 - V63.42b: School offline fallback works.
+- V63.43: Offline School lesson text and school notes queue works.
 
-## V63.43 scope
-- Save currently opened School lesson text into localStorage.
-- Show saved lessons offline.
-- Save offline notes/homework locally.
-- Sync offline notes to Supabase `offline_sync_queue`.
+## V63.44 scope
+Full personal local app backup in Beta:
+- localStorage app data scanning
+- notes/saved verses/highlights/settings/Bible365/school/offline detectable keys
+- Supabase table: `user_app_backups`
+- RLS user-owned backup rows
+- restore from cloud in Beta
+- offline backup queue
 
-## Not included yet
-- Offline audio
-- Offline video
-- Full Service Worker cold-start support
-- Public stable release
+## Stable release behavior later
+No test buttons. Automatic background save, offline queue, and restore after sign-in.

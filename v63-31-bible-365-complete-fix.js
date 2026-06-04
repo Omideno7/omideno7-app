@@ -363,8 +363,32 @@
     if(!root){
       root = document.createElement('div');
       root.id = ROOT_ID;
+      root.className = 'om7-v6331-root';
       heading.parentNode.insertBefore(root, heading.nextSibling);
     }
+
+    // Hide the old/side title that squeezes the reading column on mobile/tablet.
+    try{ heading.style.display = 'none'; }catch(e){}
+
+    // Force the containers around the Bible 365 plan to stop using two-column/flex layouts.
+    try{
+      var p = root.parentElement, depth = 0;
+      while(p && p !== document.body && depth < 6){
+        p.style.display = 'block';
+        p.style.gridTemplateColumns = '1fr';
+        p.style.width = '100%';
+        p.style.maxWidth = '980px';
+        p.style.marginLeft = 'auto';
+        p.style.marginRight = 'auto';
+        p.style.boxSizing = 'border-box';
+        if(window.innerWidth < 700){
+          p.style.paddingLeft = '14px';
+          p.style.paddingRight = '14px';
+        }
+        p = p.parentElement;
+        depth++;
+      }
+    }catch(e){}
 
     hideOldCards(heading.parentNode);
     render();
@@ -397,6 +421,12 @@
     var st = document.createElement('style');
     st.id = 'om7-v6331-style';
     st.textContent = '' +
+      '#om7Bible365CompleteFixV6331{display:block!important;width:100%!important;max-width:980px!important;margin:0 auto 120px!important;box-sizing:border-box!important;padding:0!important;clear:both!important}' +
+      '#om7Bible365CompleteFixV6331 *{box-sizing:border-box}' +
+      '#om7Bible365CompleteFixV6331 .card{width:100%!important;max-width:100%!important;margin-left:auto!important;margin-right:auto!important}' +
+      '#om7Bible365CompleteFixV6331 .om7-v6331-chapters{display:block!important;width:100%!important;max-width:100%!important}' +
+      '#om7Bible365CompleteFixV6331 .bible-chapter-card{width:100%!important;max-width:100%!important}' +
+      '@media(max-width:700px){#om7Bible365CompleteFixV6331{padding-left:0!important;padding-right:0!important}.om7-v6331-control,.om7-v6331-reading,#om7Bible365CompleteFixV6331 .bible-chapter-card{border-radius:22px!important;padding:18px!important}.om7-v6331-select{font-size:16px!important}.om7-v6331-row{display:flex!important;gap:10px!important}.om7-v6331-row .btn{flex:1 1 auto!important;min-width:130px!important}}' +
       '.om7-v6331-control{border-top:5px solid var(--green);background:linear-gradient(160deg,#fff,#F7FFF8)}' +
       '.om7-v6331-label{display:block;font-weight:900;margin:12px 0 7px;color:var(--blue)}' +
       '.om7-v6331-select{width:100%;max-width:100%;padding:13px 14px;border-radius:16px;border:1px solid var(--line);font-weight:900;font-size:16px;color:var(--blue);background:#fff}' +

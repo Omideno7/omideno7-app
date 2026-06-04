@@ -1,21 +1,13 @@
-Omideno7 V63.36 Stable + Bible 365 Mobile UI Cleanup
+Omideno7 V63.36 Stable + Bible 365 Final UI Centering Fix
 
-Upload/replace all files in this ZIP into the root of the GitHub repository, keeping folders exactly as they are.
+Upload/Replace the files in this ZIP into the root of the GitHub repository.
+This package keeps V63.36 stable and replaces the Bible 365 script with a safer centered layout.
 
-This package keeps the stable V63.36 app and adds two safe visual-only fixes for the Bible 365 page:
-1) v63-36-bible365-mobile-layout-fix.js
-   - centers the Bible 365 cards on mobile/tablet
-   - improves width and spacing
+Main fix:
+- Removes/hides the old side heading that squeezed the content.
+- Removes old intro/start plan cards from the V63.22 plan.
+- Forces Bible 365 selector and Bible chapter text to full-width centered cards.
+- Does not enable V63.37 cloud backup.
 
-2) v63-36-bible365-ui-cleanup-fix.js
-   - hides the "You have not started the plan" card
-   - hides the side title that was squeezing the reading content
-   - keeps the reading text centered and readable
-
-This package does NOT enable V63.37 cloud backup.
-It does NOT change Supabase tables.
-It does NOT change school, Daily Word, Q&A, notifications, or the Bible text data.
-
-After upload and Commit changes, wait for GitHub Actions Pages deployment to turn green.
-Then test:
-https://omideno7.github.io/omideno7-app/?v=6336clean
+After upload and commit, test:
+https://omideno7.github.io/omideno7-app/?v=6336final365

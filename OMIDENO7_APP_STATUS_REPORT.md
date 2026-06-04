@@ -1,13 +1,15 @@
-# Omideno7 App Status Report — V63.50 Emergency Clean Home Stability
+# Omideno7 App Status Report — V63.51 Precise Home Restore
 
 ## Fixed
-- Removed conflicting beta UI patch scripts from beta.html.
-- Restored New Birth / Salvation.
-- Restored Faith Declaration.
-- Restored My Notes.
-- Restored Saved Verses.
+- Removed extra duplicate cards created by emergency patch:
+  - duplicate Faith Declaration
+  - duplicate My Notes
+  - duplicate Saved Verses
+  - extra Online Meetings card
+- Preserved original Home cards already existing in the app.
+- Restored New Birth / Salvation with provided content structure.
+- Registration button opens in-app form.
+- Corrected welcome subtitle phrase.
 - Stabilized Medal Guide.
-- Kept in-app registration form.
 
-## No new SQL required
-Uses existing V63.49 church_member_registrations table if already created.
+## No SQL required

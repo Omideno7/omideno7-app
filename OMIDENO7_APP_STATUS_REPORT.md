@@ -1,15 +1,14 @@
-# Omideno7 App Status Report — V63.51 Precise Home Restore
+# Omideno7 App Status Report — V63.52 Home UI Polish + Medals
 
-## Fixed
-- Removed extra duplicate cards created by emergency patch:
-  - duplicate Faith Declaration
-  - duplicate My Notes
-  - duplicate Saved Verses
-  - extra Online Meetings card
-- Preserved original Home cards already existing in the app.
-- Restored New Birth / Salvation with provided content structure.
-- Registration button opens in-app form.
-- Corrected welcome subtitle phrase.
-- Stabilized Medal Guide.
+## Fixed / Added
+- Polished Home welcome title typography.
+- Corrected "Christian Online Church" wording to "Online Church".
+- Restored daily welcome popup with Amen button.
+- Added daily encouragement card under Home welcome area.
+- Added contextual icons to existing Home cards.
+- Restored compact stable rewards/medals card in More.
+- Medal guide button is stable.
+- Trilingual FA / EN / HR for all new UI text.
 
 ## No SQL required
+Front-end beta UI patch only.

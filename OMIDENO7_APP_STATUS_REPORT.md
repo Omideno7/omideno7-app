@@ -1,11 +1,12 @@
-# Omideno7 App Status Report — V63.48d Trilingual Rewards/Home Popup Beta
+# Omideno7 App Status Report — V63.49 In-App Salvation Registration Beta
 
-## Added / fixed
-- Home encouragement message card now supports FA / EN / HR
-- Daily popup now supports FA / EN / HR
-- Rewards/medal panel now supports FA / EN / HR
-- Medal/rule texts aligned with the newer V63.48c rule set
-- More robust Croatian language detection
+## Added
+- Replaces Google Form behavior with in-app registration modal.
+- Trilingual form labels: FA / EN / HR.
+- Required fields for church care and new believer follow-up.
+- Local queue fallback if Supabase is temporarily unavailable.
+- Supabase table and RLS policies for registrations.
 
-## No SQL required
-All changes are front-end beta patch only.
+## Security note
+This form collects sensitive pastoral-care information. Consent is required.
+Anon insert is allowed so new believers can submit before creating an account, but select/update are restricted by RLS.

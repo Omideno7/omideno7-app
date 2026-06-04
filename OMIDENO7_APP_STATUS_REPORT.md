@@ -1,21 +1,21 @@
-# Omideno7 App Status Report — V63.42 Offline Foundation Beta
+# Omideno7 App Status Report — V63.43 Offline School Lessons Beta
 
-## Stable public app
-The public `index.html` remains unchanged. V63.42 is Beta-only.
+## Stable app
+Stable public app remains unchanged.
 
-## Completed before this version
-- V63.41G Beta: Cloud save/restore for user profile, app settings, and Bible365 progress works in Supabase.
-- Auto-save test writes selected day to `bible365_progress`.
+## Completed
+- V63.41G: Cloud save/restore for Bible365 works.
+- V63.42: Basic offline cache and offline queue works.
+- V63.42b: School offline fallback works.
 
-## V63.42 scope
-Safe offline foundation without registering a public Service Worker:
-- Cache Storage stores already-loaded app assets.
-- localStorage stores a local offline snapshot.
-- localStorage stores a pending offline queue.
-- Optional sync of offline queue into Supabase table `offline_sync_queue`.
+## V63.43 scope
+- Save currently opened School lesson text into localStorage.
+- Show saved lessons offline.
+- Save offline notes/homework locally.
+- Sync offline notes to Supabase `offline_sync_queue`.
 
-## Why no Service Worker yet?
-A root Service Worker could affect the public app. This first offline stage avoids that risk. After cache/queue tests are stable, V63.43 can test an isolated Service Worker path.
-
-## Next
-V63.43 — Isolated Service Worker Offline Beta
+## Not included yet
+- Offline audio
+- Offline video
+- Full Service Worker cold-start support
+- Public stable release

@@ -8,8 +8,8 @@
 (function(){
 'use strict';
 
-var VERSION='V63.65 Admin Registration Approval — School Panel Only';
-var ADMIN_EMAILS=['omideno7church@gmail.com','yuhana1360@gmail.com'];
+var VERSION='V63.68 Admin Email Single — School Panel Only';
+var ADMIN_EMAILS=['omideno7church@gmail.com'];
 var TABLE='church_member_registrations';
 var CODE='789987';
 var currentRows=[];
@@ -301,15 +301,10 @@ document.addEventListener('click',function(e){
 function render(){renderCard();}
 document.addEventListener('DOMContentLoaded',render);
 window.addEventListener('load',render);
-
+document.addEventListener('click',function(){setTimeout(render,250)},true);
 setTimeout(render,800);
 setTimeout(render,2200);
-
-setInterval(function(){
-  if(!document.getElementById('v6365AdminApprovalCard')){
-    render();
-  }
-},4500);
+setInterval(render,4500);
 
 window.OMIDENO7_V6365_ADMIN_APPROVAL_SCHOOL_PANEL={render:render,loadRows:loadRows,approve:approve,version:VERSION};
 })();

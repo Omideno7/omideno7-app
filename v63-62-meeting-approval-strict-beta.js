@@ -32,7 +32,7 @@ function T(k){
     join:'ورود به جلسه',
     checking:'در حال بررسی تأیید ثبت‌نام...',
     approvedTitle:'کد ورود جلسه فعال شد',
-    approvedMsg:'ثبت‌نام شما توسط ادمین تأیید شده است. برای ورود به جلسه از اطلاعات زیر استفاده کنید.',
+    approvedMsg:'ثبت‌نام شما توسط ادمین تأیید شده است. برای ورود به جلسه، کد امنیتی جلسه را وارد کنید.',
     meetingLink:'لینک جلسه',
     accessCode:'کد دسترسی',
     securityCode:'کد امنیتی جلسه',
@@ -48,7 +48,7 @@ function T(k){
     join:'Join meeting',
     checking:'Checking registration approval...',
     approvedTitle:'Meeting access code is active',
-    approvedMsg:'Your registration has been approved by admin. Use the following information to join the meeting.',
+    approvedMsg:'Your registration has been approved by the admin. To join the meeting, please enter the meeting security code.',
     meetingLink:'Meeting link',
     accessCode:'Access code',
     securityCode:'Meeting security code',
@@ -64,7 +64,7 @@ function T(k){
     join:'Uđi u sastanak',
     checking:'Provjera odobrenja registracije...',
     approvedTitle:'Kod za sastanak je aktivan',
-    approvedMsg:'Vaša registracija je odobrena od administratora. Koristite sljedeće podatke za ulazak u sastanak.',
+    approvedMsg:'Vaša registracija je odobrena od strane administratora. Za ulazak u sastanak unesite sigurnosni kod sastanka.',
     meetingLink:'Link za sastanak',
     accessCode:'Pristupni kod',
     securityCode:'Sigurnosni kod sastanka',
@@ -162,10 +162,8 @@ async function findApproved(){
   return {approved:false};
 }
 function showApproved(code){
-  var body='<div class="v6362-item">✅ '+esc(T('approvedMsg'))+'</div>'
-    + '<div class="v6362-item">🔗 '+esc(T('meetingLink'))+': <strong>'+esc(MEETING_URL)+'</strong></div>'
-    + '<div class="v6362-item">🔢 '+esc(T('accessCode'))+': <strong>'+esc(ACCESS_CODE)+'</strong></div>'
-    + '<div class="v6362-item">🔐 '+esc(T('securityCode'))+': <strong>'+esc(code||SECURITY_CODE)+'</strong></div>';
+ var body='<div class="v6362-item">✅ '+esc(T('approvedMsg'))+'</div>'
+ + '<div class="v6362-item">🔐 '+esc(T('securityCode'))+': <strong>'+esc(code||SECURITY_CODE)+'</strong></div>';
   var actions='<a class="v6362-btn v6362-green" target="_blank" rel="noopener" href="'+esc(MEETING_URL)+'">🎥 '+esc(T('openMeeting'))+'</a>';
   modal(T('approvedTitle'), body, actions);
 }

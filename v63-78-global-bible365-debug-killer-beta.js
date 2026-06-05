@@ -205,6 +205,115 @@ setTimeout(killDebugPanel,1500);
 setTimeout(killDebugPanel,3000);
 setTimeout(killDebugPanel,5000);
 setInterval(killDebugPanel,900);
+function hideBarsBeforeMedals(){
+  var more=document.getElementById('more');
+  if(!more) return;
+
+  function cleanText(el){
+    return (el && el.textContent || '').replace(/\s+/g,' ').trim();
+  }
+
+  function hide(el){
+    if(!el) return;
+    el.classList.add('v6378-kill-bible365-debug');
+    try{
+      el.style.setProperty('display','none','important');
+      el.style.setProperty('visibility','hidden','important');
+      el.style.setProperty('height','0','important');
+      el.style.setProperty('margin','0','important');
+      el.style.setProperty('padding','0','important');
+      el.style.setProperty('overflow','hidden','important');
+    }catch(e){
+      el.style.display='none';
+    }
+  }
+
+  function isMedalsCard(el){
+    var t=cleanText(el);
+    return /رشد روحانی و مدال|Spiritual Growth|Medals|Rewards/i.test(t);
+  }
+
+  function isProbablyColorBars(el){
+    if(!el) return false;
+
+    var t=cleanText(el);
+    var r;
+    var s;
+
+    try{ r=el.getBoundingClientRect(); }catch(e){ r={width:0,height:999}; }
+    try{ s=getComputedStyle(el); }catch(e){ s={backgroundColor:'',backgroundImage:'',borderTopColor:'',borderBottomColor:''}; }
+
+    var smallText = t.length < 40;
+    var wide = r.width > 150;
+    var notTall = r.height > 2 && r.height < 120;
+
+    var hasColor =
+      /rgb|rgba|blue|green|purple|red|linear-gradient|repeating-linear-gradient/i.test(
+        String(s.backgroundColor)+' '+String(s.backgroundImage)+' '+String(s.borderTopColor)+' '+String(s.borderBottomColor)
+      );
+
+    var coloredChildren=0;
+    Array.prototype.slice.call(el.querySelectorAll('*')).forEach(function(ch){
+      var cr;
+      var cs;
+      try{ cr=ch.getBoundingClientRect(); }catch(e){ cr={width:0,height:999}; }
+      try{ cs=getComputedStyle(ch); }catch(e){ cs={backgroundColor:'',backgroundImage:''}; }
+
+      if(
+        cr.width > 100 &&
+        cr.height >= 1 &&
+        cr.height < 25 &&
+        /rgb|rgba|blue|green|purple|red|linear-gradient/i.test(String(cs.backgroundColor)+' '+String(cs.backgroundImage))
+      ){
+        coloredChildren++;
+      }
+    });
+
+    return smallText && wide && notTall && (hasColor || coloredChildren >= 2);
+  }
+
+  var all=Array.prototype.slice.call(more.querySelectorAll('*'));
+
+  var medalInner=all.find(function(el){
+    return isMedalsCard(el);
+  });
+
+  if(!medalInner) return;
+
+  var medalTop=medalInner;
+
+  while(medalTop && medalTop.parentElement && medalTop.parentElement !== more){
+    medalTop=medalTop.parentElement;
+  }
+
+  if(!medalTop || medalTop.parentElement !== more) return;
+
+  var kids=Array.prototype.slice.call(more.children);
+  var index=kids.indexOf(medalTop);
+
+  if(index <= 0) return;
+
+  var before=kids[index-1];
+
+  if(isProbablyColorBars(before)){
+    hide(before);
+  }
+
+  var before2=kids[index-2];
+  if(isProbablyColorBars(before2)){
+    hide(before2);
+  }
+}
+
+var oldKillDebugPanel=killDebugPanel;
+killDebugPanel=function(){
+  oldKillDebugPanel();
+  hideBarsBeforeMedals();
+};
+
+setTimeout(hideBarsBeforeMedals,300);
+setTimeout(hideBarsBeforeMedals,1200);
+setInterval(hideBarsBeforeMedals,900);
 
 window.OMIDENO7_V6378_GLOBAL_BIBLE365_DEBUG_KILLER={kill:killDebugPanel,version:VERSION};
 })();

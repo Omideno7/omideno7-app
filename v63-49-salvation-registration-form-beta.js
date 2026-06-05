@@ -515,7 +515,7 @@
   function render(){
     css();
     replaceButtons();
-    addMorePanel();
+   // addMorePanel();
   }
 
   document.addEventListener('DOMContentLoaded',render);

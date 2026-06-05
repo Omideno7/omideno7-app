@@ -8,7 +8,7 @@
 (function(){
 'use strict';
 
-var VERSION='V63.68 Admin Email Single — School Panel Only';
+var VERSION='V63.70 Admin Approval Stable List';
 var ADMIN_EMAILS=['omideno7church@gmail.com'];
 var TABLE='church_member_registrations';
 var CODE='789987';
@@ -206,11 +206,14 @@ async function renderCard(){
     else { target.appendChild(existing); }
   }
 
-  existing.innerHTML='<h3>🛡️ '+esc(T('title'))+'</h3><p>'+esc(T('sub'))+'</p>'
-    + '<div class="v6365-actions">'
-    + '<button class="v6365-btn v6365-blue" data-v6365-load="1">🔄 '+esc(T('load'))+'</button>'
-    + '<button class="v6365-btn v6365-light" data-v6365-refresh="1">'+esc(T('refresh'))+'</button>'
-    + '</div><div id="v6365List"><div class="v6365-note">'+esc(T('openSchool'))+'</div></div>';
+  if(existing.dataset.v6370Initialized!=='1'){
+    existing.dataset.v6370Initialized='1';
+    existing.innerHTML='<h3>🛡️ '+esc(T('title'))+'</h3><p>'+esc(T('sub'))+'</p>'
+      + '<div class="v6365-actions">'
+      + '<button class="v6365-btn v6365-blue" data-v6365-load="1">🔄 '+esc(T('load'))+'</button>'
+      + '<button class="v6365-btn v6365-light" data-v6365-refresh="1">'+esc(T('refresh'))+'</button>'
+      + '</div><div id="v6365List"><div class="v6365-note">'+esc(T('openSchool'))+'</div></div>';
+  }
 }
 function renderRows(rows){
   currentRows=rows||[];
@@ -301,10 +304,12 @@ document.addEventListener('click',function(e){
 function render(){renderCard();}
 document.addEventListener('DOMContentLoaded',render);
 window.addEventListener('load',render);
-document.addEventListener('click',function(){setTimeout(render,250)},true);
 setTimeout(render,800);
 setTimeout(render,2200);
-setInterval(render,4500);
-
+setInterval(function(){
+  if(!document.getElementById('v6365AdminApprovalCard')){
+    render();
+  }
+},4500);
 window.OMIDENO7_V6365_ADMIN_APPROVAL_SCHOOL_PANEL={render:render,loadRows:loadRows,approve:approve,version:VERSION};
 })();

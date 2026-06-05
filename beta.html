@@ -181,6 +181,40 @@
     return (el && el.textContent || '').replace(/\s+/g,' ').trim();
   }
 
+  function lang(){
+    var v = '';
+    try {
+      v = (localStorage.getItem('lang') || localStorage.getItem('omideno7_lang') || document.documentElement.lang || navigator.language || 'fa').toLowerCase();
+    } catch(e){}
+    if(v.indexOf('en') === 0) return 'en';
+    if(v.indexOf('hr') === 0 || v.indexOf('cro') > -1 || v.indexOf('hrv') > -1) return 'hr';
+    return 'fa';
+  }
+
+  function fixChurchTitle(){
+    var l = lang();
+    var title = document.querySelector('.app-title,[data-i18n="appTitle"]');
+    var sub = document.querySelector('.app-subtitle,[data-i18n="appSubtitle"]');
+
+    if(!title || !sub) return;
+
+    if(l === 'en'){
+      title.textContent = 'Omideno 7 Church';
+      sub.textContent = 'New Hope 7 Church';
+    } else if(l === 'hr'){
+      title.textContent = 'Crkva Omideno 7';
+      sub.textContent = 'Nova Nada 7';
+    } else {
+      title.textContent = 'کلیسای امیدنو۷';
+      sub.textContent = 'امید تازه در مسیح';
+    }
+
+    sub.style.setProperty('font-size','13px','important');
+    sub.style.setProperty('opacity','.68','important');
+    sub.style.setProperty('font-weight','600','important');
+    sub.style.setProperty('margin-top','3px','important');
+  }
+
   function hideBetaReport(){
     document.querySelectorAll('.card, section, article, div').forEach(function(el){
       var t = txt(el);
@@ -196,33 +230,70 @@
     });
   }
 
-  function keepMedalGuideOpen(){
-    document.querySelectorAll('button,a,summary').forEach(function(btn){
-      var t = txt(btn);
-      if(/راهنمای مدال|Medal Guide|Vodič za medalje/i.test(t)){
-        if(btn.dataset.omidenoGuideStable === '1') return;
-        btn.dataset.omidenoGuideStable = '1';
+  function findGuideBox(card){
+    if(!card) return null;
 
-        btn.addEventListener('click', function(){
-          setTimeout(function(){
-            document.querySelectorAll('[id*="Guide"],[id*="guide"],[class*="guide"],[class*="Guide"]').forEach(function(el){
-              var text = txt(el);
-              if(/مدال|Medal|medal|امتیاز|points|bodova/i.test(text)){
-                el.style.setProperty('display','block','important');
-                el.style.setProperty('visibility','visible','important');
-                el.style.setProperty('height','auto','important');
-                el.style.setProperty('opacity','1','important');
-              }
-            });
-          }, 100);
-        }, true);
+    var direct = card.querySelector('#v6358GuideText,#v6357GuideText,[id*="GuideText"],[id*="guideText"]');
+    if(direct) return direct;
+
+    var candidates = Array.prototype.slice.call(card.querySelectorAll('div,p,section,article,ul'));
+    candidates.sort(function(a,b){ return txt(a).length - txt(b).length; });
+
+    return candidates.find(function(el){
+      var t = txt(el);
+      return t.length > 40 &&
+             t.length < 1600 &&
+             /برنزی|نقره‌ای|طلایی|Bronze|Silver|Gold|Brončana|Srebrna|Zlatna|100 امتیاز|100 points|100 bodova/i.test(t) &&
+             !/راهنمای مدال‌ها$|Medal Guide$|Vodič za medalje$/i.test(t);
+    }) || null;
+  }
+
+  function fixMedalGuideToggle(){
+    document.querySelectorAll('button,a,summary').forEach(function(btn){
+      var bt = txt(btn);
+      if(!/راهنمای مدال|Medal Guide|Vodič za medalje/i.test(bt)) return;
+      if(btn.dataset.omidenoGuideToggle === '1') return;
+
+      btn.dataset.omidenoGuideToggle = '1';
+
+      var card = btn.closest('.card,section,article,div');
+      var box = findGuideBox(card);
+
+      if(box){
+        box.dataset.omidenoGuideBox = '1';
+        box.style.setProperty('display','none','important');
       }
+
+      btn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        var parent = btn.closest('.card,section,article,div');
+        var guide = findGuideBox(parent);
+
+        if(!guide) return false;
+
+        guide.dataset.omidenoGuideBox = '1';
+
+        var isHidden = getComputedStyle(guide).display === 'none' || guide.style.display === 'none';
+        if(isHidden){
+          guide.style.setProperty('display','block','important');
+          guide.style.setProperty('visibility','visible','important');
+          guide.style.setProperty('height','auto','important');
+          guide.style.setProperty('opacity','1','important');
+        } else {
+          guide.style.setProperty('display','none','important');
+        }
+
+        return false;
+      }, true);
     });
   }
 
   function run(){
+    fixChurchTitle();
     hideBetaReport();
-    keepMedalGuideOpen();
+    fixMedalGuideToggle();
   }
 
   document.addEventListener('DOMContentLoaded', run);
@@ -231,9 +302,10 @@
     setTimeout(run,100);
     setTimeout(run,500);
   }, true);
+
   setTimeout(run,300);
   setTimeout(run,1200);
-  setInterval(run,1500);
+  setInterval(run,2000);
 })();
 </script>
 </body>

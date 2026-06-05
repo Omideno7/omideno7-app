@@ -157,38 +157,117 @@ function hideColoredBarsAround(el){
 }
 function cleanBible365TestPanel(){
   css();
+
   var more=document.getElementById('more');
   if(!more) return;
 
-  var found=null;
+  var all=Array.prototype.slice.call(more.querySelectorAll('*'));
 
-  // Prefer card/section blocks, but include div because this old test area may not have a card class.
-  Array.prototype.slice.call(more.querySelectorAll('.card,section,details,fieldset,form,div')).forEach(function(el){
-    if(!el || el.id==='mainFooter' || el.id==='v6371RcFooterVersion' || el.id==='v6373RcFooterVersion') return;
+  function hide(el){
+    if(el && el.classList){
+      el.classList.add('v6376-hide-test-panel');
+      el.style.display='none';
+    }
+  }
+
+  function hasTestText(t){
+    t=String(t||'').replace(/\s+/g,' ').trim();
+
+    return (
+      /روز برنامه\s*۳۶۵/i.test(t) ||
+      /روز برنامه\s*365/i.test(t) ||
+      /Source:\s*manual beta field/i.test(t) ||
+      /manual beta field/i.test(t) ||
+      /ذخیره خودکار خاموش است/i.test(t) ||
+      /آخرین همگام/i.test(t) ||
+      /تست پیشنهادی/i.test(t) ||
+      /Supabase/i.test(t) ||
+      /Auto Save/i.test(t)
+    );
+  }
+
+  function isMedalOrRealFeature(t){
+    t=String(t||'').replace(/\s+/g,' ').trim();
+
+    return (
+      /رشد روحانی و مدال/i.test(t) ||
+      /مدال‌ها برای تشویق/i.test(t) ||
+      /امتیاز/i.test(t) ||
+      /راهنمای مدال/i.test(t) ||
+      /Spiritual Growth/i.test(t) ||
+      /Medal/i.test(t)
+    );
+  }
+
+  all.forEach(function(el){
     var t=txt(el);
-    if(!t || t.length>3500) return;
-    if(isBible365TestText(t) && !isRealFeature(t)){
-      markHide(el);
-      if(!found) found=el;
+    if(!t) return;
+    if(t.length>3500) return;
+
+    if(hasTestText(t) && !isMedalOrRealFeature(t)){
+      var box =
+        el.closest('.card') ||
+        el.closest('section') ||
+        el.closest('fieldset') ||
+        el.closest('form') ||
+        el.closest('div');
+
+      if(box && box !== more){
+        hide(box);
+      }
     }
   });
 
-  if(found) hideColoredBarsAround(found);
+  /* حذف نوارهای رنگی باقی‌مانده، مخصوصاً قبل از کارت مدال‌ها */
+  var medals=all.find(function(el){
+    return /رشد روحانی و مدال|Spiritual Growth|Medals|Rewards/i.test(txt(el));
+  });
 
-  // Extra fallback: if no parent matched, find exact labels and hide their nearest meaningful container.
-  if(!found){
-    Array.prototype.slice.call(more.querySelectorAll('*')).forEach(function(el){
+  if(medals && medals.parentElement){
+    var kids=Array.prototype.slice.call(medals.parentElement.children);
+    var index=kids.indexOf(medals);
+
+    kids.slice(Math.max(0,index-8), index).forEach(function(el){
       var t=txt(el);
-      if(/Source:\s*manual beta field|manual beta field|ذخیره خودکار خاموش است|تست پیشنهادی/i.test(t)){
-        var box=el.closest('.card,section,details,fieldset,form') || el.parentElement;
-        if(box && !isRealFeature(txt(box))){
-          markHide(box);
-          found=box;
-        }
+      var r;
+      var s;
+
+      try{ r=el.getBoundingClientRect(); }catch(e){ r={width:0,height:999}; }
+      try{ s=getComputedStyle(el); }catch(e){ s={backgroundColor:'',backgroundImage:''}; }
+
+      var looksLikeStripe =
+        t.length < 80 &&
+        r.width > 180 &&
+        r.height >= 2 &&
+        r.height < 90 &&
+        /rgb|linear-gradient|blue|green|purple|red/i.test(String(s.backgroundColor)+' '+String(s.backgroundImage));
+
+      if(looksLikeStripe){
+        hide(el);
       }
     });
-    if(found) hideColoredBarsAround(found);
   }
+
+  /* حذف هر div رنگی خالی که بعد از پنل تستی مانده */
+  Array.prototype.slice.call(more.querySelectorAll('div')).forEach(function(el){
+    var t=txt(el);
+    var r;
+    var s;
+
+    try{ r=el.getBoundingClientRect(); }catch(e){ r={width:0,height:999}; }
+    try{ s=getComputedStyle(el); }catch(e){ s={backgroundColor:'',backgroundImage:''}; }
+
+    var emptyColoredBar =
+      t.length < 20 &&
+      r.width > 180 &&
+      r.height >= 2 &&
+      r.height < 70 &&
+      /rgb|linear-gradient|blue|green|purple|red/i.test(String(s.backgroundColor)+' '+String(s.backgroundImage));
+
+    if(emptyColoredBar){
+      hide(el);
+    }
+  });
 }
 
 function render(){

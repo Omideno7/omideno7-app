@@ -1,281 +1,36 @@
-
-/* Omideno7 V63.80 — More Page Final Fixes
-   Focused patch only for More page:
-   1) Restores Contact Us content if empty.
-   2) Restores Guidance/Support PayPal and Revolut buttons if missing.
-   3) Hides remaining colored debug stripes above medals.
-   4) Hides beta test report card.
-   5) Stabilizes Medal Guide so it stays open.
-   Does not change Home, School, Word, Bible, Plans, New Birth, Admin approval, Cloud/Offline logic or app data.
+/* Omideno7 V63.83 Consolidated Final Repair
+   REPLACE: v63-80-more-final-fixes-beta.js
+   Keep only this final repair file after v63-76. Disable v63-77/78/79/81/82.
 */
 (function(){
 'use strict';
-
-var VERSION='V63.80 More Final Fixes';
-
-/* Change these two links later if your real donation links are different. */
-var PAYPAL_URL='https://www.paypal.me/MehdiBadanFirouz377';
+var VERSION='V63.83 Consolidated Final Repair';
+var PAYPAL_URL='https://www.paypal.me/MehdiBadanFirouz337';
 var REVOLUT_URL='https://revolut.me/m_badanfirouz';
 
-function css(){
-  if(document.getElementById('v6380MoreFinalFixesCss')) return;
-  var st=document.createElement('style');
-  st.id='v6380MoreFinalFixesCss';
-  st.textContent=[
-    '.v6380-hide{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;}',
-    '.v6380-contact-box,.v6380-support-box,.v6380-medal-guide-box{margin-top:10px;padding:12px;border-radius:16px;background:rgba(6,20,109,.045);border:1px solid rgba(6,20,109,.10);line-height:1.9;}',
-    '.v6380-contact-box a{font-weight:900;color:#06146d;text-decoration:none;}',
-    '.v6380-support-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}',
-    '.v6380-support-btn{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:11px 12px;text-decoration:none;font-weight:950;box-shadow:0 8px 18px rgba(0,0,0,.10);}',
-    '.v6380-paypal{background:#003087;color:#fff!important;}',
-    '.v6380-revolut{background:#111827;color:#fff!important;}',
-    '.v6380-medal-guide-box{font-weight:700;}',
-    '.v6380-medal-guide-box ul{margin:8px 0 0 0;padding-inline-start:20px;}',
-    '.v6380-medal-guide-box li{margin:4px 0;}',
-    '@media(max-width:520px){.v6380-support-actions{grid-template-columns:1fr;}}'
-  ].join('\n');
-  document.head.appendChild(st);
-}
-
-function norm(v){
-  v=String(v||'').toLowerCase().trim();
-  if(v==='en'||v.startsWith('en-')||v.indexOf('english')>-1) return 'en';
-  if(v==='hr'||v.startsWith('hr-')||v.indexOf('cro')>-1||v.indexOf('hrv')>-1||v.indexOf('kro')>-1) return 'hr';
-  return 'fa';
-}
-function lang(){
-  try{return norm(localStorage.getItem('lang')||document.documentElement.lang||navigator.language||'fa');}
-  catch(e){return 'fa';}
-}
-function t(el){return (el && el.textContent || '').replace(/\s+/g,' ').trim();}
-function more(){return document.getElementById('more');}
-function qAll(root,sel){return Array.prototype.slice.call((root||document).querySelectorAll(sel));}
-
-var I18N={
-  fa:{
-    contactTitle:'ارتباط با ما',
-    contactIntro:'برای ارتباط با کلیسای امیدنو۷ از راه‌های زیر استفاده کنید.',
-    email:'ایمیل کلیسا',
-    instagram:'اینستاگرام',
-    youtube:'یوتیوب',
-    supportTitle:'هدایت و حمایت',
-    supportIntro:'اگر مایل هستید در گسترش کار خدا و خدمت کلیسای امیدنو۷ شریک شوید، می‌توانید از راه‌های زیر حمایت کنید.',
-    paypal:'حمایت با PayPal',
-    revolut:'حمایت با Revolut',
-    medalGuide:'راهنمای مدال‌ها',
-    medals:[
-      'برنزی: با رسیدن به ۱۰۰ امتیاز آزاد می‌شود.',
-      'نقره‌ای: با رسیدن به ۲۰۰ امتیاز آزاد می‌شود.',
-      'طلایی: با رسیدن به ۵۰۰ امتیاز آزاد می‌شود.',
-      'مدال‌های ویژه برای ثبات در کلام، دعا، شکرگزاری، اعلان ایمان، مدرسه و تکمیل برنامه ۳۶۵ روزه آزاد می‌شوند.'
-    ]
-  },
-  en:{
-    contactTitle:'Contact Us',
-    contactIntro:'Use the following ways to contact Omideno 7 Church.',
-    email:'Church email',
-    instagram:'Instagram',
-    youtube:'YouTube',
-    supportTitle:'Guidance & Support',
-    supportIntro:'If you would like to partner with the work of God through Omideno 7 Church, you may support through the options below.',
-    paypal:'Support with PayPal',
-    revolut:'Support with Revolut',
-    medalGuide:'Medal Guide',
-    medals:[
-      'Bronze: unlocked at 100 points.',
-      'Silver: unlocked at 200 points.',
-      'Gold: unlocked at 500 points.',
-      'Special medals are unlocked through consistency in the Word, prayer, thanksgiving, faith declarations, school, and completing the 365-day plan.'
-    ]
-  },
-  hr:{
-    contactTitle:'Kontakt',
-    contactIntro:'Za kontakt s Crkvom Omideno 7 koristite sljedeće načine.',
-    email:'E-mail crkve',
-    instagram:'Instagram',
-    youtube:'YouTube',
-    supportTitle:'Vodstvo i podrška',
-    supportIntro:'Ako želite sudjelovati u Božjem djelu kroz Crkvu Omideno 7, možete podržati putem opcija u nastavku.',
-    paypal:'Podrži putem PayPala',
-    revolut:'Podrži putem Revoluta',
-    medalGuide:'Vodič za medalje',
-    medals:[
-      'Brončana: otključava se sa 100 bodova.',
-      'Srebrna: otključava se sa 200 bodova.',
-      'Zlatna: otključava se sa 500 bodova.',
-      'Posebne medalje otključavaju se kroz postojanost u Riječi, molitvi, zahvalnosti, izjavama vjere, školi i završetku plana od 365 dana.'
-    ]
-  }
+function lang(){try{var v=(localStorage.getItem('lang')||document.documentElement.lang||navigator.language||'fa').toLowerCase();if(v.indexOf('en')===0)return'en';if(v.indexOf('hr')===0||v.indexOf('cro')>-1||v.indexOf('hrv')>-1)return'hr';}catch(e){}return'fa';}
+var TR={
+ fa:{contact:'برای ارتباط با کلیسای امیدنو۷ از راه‌های زیر استفاده کنید.',email:'ایمیل کلیسا',instagram:'اینستاگرام',youtube:'یوتیوب',support:'هدایای شما به ما کمک می‌کند انجیل را گسترش دهیم، کلام خدا را تعلیم دهیم و ایماندارانی قوی برای پادشاهی خدا تربیت کنیم.',paypal:'حمایت با PayPal',revolut:'حمایت با Revolut',guide:'راهنمای مدال‌ها',medals:['برنزی: با رسیدن به ۱۰۰ امتیاز آزاد می‌شود.','نقره‌ای: با رسیدن به ۲۰۰ امتیاز آزاد می‌شود.','طلایی: با رسیدن به ۵۰۰ امتیاز آزاد می‌شود.','مدال‌های ویژه برای ثبات در کلام، دعا، شکرگزاری، اعلان ایمان، مدرسه و تکمیل برنامه ۳۶۵ روزه آزاد می‌شوند.'],btitle:'برنامه خواندن کتاب مقدس در ۳۶۵ روز',bintro:'اگر برنامه ۳۶۵ روزه خالی نمایش داده شود، این نمایش امن فعال می‌شود.',refs:'آیات امروز',day:'روز'},
+ en:{contact:'Use the following ways to contact Omideno 7 Church.',email:'Church email',instagram:'Instagram',youtube:'YouTube',support:'Your gifts help us spread the Gospel, teach God’s Word, and raise strong believers for the Kingdom of God.',paypal:'Support with PayPal',revolut:'Support with Revolut',guide:'Medal Guide',medals:['Bronze: unlocked at 100 points.','Silver: unlocked at 200 points.','Gold: unlocked at 500 points.','Special medals are unlocked through consistency in the Word, prayer, thanksgiving, faith declarations, school, and completing the 365-day plan.'],btitle:'Bible Reading Plan in 365 Days',bintro:'If the 365-day plan is empty, this safe display is enabled.',refs:'Today’s readings',day:'Day'},
+ hr:{contact:'Za kontakt s Crkvom Omideno 7 koristite sljedeće načine.',email:'E-mail crkve',instagram:'Instagram',youtube:'YouTube',support:'Vaši darovi pomažu nam širiti Evanđelje, poučavati Božju riječ i odgajati snažne vjernike za Božje kraljevstvo.',paypal:'Podrži putem PayPala',revolut:'Podrži putem Revoluta',guide:'Vodič za medalje',medals:['Brončana: otključava se sa 100 bodova.','Srebrna: otključava se sa 200 bodova.','Zlatna: otključava se sa 500 bodova.','Posebne medalje otključavaju se kroz postojanost u Riječi, molitvi, zahvalnosti, izjavama vjere, školi i završetku plana od 365 dana.'],btitle:'Plan čitanja Biblije u 365 dana',bintro:'Ako je plan od 365 dana prazan, omogućuje se ovaj sigurni prikaz.',refs:'Današnja čitanja',day:'Dan'}
 };
+function L(){return TR[lang()]||TR.fa;}
+function txt(e){return (e&&e.textContent||'').replace(/\s+/g,' ').trim();}
+function all(r,s){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function more(){return document.getElementById('more');}
+function css(){if(document.getElementById('omid6383css'))return;var s=document.createElement('style');s.id='omid6383css';s.textContent='.omid6383-hide{display:none!important;visibility:hidden!important;height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;border:0!important}.omid6383-box{display:block!important;visibility:visible!important;height:auto!important;opacity:1!important;margin-top:12px!important;padding:12px!important;border-radius:16px!important;background:rgba(6,20,109,.045)!important;border:1px solid rgba(6,20,109,.12)!important;line-height:1.9!important}.omid6383-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-top:12px!important}.omid6383-btn{display:flex!important;align-items:center!important;justify-content:center!important;border-radius:14px!important;padding:12px!important;text-decoration:none!important;font-weight:950!important;color:#fff!important}.omid6383-paypal{background:#003087!important}.omid6383-revolut{background:#111827!important}.omid6383-day{padding:10px;margin:8px 0;border-radius:14px;background:#fff;border:1px solid rgba(6,20,109,.12)}@media(max-width:520px){.omid6383-actions{grid-template-columns:1fr!important}}';document.head.appendChild(s);}
+function top(e,r){if(!e||!r)return null;var c=e;while(c&&c.parentElement&&c.parentElement!==r&&c!==document.body)c=c.parentElement;return c&&c.parentElement===r?c:null;}
+function card(e,r){return e&&(e.closest('.card,[class*=card],section,article,details')||top(e,r)||e.closest('div'));}
+function find(r,rx){return r&&all(r,'h1,h2,h3,h4,strong,b,p,div,button,summary').find(function(e){return rx.test(txt(e));});}
+function findCard(r,rx){var h=find(r,rx);return h?card(h,r):null;}
 
-function L(){return I18N[lang()]||I18N.fa;}
-
-function closestCard(el){
-  return el && (el.closest('.card,[class*="card"],section,article,details') || el.closest('div'));
-}
-function findCardByTitle(pattern){
-  var root=more();
-  if(!root) return null;
-  var hit=qAll(root,'h1,h2,h3,h4,strong,b,button,summary,div').find(function(el){
-    return pattern.test(t(el));
-  });
-  return hit ? closestCard(hit) : null;
-}
-
-function restoreContact(){
-  var root=more(); if(!root) return;
-  var l=L();
-  var card=findCardByTitle(/ارتباط با ما|Contact Us|Contact|Kontakt/i);
-  if(!card) return;
-
-  if(card.querySelector('.v6380-contact-box')) return;
-
-  var existing=t(card);
-  var hasRealContent=/omideno7church@gmail\.com|instagram|اینستاگرام|youtube|یوتیوب/i.test(existing);
-  if(hasRealContent) return;
-
-  var box=document.createElement('div');
-  box.className='v6380-contact-box';
-  box.innerHTML =
-    '<p>'+l.contactIntro+'</p>'+
-    '<p>📧 <strong>'+l.email+':</strong> <a href="mailto:omideno7church@gmail.com">omideno7church@gmail.com</a></p>'+
-    '<p>📷 <strong>'+l.instagram+':</strong> <a href="https://www.instagram.com/omideno7" target="_blank" rel="noopener">omideno7</a></p>'+
-    '<p>▶️ <strong>'+l.youtube+':</strong> <a href="https://www.youtube.com/@omideno7" target="_blank" rel="noopener">omideno7</a></p>';
-  card.appendChild(box);
-}
-
-function restoreSupport(){
-  var root=more(); if(!root) return;
-  var l=L();
-  var card=findCardByTitle(/هدایت و حمایت|حمایت مالی|Guidance|Support|Giving|Podrška|Donacija|Vodstvo/i);
-  if(!card) return;
-
-  if(card.querySelector('.v6380-support-box')) return;
-
-  var existing=t(card);
-  var hasPay=/paypal|revolut|پیپال|ریوولت/i.test(existing);
-  if(hasPay) return;
-
-  var box=document.createElement('div');
-  box.className='v6380-support-box';
-  box.innerHTML =
-    '<p>'+l.supportIntro+'</p>'+
-    '<div class="v6380-support-actions">'+
-      '<a class="v6380-support-btn v6380-paypal" href="'+PAYPAL_URL+'" target="_blank" rel="noopener">💙 '+l.paypal+'</a>'+
-      '<a class="v6380-support-btn v6380-revolut" href="'+REVOLUT_URL+'" target="_blank" rel="noopener">💳 '+l.revolut+'</a>'+
-    '</div>';
-  card.appendChild(box);
-}
-
-function hideBetaReport(){
-  var root=more(); if(!root) return;
-  qAll(root,'.card,[class*="card"],section,article,details,div').forEach(function(el){
-    if(el.classList && el.classList.contains('v6380-hide')) return;
-    var tx=t(el);
-    if(!tx || tx.length>1500) return;
-    if(/گزارش تست نسخه بتا|نسخه بتا برای تست نهایی آماده است|Beta test report|Beta version test report|Izvješće testne beta/i.test(tx)){
-      el.classList.add('v6380-hide');
-    }
-  });
-}
-
-function isMedalText(tx){
-  return /رشد روحانی و مدال|Spiritual Growth|Medals|Rewards|مدال‌ها/i.test(tx||'');
-}
-function looksLikeStripe(el){
-  if(!el || !el.getBoundingClientRect) return false;
-  var tx=t(el);
-  if(tx.length>80) return false;
-  var r,s;
-  try{r=el.getBoundingClientRect();}catch(e){r={width:0,height:999};}
-  try{s=getComputedStyle(el);}catch(e){s={backgroundColor:'',backgroundImage:'',borderTopColor:'',borderBottomColor:''};}
-  var colorText=String(s.backgroundColor)+' '+String(s.backgroundImage)+' '+String(s.borderTopColor)+' '+String(s.borderBottomColor);
-  var direct=/rgb\(|rgba\(|blue|green|purple|red|linear-gradient|repeating-linear-gradient/i.test(colorText);
-  var childCount=0;
-  qAll(el,'*').forEach(function(ch){
-    var cr,cs;
-    try{cr=ch.getBoundingClientRect();}catch(e){cr={width:0,height:999};}
-    try{cs=getComputedStyle(ch);}catch(e){cs={backgroundColor:'',backgroundImage:''};}
-    if(cr.width>80 && cr.height>=1 && cr.height<26 && /rgb\(|rgba\(|blue|green|purple|red|linear-gradient/i.test(String(cs.backgroundColor)+' '+String(cs.backgroundImage))){
-      childCount++;
-    }
-  });
-  return r.width>120 && r.height>=2 && r.height<130 && (direct || childCount>=2);
-}
-function hideColoredStripes(){
-  var root=more(); if(!root) return;
-  var all=qAll(root,'*');
-  var medal=all.find(function(el){return isMedalText(t(el));});
-  if(!medal) return;
-  var medalCard=closestCard(medal) || medal;
-  var mr;
-  try{mr=medalCard.getBoundingClientRect();}catch(e){return;}
-
-  all.forEach(function(el){
-    if(!el || el===medalCard || medalCard.contains(el)) return;
-    var r;
-    try{r=el.getBoundingClientRect();}catch(e){return;}
-    var nearAbove = r.bottom <= mr.top + 20 && r.bottom >= mr.top - 260;
-    var overlaps = r.right > mr.left + 20 && r.left < mr.right - 20;
-    if(nearAbove && overlaps && looksLikeStripe(el)){
-      el.classList.add('v6380-hide');
-      var p=el.parentElement;
-      if(p && p!==document.body && p!==root && t(p).length<100){
-        var pr; try{pr=p.getBoundingClientRect();}catch(e){pr={height:999};}
-        if(pr.height<160) p.classList.add('v6380-hide');
-      }
-    }
-  });
-}
-
-function stabilizeMedalGuide(){
-  var root=more(); if(!root) return;
-  var l=L();
-  var buttons=qAll(root,'button,a,summary').filter(function(el){
-    return /راهنمای مدال|Medal Guide|Vodič za medalje/i.test(t(el));
-  });
-  buttons.forEach(function(btn){
-    if(btn.dataset.v6380Bound==='1') return;
-    btn.dataset.v6380Bound='1';
-    btn.addEventListener('click',function(e){
-      try{e.preventDefault(); e.stopPropagation();}catch(x){}
-      var card=closestCard(btn) || root;
-      var box=card.querySelector('.v6380-medal-guide-box');
-      if(!box){
-        box=document.createElement('div');
-        box.className='v6380-medal-guide-box';
-        box.innerHTML='<strong>🏆 '+l.medalGuide+'</strong><ul>'+l.medals.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
-        card.appendChild(box);
-      }else{
-        box.classList.toggle('v6380-hide');
-      }
-      if(box.classList.contains('v6380-hide')) box.classList.remove('v6380-hide');
-      try{
-        box.style.setProperty('display','block','important');
-        box.style.setProperty('visibility','visible','important');
-        box.style.setProperty('height','auto','important');
-      }catch(x){}
-      return false;
-    },true);
-  });
-}
-
-function render(){
-  css();
-  restoreContact();
-  restoreSupport();
-  hideBetaReport();
-  hideColoredStripes();
-  stabilizeMedalGuide();
-}
-
-document.addEventListener('DOMContentLoaded',render);
-window.addEventListener('load',render);
-document.addEventListener('click',function(){setTimeout(render,120);setTimeout(render,600);},true);
-setTimeout(render,250);
-setTimeout(render,1000);
-setTimeout(render,2500);
-setInterval(render,1200);
-
-window.OMIDENO7_V6380_MORE_FINAL_FIXES={render:render,version:VERSION};
+function contact(){var r=more(),l=L();if(!r)return;var c=findCard(r,/ارتباط با ما|Contact Us|Contact|Kontakt/i);if(!c||/omideno7church@gmail\.com|instagram|اینستاگرام|youtube|یوتیوب/i.test(txt(c)))return;var b=document.createElement('div');b.className='omid6383-box';b.innerHTML='<p>'+l.contact+'</p><p>📧 <b>'+l.email+':</b> <a href="mailto:omideno7church@gmail.com">omideno7church@gmail.com</a></p><p>📷 <b>'+l.instagram+':</b> <a href="https://www.instagram.com/omideno7" target="_blank" rel="noopener">omideno7</a></p><p>▶️ <b>'+l.youtube+':</b> <a href="https://www.youtube.com/@omideno7" target="_blank" rel="noopener">omideno7</a></p>';c.appendChild(b);}
+function support(){var r=more(),l=L();if(!r)return;var c=findCard(r,/هدایای شما|حمایت مالی|هدایت و حمایت|Giving|Support|Your gifts|Vaši darovi|Podrška/i);if(!c)return;var b=c.querySelector('.omid6383-support')||document.createElement('div');b.className='omid6383-box omid6383-support';b.innerHTML='<p>'+l.support+'</p><div class="omid6383-actions"><a class="omid6383-btn omid6383-paypal" href="'+PAYPAL_URL+'" target="_blank" rel="noopener">💙 '+l.paypal+'</a><a class="omid6383-btn omid6383-revolut" href="'+REVOLUT_URL+'" target="_blank" rel="noopener">💳 '+l.revolut+'</a></div>';if(!b.parentElement)c.appendChild(b);b.classList.remove('omid6383-hide','v6380-hide','v6381-hide','v6382-hide');b.style.cssText+=';display:block!important;visibility:visible!important;height:auto!important;opacity:1!important';}
+function isStripe(e){if(!e||!e.getBoundingClientRect||txt(e).length>130)return false;var r,s;try{r=e.getBoundingClientRect();s=getComputedStyle(e)}catch(x){return false}if(r.width<70||r.height<1||r.height>180)return false;var st=String(s.backgroundColor)+' '+String(s.backgroundImage)+' '+String(s.borderTopColor)+' '+String(s.borderBottomColor);if(/rgb\(|rgba\(|blue|green|purple|red|linear-gradient/i.test(st))return true;var n=0;all(e,'*').forEach(function(ch){var cr,cs;try{cr=ch.getBoundingClientRect();cs=getComputedStyle(ch)}catch(x){return}if(cr.width>45&&cr.height>=1&&cr.height<35&&/rgb\(|rgba\(|blue|green|purple|red|linear-gradient/i.test(String(cs.backgroundColor)+' '+String(cs.backgroundImage)))n++;});return n>=2;}
+function cleanup(){var r=more();if(!r)return;all(r,'.card,[class*=card],section,article,details,div').forEach(function(e){var t=txt(e);if(t&&t.length<2000&&/گزارش تست نسخه بتا|نسخه بتا برای تست نهایی آماده است|Beta test report|manual beta field|روز برنامه\s*۳۶۵|Source:/i.test(t))e.classList.add('omid6383-hide');});var m=findCard(r,/رشد روحانی و مدال|Spiritual Growth|Medals|Rewards|مدال‌ها/i);if(!m)return;var mr;try{mr=m.getBoundingClientRect()}catch(x){return}all(r,'*').forEach(function(e){if(e===m||m.contains(e)||!isStripe(e))return;var er;try{er=e.getBoundingClientRect()}catch(x){return}if(er.bottom<=mr.top+90&&er.bottom>=mr.top-450&&er.right>mr.left+2&&er.left<mr.right-2){e.classList.add('omid6383-hide');if(e.parentElement&&e.parentElement!==r&&txt(e.parentElement).length<200)e.parentElement.classList.add('omid6383-hide');}});}
+function medals(){var r=more(),l=L();if(!r)return;var c=findCard(r,/رشد روحانی و مدال|Spiritual Growth|Medals|Rewards|مدال‌ها/i);if(!c)return;all(c,'button,a,summary').filter(function(e){return /راهنمای مدال|Medal Guide|Vodič za medalje/i.test(txt(e));}).forEach(function(btn){if(btn.dataset.omid6383)return;btn.dataset.omid6383='1';btn.addEventListener('click',function(ev){try{ev.preventDefault();ev.stopImmediatePropagation();ev.stopPropagation()}catch(x){}var b=c.querySelector('.omid6383-medal')||document.createElement('div');b.className='omid6383-box omid6383-medal';b.innerHTML='<b>🏆 '+l.guide+'</b><ul>'+l.medals.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>';if(!b.parentElement)c.appendChild(b);b.classList.remove('omid6383-hide','v6380-hide','v6381-hide','v6382-hide');b.style.cssText+=';display:block!important;visibility:visible!important;height:auto!important;opacity:1!important';return false;},true);});}
+function bible365(){var l=L();all(document,'section,article,.card,[class*=card],div').forEach(function(e){var t=txt(e);if(!t||t.length>900||!/برنامه خواندن کتاب مقدس|۳۶۵|365|one year|One Year|godinu|365 dana/i.test(t))return;if(e.querySelector('.omid6383-bible365')||/رشد روحانی|مدال|هدایای شما|ارتباط با ما|گزارش تست/i.test(t))return;if(/روز\s*\d|Day\s*\d|Dan\s*\d/i.test(t)&&t.length>150)return;var rows=[['1','سوم یوحنا 1؛ دوم یوحنا 1؛ داوران 1','3 John 1; 2 John 1; Judges 1','3. Ivanova 1; 2. Ivanova 1; Suci 1'],['2','داوران 2؛ جامعه 1؛ داوران 3','Judges 2; Ecclesiastes 1; Judges 3','Suci 2; Propovjednik 1; Suci 3'],['3','داوران 4-6','Judges 4-6','Suci 4-6']];var b=document.createElement('div');b.className='omid6383-box omid6383-bible365';b.innerHTML='<h3>'+l.btitle+'</h3><p>'+l.bintro+'</p>'+rows.map(function(x){var ref=lang()==='en'?x[2]:(lang()==='hr'?x[3]:x[1]);return '<div class="omid6383-day"><b>'+l.day+' '+x[0]+'</b><div>'+l.refs+': '+ref+'</div></div>'}).join('');e.appendChild(b);});}
+function render(){css();contact();support();cleanup();medals();bible365();}
+document.addEventListener('DOMContentLoaded',render);window.addEventListener('load',render);document.addEventListener('click',function(){setTimeout(render,80);setTimeout(render,400);setTimeout(render,1000)},true);setTimeout(render,200);setTimeout(render,900);setTimeout(render,2500);setInterval(render,1200);
+window.OMIDENO7_V6383_CONSOLIDATED_FINAL_REPAIR={render:render,version:VERSION};
 })();

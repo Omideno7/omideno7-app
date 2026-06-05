@@ -1,0 +1,6 @@
+Recommended beta.html tail:
+
+<script src="v63-76-final-rc-polish-beta.js?v=6376"></script>
+<script src="v63-80-more-final-fixes-beta.js?v=6383"></script>
+</body>
+</html>

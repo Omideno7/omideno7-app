@@ -175,5 +175,66 @@
 <!-- disabled test only: v63-71 may hide rewards panel
 <script src="v63-71-rc-clean-overlay-beta.js?v=6371"></script>
 -->
+<script>
+(function(){
+  function txt(el){
+    return (el && el.textContent || '').replace(/\s+/g,' ').trim();
+  }
+
+  function hideBetaReport(){
+    document.querySelectorAll('.card, section, article, div').forEach(function(el){
+      var t = txt(el);
+      if(
+        t.length < 1200 &&
+        /گزارش تست نسخه بتا|Beta Test Report|Izvještaj beta testa|beta version is ready|نسخه بتا/i.test(t)
+      ){
+        el.style.setProperty('display','none','important');
+        el.style.setProperty('visibility','hidden','important');
+        el.style.setProperty('height','0','important');
+        el.style.setProperty('overflow','hidden','important');
+      }
+    });
+  }
+
+  function keepMedalGuideOpen(){
+    document.querySelectorAll('button,a,summary').forEach(function(btn){
+      var t = txt(btn);
+      if(/راهنمای مدال|Medal Guide|Vodič za medalje/i.test(t)){
+        if(btn.dataset.omidenoGuideStable === '1') return;
+        btn.dataset.omidenoGuideStable = '1';
+
+        btn.addEventListener('click', function(){
+          setTimeout(function(){
+            document.querySelectorAll('[id*="Guide"],[id*="guide"],[class*="guide"],[class*="Guide"]').forEach(function(el){
+              var text = txt(el);
+              if(/مدال|Medal|medal|امتیاز|points|bodova/i.test(text)){
+                el.style.setProperty('display','block','important');
+                el.style.setProperty('visibility','visible','important');
+                el.style.setProperty('height','auto','important');
+                el.style.setProperty('opacity','1','important');
+              }
+            });
+          }, 100);
+        }, true);
+      }
+    });
+  }
+
+  function run(){
+    hideBetaReport();
+    keepMedalGuideOpen();
+  }
+
+  document.addEventListener('DOMContentLoaded', run);
+  window.addEventListener('load', run);
+  document.addEventListener('click', function(){
+    setTimeout(run,100);
+    setTimeout(run,500);
+  }, true);
+  setTimeout(run,300);
+  setTimeout(run,1200);
+  setInterval(run,1500);
+})();
+</script>
 </body>
 </html>

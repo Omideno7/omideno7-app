@@ -14,8 +14,8 @@
 var VERSION='V63.80 More Final Fixes';
 
 /* Change these two links later if your real donation links are different. */
-var PAYPAL_URL='https://paypal.me/omideno7';
-var REVOLUT_URL='https://revolut.me/omideno7';
+var PAYPAL_URL='https://www.paypal.me/MehdiBadanFirouz377';
+var REVOLUT_URL='https://revolut.me/m_badanfirouz';
 
 function css(){
   if(document.getElementById('v6380MoreFinalFixesCss')) return;

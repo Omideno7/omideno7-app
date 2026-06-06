@@ -311,7 +311,24 @@
   setInterval(run,2000);
 })();
 </script>
-<script src="omideno7-daily-message.js?v=5"></script>
+(function(){
+  function hideOldDailyPopup(){
+    try{
+      document.querySelectorAll('.v6358-toast').forEach(function(el){
+        el.remove();
+      });
+    }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded', hideOldDailyPopup);
+  window.addEventListener('load', hideOldDailyPopup);
+  setTimeout(hideOldDailyPopup, 100);
+  setTimeout(hideOldDailyPopup, 500);
+  setTimeout(hideOldDailyPopup, 1200);
+  setTimeout(hideOldDailyPopup, 2500);
+})();
+</script>
+<script src="omideno7-daily-message.js?v=6"></script>
 <script src="omideno7-faith-declarations-v2.js?v=2"></script>
 </body>
 </html>

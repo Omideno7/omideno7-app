@@ -1984,7 +1984,15 @@
   }
   // disabled: stops daily home message from fighting/reverting with other home renderers
 // setTimeout(startObserver,1000);
-// setInterval(function(){ if(getLang()!==LAST_LANG) apply();},1500);
+// disabled: full observer caused fighting/reverting with other home renderers
+// setTimeout(startObserver,1000);
 
+setInterval(function(){
+  if(getLang() !== LAST_LANG){
+    setTimeout(apply, 120);
+    setTimeout(apply, 500);
+    setTimeout(apply, 1200);
+  }
+}, 1500);
   window.OMIDENO7_DAILY_MESSAGE={version:VERSION,refresh:apply,messages:DAILY_HOME_MESSAGES};
 })();

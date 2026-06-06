@@ -310,25 +310,43 @@
   setTimeout(run,1200);
   setInterval(run,2000);
 })();
-</script>
+<script>
 (function(){
-  function hideOldDailyPopup(){
+  function hideOldDailyMessage(){
     try{
-      document.querySelectorAll('.v6358-toast').forEach(function(el){
-        el.remove();
+      [
+        '#v6358DailyCard',
+        '.v6358-toast',
+        '.v6358DailyCard',
+        '[id="v6358DailyCard"]',
+        '[id*="6358"][id*="Daily"]',
+        '[class*="6358"][class*="toast"]',
+        '[class*="6358"][class*="Daily"]',
+        '[class*="6358"][class*="daily"]'
+      ].forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(el){
+          el.remove();
+        });
       });
     }catch(e){}
   }
 
-  document.addEventListener('DOMContentLoaded', hideOldDailyPopup);
-  window.addEventListener('load', hideOldDailyPopup);
-  setTimeout(hideOldDailyPopup, 100);
-  setTimeout(hideOldDailyPopup, 500);
-  setTimeout(hideOldDailyPopup, 1200);
-  setTimeout(hideOldDailyPopup, 2500);
+  document.addEventListener('DOMContentLoaded', hideOldDailyMessage);
+  window.addEventListener('load', hideOldDailyMessage);
+  document.addEventListener('click', function(){
+    setTimeout(hideOldDailyMessage, 80);
+    setTimeout(hideOldDailyMessage, 300);
+  }, true);
+
+  setTimeout(hideOldDailyMessage, 50);
+  setTimeout(hideOldDailyMessage, 150);
+  setTimeout(hideOldDailyMessage, 400);
+  setTimeout(hideOldDailyMessage, 900);
+  setTimeout(hideOldDailyMessage, 1800);
+  setInterval(hideOldDailyMessage, 2000);
 })();
 </script>
-<script src="omideno7-daily-message.js?v=6"></script>
+<script src="omideno7-daily-message.js?v=7"></script>
 <script src="omideno7-faith-declarations-v2.js?v=2"></script>
 </body>
 </html>

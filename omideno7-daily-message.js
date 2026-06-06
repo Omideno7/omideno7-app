@@ -1982,8 +1982,9 @@
     });
     obs.observe(document.body,{childList:true,subtree:true,characterData:true});
   }
-  setTimeout(startObserver,1000);
-  setInterval(function(){ if(getLang()!==LAST_LANG) apply(); },1500);
+  // disabled: stops daily home message from fighting/reverting with other home renderers
+// setTimeout(startObserver,1000);
+// setInterval(function(){ if(getLang()!==LAST_LANG) apply();},1500);
 
   window.OMIDENO7_DAILY_MESSAGE={version:VERSION,refresh:apply,messages:DAILY_HOME_MESSAGES};
 })();

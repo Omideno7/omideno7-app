@@ -1,10 +1,12 @@
-/* Omideno7 Daily Home Message - V1
-   365 trilingual daily messages + Christian holidays + birthday + salvation anniversary.
+/* Omideno7 Daily Home Message - Stable V2
+   Fixes flicker/revert on the small home message card.
+   Load this file once, at the very end of beta.html before </body>.
 */
 (function(){
   'use strict';
-  var VERSION='1.0.0';
-  var DAILY_HOME_MESSAGES = [
+
+  var VERSION='2.0.0';
+  var DAILY_HOME_MESSAGES=[
   {
     "fa": "امروز با ایمان قدم بردار؛ خداوند با توست و کلام او مسیرت را روشن می‌کند.",
     "en": "Walk today in faith; the Lord is with you, and His Word lights your path.",
@@ -1831,34 +1833,32 @@
     "hr": "Neka mudrost danas vodi tvoje misli i korake."
   }
 ];
+  var APPLY_LOCK=false;
+  var LAST_LANG='';
+  var LAST_MESSAGE='';
 
-  var SPECIAL_FIXED={
-    '01-01':{
-      fa:'سال نو مبارک. خداوند این سال را برای تو سال رشد، حکمت، ثمر و قدم‌های تازه در مسیح قرار دهد.',
-      en:'Happy New Year. May the Lord make this year a year of growth, wisdom, fruitfulness, and fresh steps in Christ.',
-      hr:'Sretna Nova godina. Neka Gospodin učini ovu godinu godinom rasta, mudrosti, plodnosti i novih koraka u Kristu.'
-    },
-    '12-25':{
-      fa:'کریسمس مبارک. امروز با شادی به یاد بیاور که مسیح آمد تا نور، نجات و زندگی تازه را به جهان ببخشد.',
-      en:'Merry Christmas. Today, remember with joy that Christ came to bring light, salvation, and new life to the world.',
-      hr:'Sretan Božić. Danas se s radošću sjeti da je Krist došao donijeti svjetlo, spasenje i novi život svijetu.'
-    }
-  };
+  var ORIGINAL_PATTERNS=[
+    /امروز با ایمان قدم بردار/i,
+    /خداوند با توست/i,
+    /کلام.*مسیرت.*روشن/i,
+    /Walk by faith/i,
+    /His Word lights your path/i,
+    /Hodaj.*vjeri/i,
+    /Njegova riječ.*put/i
+  ];
 
   var BIRTHDAY_MESSAGE={
     fa:'امروز روز تولد توست. خداوند تو را با هدفی الهی آفریده است. سال جدید زندگی‌ات پر از فیض، حکمت، سلامتی و رشد روحانی باشد.',
     en:'Today is your birthday. God created you with a divine purpose. May this new year of your life be filled with grace, wisdom, health, and spiritual growth.',
     hr:'Danas je tvoj rođendan. Bog te stvorio s božanskom svrhom. Neka ova nova godina tvog života bude ispunjena milošću, mudrošću, zdravljem i duhovnim rastom.'
   };
-
   var SALVATION_ANNIVERSARY_MESSAGE={
     fa:'امروز سالگرد ایمان‌آوری توست. در چنین روزی خداوند تو را به سوی خود خواند و زندگی تازه‌ای در مسیح به تو بخشید. این روز را با شکرگزاری جشن بگیر؛ تو فرزند خدا هستی و در مسیح زندگی تازه داری.',
     en:'Today is your salvation anniversary. On this day, the Lord called you to Himself and gave you new life in Christ. Celebrate this day with thanksgiving; you are a child of God and you have new life in Christ.',
     hr:'Danas je godišnjica tvog spasenja. Na ovaj dan Gospodin te pozvao k sebi i dao ti novi život u Kristu. Proslavi ovaj dan sa zahvalnošću; ti si Božje dijete i imaš novi život u Kristu.'
   };
 
-  function cleanText(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
-
+  function clean(t){ return String(t||'').replace(/\s+/g,' ').trim(); }
   function getLang(){
     var v='';
     try{ v=(localStorage.getItem('lang')||localStorage.getItem('omideno7_lang')||document.documentElement.lang||navigator.language||'fa').toLowerCase(); }catch(e){}
@@ -1866,157 +1866,124 @@
     if(v.indexOf('hr')===0 || v.indexOf('cro')>-1 || v.indexOf('hrv')>-1) return 'hr';
     return 'fa';
   }
-
-  function pad(n){ return String(n).padStart(2,'0'); }
-  function mmdd(d){ return pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
-  function dayOfYear(d){ return Math.floor((d - new Date(d.getFullYear(),0,0))/86400000); }
-
+  function pad(n){return String(n).padStart(2,'0');}
+  function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+  function mmdd(d){return pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+  function dayOfYear(d){return Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(d.getFullYear(),0,0))/86400000);}
   function parseDate(value){
     if(!value) return null;
     var s=String(value).trim();
-    var m=s.match(/(\d{4})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})/);
-    if(m) return new Date(+m[1], +m[2]-1, +m[3]);
-    m=s.match(/(\d{1,2})[\-\/\.](\d{1,2})[\-\/\.](\d{4})/);
-    if(m) return new Date(+m[3], +m[2]-1, +m[1]);
+    var m=s.match(/(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})/);
+    if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+    m=s.match(/(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})/);
+    if(m) return new Date(+m[3],+m[2]-1,+m[1]);
     var d=new Date(s);
-    return isNaN(d.getTime()) ? null : d;
+    return isNaN(d.getTime())?null:d;
   }
-
-  function sameMonthDay(a,b){ return !!(a && b && a.getMonth()===b.getMonth() && a.getDate()===b.getDate()); }
-
-  function getStoredValue(keys){
+  function sameMonthDay(a,b){return !!(a&&b&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate());}
+  function stored(keys){
     try{
-      for(var i=0;i<keys.length;i++){
-        var direct=localStorage.getItem(keys[i]);
-        if(direct) return direct;
-      }
+      for(var i=0;i<keys.length;i++){var v=localStorage.getItem(keys[i]); if(v) return v;}
       for(var k in localStorage){
         if(!Object.prototype.hasOwnProperty.call(localStorage,k)) continue;
-        var raw=localStorage.getItem(k);
-        if(!raw) continue;
-        for(var j=0;j<keys.length;j++){
-          if(k.toLowerCase().indexOf(keys[j].toLowerCase())>-1 && raw.length<50) return raw;
-        }
+        var raw=localStorage.getItem(k); if(!raw) continue;
         if(raw.charAt(0)==='{'){
-          try{
-            var obj=JSON.parse(raw);
-            for(var z=0;z<keys.length;z++) if(obj && obj[keys[z]]) return obj[keys[z]];
-          }catch(e){}
+          try{var o=JSON.parse(raw); for(var z=0;z<keys.length;z++) if(o&&o[keys[z]]) return o[keys[z]];}catch(e){}
         }
       }
     }catch(e){}
     return '';
   }
-
-  function getBirthDate(){ return parseDate(getStoredValue(['birthDate','dateOfBirth','birthday','dob'])); }
-  function getSalvationDate(){ return parseDate(getStoredValue(['salvationDate','savedDate','faithDate','conversionDate'])); }
-
-  function easterDate(year){
-    var a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;
-    return new Date(year,month-1,day);
+  function chosenMessage(){
+    var l=getLang(), today=new Date(), birth=parseDate(stored(['birthDate','dateOfBirth','birthday','dob'])), salvation=parseDate(stored(['salvationDate','savedDate','faithDate','conversionDate']));
+    if(sameMonthDay(salvation,today)) return {type:'salvation',text:SALVATION_ANNIVERSARY_MESSAGE[l]||SALVATION_ANNIVERSARY_MESSAGE.fa};
+    if(sameMonthDay(birth,today)) return {type:'birthday',text:BIRTHDAY_MESSAGE[l]||BIRTHDAY_MESSAGE.fa};
+    var idx=(dayOfYear(today)-1)%DAILY_HOME_MESSAGES.length;
+    return {type:'daily',text:DAILY_HOME_MESSAGES[idx][l]||DAILY_HOME_MESSAGES[idx].fa};
   }
-  function addDays(date,days){ var d=new Date(date.getFullYear(),date.getMonth(),date.getDate()); d.setDate(d.getDate()+days); return d; }
-
-  function getSpecialMessage(today){
-    var lang=getLang(), key=mmdd(today), birth=getBirthDate(), salvation=getSalvationDate();
-    if(sameMonthDay(salvation,today)) return {type:'salvation',message:SALVATION_ANNIVERSARY_MESSAGE[lang]||SALVATION_ANNIVERSARY_MESSAGE.fa};
-    if(sameMonthDay(birth,today)) return {type:'birthday',message:BIRTHDAY_MESSAGE[lang]||BIRTHDAY_MESSAGE.fa};
-
-    var easter=easterDate(today.getFullYear()), goodFriday=addDays(easter,-2), pentecost=addDays(easter,49);
-    if(mmdd(today)===mmdd(goodFriday)) return {type:'holiday',message:({
-      fa:'امروز جمعه نیک است. با قلبی شکرگزار به محبت عظیم مسیح نگاه کن؛ او جان خود را داد تا تو حیات داشته باشی.',
-      en:'Today is Good Friday. Look with a thankful heart at the great love of Christ; He gave His life so that you may have life.',
-      hr:'Danas je Veliki petak. Zahvalnim srcem gledaj na veliku Kristovu ljubav; dao je svoj život da ti imaš život.'
-    })[lang]};
-    if(mmdd(today)===mmdd(easter)) return {type:'holiday',message:({
-      fa:'قیام مسیح مبارک. عیسی زنده است، و قدرت قیام او امروز در زندگی تو عمل می‌کند.',
-      en:'Happy Resurrection Day. Jesus is alive, and the power of His resurrection is working in your life today.',
-      hr:'Sretan dan uskrsnuća. Isus je živ i sila Njegova uskrsnuća danas djeluje u tvom životu.'
-    })[lang]};
-    if(mmdd(today)===mmdd(pentecost)) return {type:'holiday',message:({
-      fa:'امروز روز پنطیکاست است. روح‌القدس به تو قدرت می‌بخشد تا شاهد زنده مسیح باشی.',
-      en:'Today is Pentecost. The Holy Spirit empowers you to be a living witness of Christ.',
-      hr:'Danas je Pedesetnica. Duh Sveti ti daje silu da budeš živi svjedok Krista.'
-    })[lang]};
-    if(SPECIAL_FIXED[key]) return {type:'holiday',message:SPECIAL_FIXED[key][lang]||SPECIAL_FIXED[key].fa};
-    return null;
+  function isOriginalOrOldDailyText(t){
+    t=clean(t);
+    if(!t || t.length>260) return false;
+    if(t===LAST_MESSAGE) return true;
+    return ORIGINAL_PATTERNS.some(function(re){return re.test(t);});
   }
-
-  function getDailyMessage(){
-    var today=new Date(), special=getSpecialMessage(today);
-    if(special) return special;
-    var lang=getLang(), idx=(dayOfYear(today)-1)%DAILY_HOME_MESSAGES.length;
-    return {type:'daily',message:DAILY_HOME_MESSAGES[idx][lang]||DAILY_HOME_MESSAGES[idx].fa};
-  }
-
-  function findHomeMessageElements(){
-    var found=[], re=/امروز با ایمان قدم بردار|خداوند با توست|Walk by faith|Hodaj danas|His Word lights your path/i;
-    document.querySelectorAll('p,div,span').forEach(function(el){
-      var t=cleanText(el);
-      if(t && t.length<350 && re.test(t)) found.push(el);
+  function findTargets(){
+    var out=[];
+    var home=document.getElementById('home') || document.querySelector('section#home,.page#home,.page.active');
+    var scope=home || document;
+    scope.querySelectorAll('p,div,span').forEach(function(el){
+      if(el.querySelector('button,a,input,select,textarea')) return;
+      var t=clean(el.textContent);
+      if(isOriginalOrOldDailyText(t)) out.push(el);
     });
-    if(found.length) return found;
-    var home=document.getElementById('home')||document.querySelector('[data-page="home"],.page.active');
-    if(home){
-      var candidates=[].slice.call(home.querySelectorAll('p,div,span')).filter(function(el){
-        var t=cleanText(el);
-        return t.length>20 && t.length<220 && !el.querySelector('button,a,input,select,textarea');
-      });
-      if(candidates.length) return [candidates[0]];
-    }
-    return [];
+    return out;
   }
-
-  function injectStyles(){
-    if(document.getElementById('omideno7DailyMessageCss')) return;
+  function injectCss(){
+    if(document.getElementById('omideno7DailyStableCss')) return;
     var st=document.createElement('style');
-    st.id='omideno7DailyMessageCss';
-    st.textContent='.omideno7-daily-message-card{position:relative!important}.omideno7-daily-message-text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Tahoma,Arial,sans-serif!important;font-weight:700!important;line-height:1.85!important;letter-spacing:-.01em!important;color:#0f1f3d!important;text-shadow:0 1px 0 rgba(255,255,255,.35)!important}html[lang="fa"] .omideno7-daily-message-text,[dir="rtl"] .omideno7-daily-message-text{font-family:"Vazirmatn","IRANSans",Tahoma,"Segoe UI",Arial,sans-serif!important}.omideno7-special-day{border:1px solid rgba(245,158,11,.28)!important;box-shadow:0 18px 45px rgba(245,158,11,.16)!important}.omideno7-confetti-piece{position:fixed;top:-20px;z-index:999999;pointer-events:none;font-size:18px;animation:omideno7ConfettiFall 4.2s linear forwards}@keyframes omideno7ConfettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:0}10%{opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}';
+    st.id='omideno7DailyStableCss';
+    st.textContent='.omideno7-daily-message-text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Tahoma,Arial,sans-serif!important;font-weight:750!important;line-height:1.85!important;color:#0f1f3d!important}html[lang="fa"] .omideno7-daily-message-text,[dir="rtl"] .omideno7-daily-message-text{font-family:"Vazirmatn","IRANSans",Tahoma,"Segoe UI",Arial,sans-serif!important}.omideno7-confetti-piece{position:fixed;top:-20px;z-index:999999;pointer-events:none;animation:omideno7ConfettiFall 4.2s linear forwards}@keyframes omideno7ConfettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:0}10%{opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}';
     document.head.appendChild(st);
   }
-
-  function styleMessage(el,type){
-    el.classList.add('omideno7-daily-message-text');
-    var parent=el.closest('.card,.hero-card,section,div')||el;
-    parent.classList.add('omideno7-daily-message-card');
-    if(type==='birthday'||type==='salvation') parent.classList.add('omideno7-special-day');
-  }
-
   function celebrate(kind){
-    try{
-      var key='omideno7_celebrated_'+kind+'_'+new Date().toISOString().slice(0,10);
-      if(sessionStorage.getItem(key)) return;
-      sessionStorage.setItem(key,'1');
-    }catch(e){}
+    try{var k='omideno7_celebrated_'+kind+'_'+key(new Date()); if(sessionStorage.getItem(k)) return; sessionStorage.setItem(k,'1');}catch(e){}
     var items=kind==='salvation'?['✨','🌟','💛','🕊️','🌿']:['🌸','✨','🎉','💛','🌷'];
-    for(var i=0;i<28;i++){
+    for(var i=0;i<24;i++){
       setTimeout(function(){
-        var span=document.createElement('span');
-        span.className='omideno7-confetti-piece';
-        span.textContent=items[Math.floor(Math.random()*items.length)];
-        span.style.left=Math.floor(Math.random()*96)+'vw';
-        span.style.animationDuration=(3.2+Math.random()*2.2)+'s';
-        span.style.fontSize=(15+Math.random()*13)+'px';
-        document.body.appendChild(span);
-        setTimeout(function(){try{span.remove();}catch(e){}},6000);
+        var s=document.createElement('span');
+        s.className='omideno7-confetti-piece';
+        s.textContent=items[Math.floor(Math.random()*items.length)];
+        s.style.left=Math.floor(Math.random()*96)+'vw';
+        s.style.fontSize=(15+Math.random()*12)+'px';
+        document.body.appendChild(s);
+        setTimeout(function(){try{s.remove();}catch(e){}},6000);
       },i*90);
     }
   }
-
   function apply(){
-    injectStyles();
-    var chosen=getDailyMessage();
-    findHomeMessageElements().forEach(function(el){
-      el.textContent=chosen.message;
-      styleMessage(el,chosen.type);
-    });
-    if(chosen.type==='birthday'||chosen.type==='salvation') celebrate(chosen.type);
+    if(APPLY_LOCK) return;
+    APPLY_LOCK=true;
+    try{
+      injectCss();
+      var picked=chosenMessage();
+      LAST_LANG=getLang();
+      LAST_MESSAGE=picked.text;
+      var targets=findTargets();
+      targets.forEach(function(el){
+        if(clean(el.textContent)!==picked.text){
+          el.textContent=picked.text;
+        }
+        el.classList.add('omideno7-daily-message-text');
+        el.setAttribute('data-omideno7-daily-message','1');
+      });
+      if(picked.type==='birthday'||picked.type==='salvation') celebrate(picked.type);
+    }finally{
+      setTimeout(function(){APPLY_LOCK=false;},60);
+    }
   }
 
-  document.addEventListener('DOMContentLoaded',apply);
-  window.addEventListener('load',apply);
-  document.addEventListener('click',function(){setTimeout(apply,120);},true);
-  setTimeout(apply,300);
-  setTimeout(apply,1200);
+  function schedule(){
+    [250,700,1400,2600,4200].forEach(function(ms){setTimeout(apply,ms);});
+  }
+
+  document.addEventListener('DOMContentLoaded',schedule);
+  window.addEventListener('load',schedule);
+  document.addEventListener('click',function(){setTimeout(apply,180);},true);
+
+  var observerStarted=false;
+  function startObserver(){
+    if(observerStarted || !document.body) return;
+    observerStarted=true;
+    var obs=new MutationObserver(function(){
+      var l=getLang();
+      if(l!==LAST_LANG || findTargets().some(function(el){return clean(el.textContent)!==LAST_MESSAGE;})){
+        setTimeout(apply,120);
+      }
+    });
+    obs.observe(document.body,{childList:true,subtree:true,characterData:true});
+  }
+  setTimeout(startObserver,1000);
+  setInterval(function(){ if(getLang()!==LAST_LANG) apply(); },1500);
+
   window.OMIDENO7_DAILY_MESSAGE={version:VERSION,refresh:apply,messages:DAILY_HOME_MESSAGES};
 })();

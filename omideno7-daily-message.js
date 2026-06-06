@@ -1913,14 +1913,10 @@ function findTargets(){
   var scope=home || document;
 
   [
+    '#v6358WelcomeCard .subtitle',
+    '#home #v6358WelcomeCard .subtitle',
     '#home [data-i18n="homeDesc"]',
-    '#home [data-i18n="daily"]',
-    '#home [data-daily-card]',
-    '#home .daily-card',
-    '#home .status',
-    '#home .notification-status',
-    '#home .hero-card p',
-    '#home .card p'
+    '#home .hero-card > p[data-i18n="homeDesc"]'
   ].forEach(function(sel){
     try{
       scope.querySelectorAll(sel).forEach(function(el){

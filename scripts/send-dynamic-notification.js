@@ -113,8 +113,88 @@ function announcementMessage(subtype){
     }
   };
 }
+const FAITH_DECLARATION_START_DATE = '2026-06-01';
 
-function messageFor(type){
+const FAITH_DECLARATION_TITLES = [
+  { fa:'کلام زنده در درون من', en:'The Living Word in Me', hr:'Živa Riječ u meni' },
+  { fa:'شفا به‌عنوان میراث من', en:'Healing as My Inheritance', hr:'Iscjeljenje kao moje nasljedstvo' },
+  { fa:'زندگی الهی در من', en:'The Divine Life in Me', hr:'Božanski život u meni' },
+  { fa:'قدرت قیام در بدن من', en:'Resurrection Power in My Body', hr:'Sila uskrsnuća u mom tijelu' },
+  { fa:'پیروزی ایمان', en:'The Victory of Faith', hr:'Pobjeda vjere' },
+  { fa:'قدرت زبان من', en:'The Power of My Tongue', hr:'Snaga mog jezika' },
+  { fa:'من خلقت تازه هستم', en:'I Am a New Creation', hr:'Ja sam novo stvorenje' },
+  { fa:'حاکمیت در زندگی', en:'Reigning in Life', hr:'Vladanje u životu' },
+  { fa:'ذهن تازه‌شده با کلام', en:'A Mind Renewed by the Word', hr:'Um obnovljen Riječju' },
+  { fa:'بدن من معبد روح‌القدس است', en:'My Body Is the Temple of the Holy Spirit', hr:'Moje tijelo je hram Duha Svetoga' },
+  { fa:'در مسیح کامل هستم', en:'Complete in Christ', hr:'Potpun u Kristu' },
+  { fa:'برکت ابراهیم در زندگی من', en:'The Blessing of Abraham in My Life', hr:'Abrahamov blagoslov u mom životu' },
+  { fa:'نام عیسی بر زندگی من', en:'The Name of Jesus over My Life', hr:'Ime Isusovo nad mojim životom' },
+  { fa:'من از بالا هستم', en:'I Am from Above', hr:'Ja sam odozgor' },
+  { fa:'ترس جایی در من ندارد', en:'Fear Has No Place in Me', hr:'Strah nema mjesta u meni' },
+  { fa:'سلامتی و آرامش مسیح', en:'The Peace and Wholeness of Christ', hr:'Mir i cjelovitost Kristova' },
+  { fa:'پیشرفت روزانه', en:'Daily Progress', hr:'Svakodnevni napredak' },
+  { fa:'کلام، داروی جان من', en:'The Word as Medicine to My Life', hr:'Riječ kao lijek mom životu' },
+  { fa:'قوت در انسان درونی', en:'Strength in the Inner Man', hr:'Snaga u unutarnjem čovjeku' },
+  { fa:'رهایی از محکومیت', en:'Freedom from Condemnation', hr:'Sloboda od osude' },
+  { fa:'محبت پدر در من', en:'The Father’s Love in Me', hr:'Očeva ljubav u meni' },
+  { fa:'حکمت خدا برای امروز', en:'God’s Wisdom for Today', hr:'Božja mudrost za danas' },
+  { fa:'نور در مسیر من', en:'Light on My Path', hr:'Svjetlo na mom putu' },
+  { fa:'اعتماد به عهد خدا', en:'Trusting God’s Covenant', hr:'Pouzdanje u Božji savez' },
+  { fa:'ثمر روح در من', en:'The Fruit of the Spirit in Me', hr:'Plod Duha u meni' },
+  { fa:'اقتدار بر تاریکی', en:'Authority over Darkness', hr:'Autoritet nad tamom' },
+  { fa:'پوشیده در مسیح', en:'Covered in Christ', hr:'Pokriven u Kristu' },
+  { fa:'زبان شکرگزاری', en:'The Language of Thanksgiving', hr:'Jezik zahvalnosti' },
+  { fa:'قدرت دعا و اعلام', en:'The Power of Prayer and Declaration', hr:'Sila molitve i objave' },
+  { fa:'زندگی در فراوانی فیض', en:'Living in Abundant Grace', hr:'Život u obilnoj milosti' },
+  { fa:'استواری در طوفان', en:'Standing Firm in the Storm', hr:'Postojanost u oluji' },
+  { fa:'لباس عدالت', en:'Clothed with Righteousness', hr:'Odjeven u pravednost' },
+  { fa:'زندگی بدون عقب‌نشینی', en:'A Life without Drawing Back', hr:'Život bez povlačenja' },
+  { fa:'وفور حیات در خانه من', en:'Abundant Life in My Household', hr:'Obilan život u mom domu' },
+  { fa:'آزادی از ترس آینده', en:'Free from Fear of the Future', hr:'Sloboda od straha budućnosti' },
+  { fa:'چشمان ایمان', en:'Eyes of Faith', hr:'Oči vjere' },
+  { fa:'پیروزی در نام عیسی', en:'Victory in the Name of Jesus', hr:'Pobjeda u Isusovu imenu' },
+  { fa:'افزایش و ثمردهی', en:'Increase and Fruitfulness', hr:'Rast i plodnost' },
+  { fa:'حضور خدا همراه من', en:'God’s Presence Goes with Me', hr:'Božja prisutnost ide sa mnom' },
+  { fa:'پایداری در ایمان', en:'Perseverance in Faith', hr:'Ustrajnost u vjeri' },
+  { fa:'تازه شدن هر روز', en:'Renewed Every Day', hr:'Obnovljen svaki dan' },
+  { fa:'برتری زندگی روحانی', en:'The Superiority of Spiritual Life', hr:'Nadmoć duhovnog života' },
+  { fa:'قلبی پر از کلام', en:'A Heart Filled with the Word', hr:'Srce ispunjeno Riječju' },
+  { fa:'آزاد برای خدمت', en:'Free to Serve', hr:'Slobodan za služenje' },
+  { fa:'حیات برتر از ضعف', en:'Life Greater than Weakness', hr:'Život veći od slabosti' },
+  { fa:'اعلان بر خانواده', en:'Declaration over My Family', hr:'Objava nad mojom obitelji' },
+  { fa:'وفاداری خدا در امروز', en:'God’s Faithfulness Today', hr:'Božja vjernost danas' },
+  { fa:'راه باز در مسیح', en:'An Open Way in Christ', hr:'Otvoren put u Kristu' },
+  { fa:'پاکی و سلامت درونی', en:'Purity and Inner Wholeness', hr:'Čistoća i unutarnja cjelovitost' },
+  { fa:'زندگی برای جلال خدا', en:'Living for God’s Glory', hr:'Život za Božju slavu' }
+];
+
+function faithDeclarationDayNumber(){
+  const start = new Date(FAITH_DECLARATION_START_DATE + 'T00:00:00Z');
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  let diff = Math.floor((today - start) / 86400000);
+  if(diff < 0) diff = 0;
+  return (diff % FAITH_DECLARATION_TITLES.length) + 1;
+}
+
+function faithDeclarationMessage(){
+  const day = faithDeclarationDayNumber();
+  const item = FAITH_DECLARATION_TITLES[day - 1];
+
+  return {
+    title: {
+      en: `Day ${day} — ${item.en}`,
+      fa: `روز ${day} — ${item.fa}`,
+      hr: `Dan ${day} — ${item.hr}`
+    },
+    body: {
+      en: 'Today’s faith declaration is ready. Speak it with faith and release God’s Word over your life.',
+      fa: 'اعلان ایمان امروز آماده است. آن را با ایمان و صدای بلند اعلام کن و کلام خدا را بر زندگی‌ات جاری ساز.',
+      hr: 'Današnja izjava vjere je spremna. Izgovori je s vjerom i objavi Božju riječ nad svojim životom.'
+    },
+    deliveryTime: '10:00:00'
+  };
+}function messageFor(type){
   const day = todayDayNumber();
 
   const messages = {
@@ -132,19 +212,7 @@ function messageFor(type){
       deliveryTime: '07:00:00'
     },
 
-    'faith-declaration': {
-      title: {
-        en: 'Faith Declaration',
-        fa: 'اعلان ایمان امروز',
-        hr: 'Izjava vjere'
-      },
-      body: {
-        en: 'Declare God’s Word over your life today.',
-        fa: 'امروز کلام خدا را با ایمان بر زندگی خود اعلام کن.',
-        hr: 'Danas izgovori Božju riječ nad svojim životom.'
-      },
-      deliveryTime: '10:00:00'
-    },
+   'faith-declaration': faithDeclarationMessage(),
 
     'thanksgiving': {
       title: {
@@ -288,15 +356,36 @@ async function send(){
   console.log('OneSignal App ID:', APP_ID ? '***' : 'missing');
   console.log('Open URL field: web_url only');
 
-  if(type === 'app-announcement'){
-    console.log('Announcement type:', announcementType);
-    for(const lang of ['fa','en','hr']){
-      await postToOneSignal(singleLanguagePayload(type, lang), `app-announcement:${announcementType}:${lang}`);
-    }
-    return;
+if(type === 'app-announcement'){
+  console.log('Announcement type:', announcementType);
+  for(const lang of ['fa','en','hr']){
+    await postToOneSignal(singleLanguagePayload(type, lang), `app-announcement:${announcementType}:${lang}`);
   }
+  return;
+}
 
-  await postToOneSignal(allSubscribersPayload(type), type);
+if(type === 'faith-declaration'){
+  console.log('Faith declaration notification: sending by language tags');
+  for(const lang of ['fa','en','hr']){
+    await postToOneSignal(singleLanguagePayload(type, lang), `faith-declaration:${lang}`);
+  }
+  return;
+}
+
+await postToOneSignal(allSubscribersPayload(type), type);
+  }
+  return;
+}
+
+if(type === 'faith-declaration'){
+  console.log('Faith declaration notification: sending by language tags');
+  for(const lang of ['fa','en','hr']){
+    await postToOneSignal(singleLanguagePayload(type, lang), `faith-declaration:${lang}`);
+  }
+  return;
+}
+
+await postToOneSignal(allSubscribersPayload(type), type);
 }
 
 send().catch(err => {

@@ -471,10 +471,9 @@
     var dict={
       fa:{
         title:'مدال‌ها و رشد روحانی',
-        sub:'مدال‌های شما بر اساس استمرار در کلام، دعا، شکرگزاری، ایمان و مطالعه کتاب‌مقدس آزاد می‌شود.',
+        sub:'مدال‌های شما بر اساس استمرار در کلام، دعا، شکرگزاری، ایمان، مدرسه و مطالعه کتاب‌مقدس آزاد می‌شود.',
         points:'امتیاز',
         streak:'روز پیوسته',
-        guide:'راهنمای مدال‌ها',
         bronze:'برنزی',
         silver:'نقره‌ای',
         gold:'طلایی',
@@ -489,10 +488,9 @@
       },
       en:{
         title:'Spiritual Growth & Medals',
-        sub:'Your medals unlock through consistency in the Word, prayer, thanksgiving, faith, and Bible reading.',
+        sub:'Your medals unlock through consistency in the Word, prayer, thanksgiving, faith, school, and Bible reading.',
         points:'Points',
         streak:'Day streak',
-        guide:'Medal Guide',
         bronze:'Bronze',
         silver:'Silver',
         gold:'Gold',
@@ -507,10 +505,9 @@
       },
       hr:{
         title:'Duhovni rast i medalje',
-        sub:'Medalje se otključavaju kroz postojanost u Riječi, molitvi, zahvaljivanju, vjeri i čitanju Biblije.',
+        sub:'Medalje se otključavaju kroz postojanost u Riječi, molitvi, zahvaljivanju, vjeri, školi i čitanju Biblije.',
         points:'Bodovi',
         streak:'Dana zaredom',
-        guide:'Vodič za medalje',
         bronze:'Brončana',
         silver:'Srebrna',
         gold:'Zlatna',
@@ -527,21 +524,133 @@
     return (dict[l]&&dict[l][k])||dict.fa[k]||k;
   }
 
-  function getState(){
-    var keys=['omideno7_rewards_v6348_state','omideno7_rewards_state','omideno7_rewards'];
+  function readNumberFromStorage(keys){
     for(var i=0;i<keys.length;i++){
       try{
         var raw=localStorage.getItem(keys[i]);
-        if(raw){
-          var s=JSON.parse(raw);
-          return {
-            points:Number(s.points||s.point||0),
-            streak:Number(s.streak||s.days||0)
-          };
+        if(raw===null || raw===undefined || raw==='') continue;
+
+        var n=Number(raw);
+        if(!isNaN(n)) return n;
+
+        if(String(raw).charAt(0)==='{'){
+          var obj=JSON.parse(raw);
+          var candidates=[
+            obj.points,
+            obj.point,
+            obj.score,
+            obj.totalPoints,
+            obj.streak,
+            obj.days,
+            obj.completedDays,
+            obj.progress
+          ];
+          for(var j=0;j<candidates.length;j++){
+            var x=Number(candidates[j]);
+            if(!isNaN(x) && x>0) return x;
+          }
         }
       }catch(e){}
     }
-    return {points:0,streak:0};
+    return 0;
+  }
+
+  function readObjectFromStorage(keys){
+    for(var i=0;i<keys.length;i++){
+      try{
+        var raw=localStorage.getItem(keys[i]);
+        if(raw && String(raw).charAt(0)==='{') return JSON.parse(raw);
+      }catch(e){}
+    }
+    return {};
+  }
+
+  function getState(){
+    var rewards=readObjectFromStorage([
+      'omideno7_rewards_v6348_state',
+      'omideno7_rewards_state',
+      'omideno7_rewards'
+    ]);
+
+    var points=Number(
+      rewards.points ||
+      rewards.point ||
+      rewards.score ||
+      rewards.totalPoints ||
+      readNumberFromStorage([
+        'omideno7_points',
+        'omideno7_total_points',
+        'omideno7_score',
+        'points',
+        'totalPoints'
+      ])
+    );
+
+    var streak=Number(
+      rewards.streak ||
+      rewards.days ||
+      rewards.completedDays ||
+      readNumberFromStorage([
+        'omideno7_streak',
+        'omideno7_day_streak',
+        'streak',
+        'dayStreak',
+        'completedDays'
+      ])
+    );
+
+    if(isNaN(points)) points=0;
+    if(isNaN(streak)) streak=0;
+
+    var faithDays=readNumberFromStorage([
+      'omideno7_faith_declaration_days',
+      'omideno7_declarations_read',
+      'faithDeclarationDays',
+      'declarationsRead'
+    ]);
+
+    var prayerDays=readNumberFromStorage([
+      'omideno7_prayer_days',
+      'omideno7_morning_prayer_days',
+      'prayerDays'
+    ]);
+
+    var thanksgivingDays=readNumberFromStorage([
+      'omideno7_thanksgiving_days',
+      'thanksgivingDays'
+    ]);
+
+    var schoolProgress=readNumberFromStorage([
+      'omideno7_school_progress',
+      'omideno7_school_completed_lessons',
+      'schoolProgress',
+      'schoolCompletedLessons'
+    ]);
+
+    var bibleDays=readNumberFromStorage([
+      'omideno7_bible365_day',
+      'omideno7_bible_reading_day',
+      'bible365Day',
+      'bibleReadingDay'
+    ]);
+
+    return {
+      points:points,
+      streak:streak,
+      faithDays:faithDays,
+      prayerDays:prayerDays,
+      thanksgivingDays:thanksgivingDays,
+      schoolProgress:schoolProgress,
+      bibleDays:bibleDays
+    };
+  }
+
+  function medalCard(icon,title,isOpen,rule){
+    return '<div style="border:1px solid #E6EAF2;border-radius:16px;padding:10px;text-align:center;'+(isOpen?'':'opacity:.58;filter:grayscale(.35);')+'">'+
+      '<div style="font-size:28px;">'+icon+'</div>'+
+      '<strong style="display:block;color:#06146D;font-size:14px;">'+title+'</strong>'+
+      '<small>'+(isOpen?T('unlocked'):T('locked'))+' · '+rule+'</small>'+
+    '</div>';
   }
 
   function ensureRewardsPanel(){
@@ -550,23 +659,21 @@
       if(!more) return;
 
       var old=document.getElementById('v6358RewardsPanel');
-      if(old){
-        old.style.setProperty('display','block','important');
-        old.style.setProperty('visibility','visible','important');
-        return;
-      }
+      if(old) old.remove();
 
       var s=getState();
+
       var medals=[
         ['🥉',T('bronze'),s.points>=100,'100 '+T('points')],
         ['🥈',T('silver'),s.points>=200,'200 '+T('points')],
         ['🥇',T('gold'),s.points>=500,'500 '+T('points')],
-        ['📖',T('word'),false,'30 days'],
-        ['🎓',T('school'),false,'7 days'],
-        ['🙏',T('prayer'),false,'10 days'],
-        ['🙌',T('thanks'),false,'30 days'],
-        ['🛡️',T('faith'),false,'21 days'],
-        ['📚',T('bible'),false,'365 days']
+
+        ['📖',T('word'),s.streak>=30 || s.points>=120,'30 '+T('streak')],
+        ['🎓',T('school'),s.schoolProgress>=7 || s.points>=150,'7 lessons'],
+        ['🙏',T('prayer'),s.prayerDays>=10 || s.streak>=10,'10 '+T('streak')],
+        ['🙌',T('thanks'),s.thanksgivingDays>=30 || s.points>=80,'30 days'],
+        ['🛡️',T('faith'),s.faithDays>=21 || s.streak>=21,'21 '+T('streak')],
+        ['📚',T('bible'),s.bibleDays>=365 || s.streak>=365,'365 days']
       ];
 
       var html=
@@ -579,16 +686,8 @@
           '</div>'+
           '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-top:12px;">'+
             medals.map(function(m){
-              return '<div style="border:1px solid #E6EAF2;border-radius:16px;padding:10px;text-align:center;'+(m[2]?'':'opacity:.58;filter:grayscale(.35);')+'">'+
-                '<div style="font-size:28px;">'+m[0]+'</div>'+
-                '<strong style="display:block;color:#06146D;font-size:14px;">'+m[1]+'</strong>'+
-                '<small>'+(m[2]?T('unlocked'):T('locked'))+' · '+m[3]+'</small>'+
-              '</div>';
+              return medalCard(m[0],m[1],m[2],m[3]);
             }).join('')+
-          '</div>'+
-          '<button id="v6358GuideBtn" class="btn secondary" style="margin-top:12px;">'+T('guide')+'</button>'+
-          '<div id="v6358GuideText" style="display:none;margin-top:10px;line-height:1.8;">'+
-            '🥉 100 '+T('points')+' · 🥈 200 '+T('points')+' · 🥇 500 '+T('points')+
           '</div>'+
         '</div>';
 
@@ -598,15 +697,6 @@
 
       var footer=more.querySelector('footer,.footer');
       more.insertBefore(panel, footer || null);
-
-      var btn=document.getElementById('v6358GuideBtn');
-      var guide=document.getElementById('v6358GuideText');
-      if(btn&&guide){
-        btn.onclick=function(e){
-          e.preventDefault();
-          guide.style.display=guide.style.display==='none'?'block':'none';
-        };
-      }
     }catch(e){}
   }
 
@@ -619,89 +709,16 @@
     setTimeout(run,1500);
     setTimeout(run,3000);
   });
+
   window.addEventListener('load',function(){
     setTimeout(run,500);
     setTimeout(run,1500);
   });
+
   document.addEventListener('click',function(){
     setTimeout(run,300);
     setTimeout(run,1000);
   },true);
-})();
-</script>
-<script>
-(function(){
-  function findGuide(){
-    return document.getElementById('v6358GuideText') ||
-           document.querySelector('[id*="GuideText"]') ||
-           document.querySelector('[data-medal-guide="text"]');
-  }
-
-  function findButton(){
-    return document.getElementById('v6358GuideBtn') ||
-           Array.prototype.slice.call(document.querySelectorAll('button,a,div,span')).find(function(el){
-             var t = (el.textContent || '').replace(/\s+/g,' ').trim();
-             return /راهنمای مدال|Medal Guide|Vodič za medalje/i.test(t);
-           });
-  }
-
-  function prepare(){
-    var btn = findButton();
-    var guide = findGuide();
-
-    if(btn){
-      btn.setAttribute('type','button');
-      btn.style.setProperty('pointer-events','auto','important');
-      btn.style.setProperty('cursor','pointer','important');
-      btn.setAttribute('data-medal-guide-btn','1');
-    }
-
-    if(guide){
-      guide.setAttribute('data-medal-guide','text');
-      if(!guide.dataset.ready){
-        guide.dataset.ready = '1';
-        guide.style.setProperty('display','none','important');
-      }
-    }
-  }
-
-  function toggle(){
-    prepare();
-    var guide = findGuide();
-    if(!guide) return;
-
-    var isHidden = window.getComputedStyle(guide).display === 'none' || guide.style.display === 'none';
-    guide.style.setProperty('display', isHidden ? 'block' : 'none', 'important');
-    guide.style.setProperty('visibility', 'visible', 'important');
-    guide.style.setProperty('height', 'auto', 'important');
-    guide.style.setProperty('overflow', 'visible', 'important');
-  }
-
-  document.addEventListener('click', function(e){
-    var target = e.target && e.target.closest ? e.target.closest('[data-medal-guide-btn="1"], #v6358GuideBtn, button, a, div, span') : null;
-    if(!target) return;
-
-    var txt = (target.textContent || '').replace(/\s+/g,' ').trim();
-    if(target.id !== 'v6358GuideBtn' && target.getAttribute('data-medal-guide-btn') !== '1' && !/راهنمای مدال|Medal Guide|Vodič za medalje/i.test(txt)) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    toggle();
-  }, true);
-
-  document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(prepare, 300);
-    setTimeout(prepare, 1200);
-    setTimeout(prepare, 2500);
-  });
-
-  window.addEventListener('load', function(){
-    setTimeout(prepare, 500);
-    setTimeout(prepare, 1500);
-  });
-
-  setInterval(prepare, 1500);
 })();
 </script>
 </body>

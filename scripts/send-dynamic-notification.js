@@ -270,21 +270,21 @@ function languageFilters(lang){
 
 function singleLanguagePayload(type, lang){
   const msg = messageFor(type);
-  const payload = {
-    app_id: APP_ID,
-    target_channel: 'push',
-    filters: languageFilters(lang),
-    headings: { en: msg.title[lang] || msg.title.en || msg.title.fa || msg.title.hr },
-    contents: { en: msg.body[lang] || msg.body.en || msg.body.fa || msg.body.hr },
-    web_url: appUrlFor(type, announcementType),
-    data: {
-      app: 'omideno7',
-      notification_type: type,
-      announcement_type: type === 'app-announcement' ? announcementType : undefined,
-      app_language: lang,
-      version: 'V63.36'
-    }
-  };
+ const payload = {
+  app_id: APP_ID,
+  target_channel: 'push',
+  filters: languageFilters(lang),
+  headings: { en: msg.title[lang] || msg.title.en || msg.title.fa || msg.title.hr },
+  contents: { en: msg.body[lang] || msg.body.en || msg.body.fa || msg.body.hr },
+  web_url: appUrlFor(type, announcementType),
+  data: {
+    app: 'omideno7',
+    notification_type: type,
+    announcement_type: type === 'app-announcement' ? announcementType : undefined,
+    app_language: lang,
+    version: 'V63.36'
+  }
+};
 
   if(msg.deliveryTime){
     payload.delayed_option = 'timezone';

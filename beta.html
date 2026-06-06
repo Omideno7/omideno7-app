@@ -457,39 +457,176 @@
 </script>
 <script>
 (function(){
-  function restoreRewardsPanel(){
+  function lang(){
     try{
-      if(window.OMIDENO7_V6358_FINAL && typeof window.OMIDENO7_V6358_FINAL.render === 'function'){
-        window.OMIDENO7_V6358_FINAL.render();
+      var v=(localStorage.getItem('lang')||localStorage.getItem('omideno7_lang')||document.documentElement.lang||navigator.language||'fa').toLowerCase();
+      if(v.indexOf('en')===0) return 'en';
+      if(v.indexOf('hr')===0 || v.indexOf('cro')>-1 || v.indexOf('hrv')>-1) return 'hr';
+      return 'fa';
+    }catch(e){return 'fa';}
+  }
+
+  function T(k){
+    var l=lang();
+    var dict={
+      fa:{
+        title:'مدال‌ها و رشد روحانی',
+        sub:'مدال‌های شما بر اساس استمرار در کلام، دعا، شکرگزاری، ایمان و مطالعه کتاب‌مقدس آزاد می‌شود.',
+        points:'امتیاز',
+        streak:'روز پیوسته',
+        guide:'راهنمای مدال‌ها',
+        bronze:'برنزی',
+        silver:'نقره‌ای',
+        gold:'طلایی',
+        word:'دوستدار کلام',
+        school:'شاگرد وفادار',
+        prayer:'مدال دعا',
+        thanks:'شکرگزاری',
+        faith:'ایمان',
+        bible:'گرسنگی عمیق برای کلام خدا',
+        locked:'قفل',
+        unlocked:'آزاد'
+      },
+      en:{
+        title:'Spiritual Growth & Medals',
+        sub:'Your medals unlock through consistency in the Word, prayer, thanksgiving, faith, and Bible reading.',
+        points:'Points',
+        streak:'Day streak',
+        guide:'Medal Guide',
+        bronze:'Bronze',
+        silver:'Silver',
+        gold:'Gold',
+        word:'Word Lover',
+        school:'Faithful Student',
+        prayer:'Prayer Medal',
+        thanks:'Thanksgiving',
+        faith:'Faith',
+        bible:'Deep Hunger for God’s Word',
+        locked:'Locked',
+        unlocked:'Unlocked'
+      },
+      hr:{
+        title:'Duhovni rast i medalje',
+        sub:'Medalje se otključavaju kroz postojanost u Riječi, molitvi, zahvaljivanju, vjeri i čitanju Biblije.',
+        points:'Bodovi',
+        streak:'Dana zaredom',
+        guide:'Vodič za medalje',
+        bronze:'Brončana',
+        silver:'Srebrna',
+        gold:'Zlatna',
+        word:'Ljubitelj Riječi',
+        school:'Vjerni učenik',
+        prayer:'Medalja molitve',
+        thanks:'Zahvaljivanje',
+        faith:'Vjera',
+        bible:'Duboka glad za Božjom Riječi',
+        locked:'Zaključano',
+        unlocked:'Otključano'
+      }
+    };
+    return (dict[l]&&dict[l][k])||dict.fa[k]||k;
+  }
+
+  function getState(){
+    var keys=['omideno7_rewards_v6348_state','omideno7_rewards_state','omideno7_rewards'];
+    for(var i=0;i<keys.length;i++){
+      try{
+        var raw=localStorage.getItem(keys[i]);
+        if(raw){
+          var s=JSON.parse(raw);
+          return {
+            points:Number(s.points||s.point||0),
+            streak:Number(s.streak||s.days||0)
+          };
+        }
+      }catch(e){}
+    }
+    return {points:0,streak:0};
+  }
+
+  function ensureRewardsPanel(){
+    try{
+      var more=document.getElementById('more');
+      if(!more) return;
+
+      var old=document.getElementById('v6358RewardsPanel');
+      if(old){
+        old.style.setProperty('display','block','important');
+        old.style.setProperty('visibility','visible','important');
+        return;
       }
 
-      ['v6358RewardsPanel','v6357RewardsPanel'].forEach(function(id){
-        var el = document.getElementById(id);
-        if(el){
-          el.style.setProperty('display', 'block', 'important');
-          el.style.setProperty('visibility', 'visible', 'important');
-          el.style.setProperty('height', 'auto', 'important');
-          el.style.setProperty('overflow', 'visible', 'important');
-        }
-      });
+      var s=getState();
+      var medals=[
+        ['🥉',T('bronze'),s.points>=100,'100 '+T('points')],
+        ['🥈',T('silver'),s.points>=200,'200 '+T('points')],
+        ['🥇',T('gold'),s.points>=500,'500 '+T('points')],
+        ['📖',T('word'),false,'30 days'],
+        ['🎓',T('school'),false,'7 days'],
+        ['🙏',T('prayer'),false,'10 days'],
+        ['🙌',T('thanks'),false,'30 days'],
+        ['🛡️',T('faith'),false,'21 days'],
+        ['📚',T('bible'),false,'365 days']
+      ];
+
+      var html=
+        '<div id="v6358RewardsPanel" class="card" style="border-top:5px solid #06146D;padding:16px;margin-top:14px;">'+
+          '<h3 style="margin:0 0 6px;color:#06146D;font-weight:950;">🏆 '+T('title')+'</h3>'+
+          '<p style="margin:0 0 12px;line-height:1.8;">'+T('sub')+'</p>'+
+          '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;">'+
+            '<div style="flex:1;min-width:120px;background:#f8fbff;border-radius:14px;padding:10px;text-align:center;"><strong>'+s.points+'</strong><br><small>'+T('points')+'</small></div>'+
+            '<div style="flex:1;min-width:120px;background:#f8fbff;border-radius:14px;padding:10px;text-align:center;"><strong>'+s.streak+'</strong><br><small>'+T('streak')+'</small></div>'+
+          '</div>'+
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-top:12px;">'+
+            medals.map(function(m){
+              return '<div style="border:1px solid #E6EAF2;border-radius:16px;padding:10px;text-align:center;'+(m[2]?'':'opacity:.58;filter:grayscale(.35);')+'">'+
+                '<div style="font-size:28px;">'+m[0]+'</div>'+
+                '<strong style="display:block;color:#06146D;font-size:14px;">'+m[1]+'</strong>'+
+                '<small>'+(m[2]?T('unlocked'):T('locked'))+' · '+m[3]+'</small>'+
+              '</div>';
+            }).join('')+
+          '</div>'+
+          '<button id="v6358GuideBtn" class="btn secondary" style="margin-top:12px;">'+T('guide')+'</button>'+
+          '<div id="v6358GuideText" style="display:none;margin-top:10px;line-height:1.8;">'+
+            '🥉 100 '+T('points')+' · 🥈 200 '+T('points')+' · 🥇 500 '+T('points')+
+          '</div>'+
+        '</div>';
+
+      var box=document.createElement('div');
+      box.innerHTML=html;
+      var panel=box.firstElementChild;
+
+      var footer=more.querySelector('footer,.footer');
+      more.insertBefore(panel, footer || null);
+
+      var btn=document.getElementById('v6358GuideBtn');
+      var guide=document.getElementById('v6358GuideText');
+      if(btn&&guide){
+        btn.onclick=function(e){
+          e.preventDefault();
+          guide.style.display=guide.style.display==='none'?'block':'none';
+        };
+      }
     }catch(e){}
   }
 
-  document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(restoreRewardsPanel, 500);
-    setTimeout(restoreRewardsPanel, 1500);
-    setTimeout(restoreRewardsPanel, 3000);
-  });
+  function run(){
+    ensureRewardsPanel();
+  }
 
-  window.addEventListener('load', function(){
-    setTimeout(restoreRewardsPanel, 500);
-    setTimeout(restoreRewardsPanel, 1500);
+  document.addEventListener('DOMContentLoaded',function(){
+    setTimeout(run,500);
+    setTimeout(run,1500);
+    setTimeout(run,3000);
   });
-
-  document.addEventListener('click', function(){
-    setTimeout(restoreRewardsPanel, 300);
-    setTimeout(restoreRewardsPanel, 1000);
-  }, true);
+  window.addEventListener('load',function(){
+    setTimeout(run,500);
+    setTimeout(run,1500);
+  });
+  document.addEventListener('click',function(){
+    setTimeout(run,300);
+    setTimeout(run,1000);
+  },true);
 })();
 </script>
 </body>

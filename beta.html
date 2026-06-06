@@ -631,20 +631,77 @@
 </script>
 <script>
 (function(){
-  function toggleMedalGuide(){
-    var guide = document.getElementById('v6358GuideText');
+  function findGuide(){
+    return document.getElementById('v6358GuideText') ||
+           document.querySelector('[id*="GuideText"]') ||
+           document.querySelector('[data-medal-guide="text"]');
+  }
+
+  function findButton(){
+    return document.getElementById('v6358GuideBtn') ||
+           Array.prototype.slice.call(document.querySelectorAll('button,a,div,span')).find(function(el){
+             var t = (el.textContent || '').replace(/\s+/g,' ').trim();
+             return /راهنمای مدال|Medal Guide|Vodič za medalje/i.test(t);
+           });
+  }
+
+  function prepare(){
+    var btn = findButton();
+    var guide = findGuide();
+
+    if(btn){
+      btn.setAttribute('type','button');
+      btn.style.setProperty('pointer-events','auto','important');
+      btn.style.setProperty('cursor','pointer','important');
+      btn.setAttribute('data-medal-guide-btn','1');
+    }
+
+    if(guide){
+      guide.setAttribute('data-medal-guide','text');
+      if(!guide.dataset.ready){
+        guide.dataset.ready = '1';
+        guide.style.setProperty('display','none','important');
+      }
+    }
+  }
+
+  function toggle(){
+    prepare();
+    var guide = findGuide();
     if(!guide) return;
-    var current = window.getComputedStyle(guide).display;
-    guide.style.setProperty('display', current === 'none' ? 'block' : 'none', 'important');
+
+    var isHidden = window.getComputedStyle(guide).display === 'none' || guide.style.display === 'none';
+    guide.style.setProperty('display', isHidden ? 'block' : 'none', 'important');
+    guide.style.setProperty('visibility', 'visible', 'important');
+    guide.style.setProperty('height', 'auto', 'important');
+    guide.style.setProperty('overflow', 'visible', 'important');
   }
 
   document.addEventListener('click', function(e){
-    var btn = e.target && e.target.closest ? e.target.closest('#v6358GuideBtn') : null;
-    if(!btn) return;
+    var target = e.target && e.target.closest ? e.target.closest('[data-medal-guide-btn="1"], #v6358GuideBtn, button, a, div, span') : null;
+    if(!target) return;
+
+    var txt = (target.textContent || '').replace(/\s+/g,' ').trim();
+    if(target.id !== 'v6358GuideBtn' && target.getAttribute('data-medal-guide-btn') !== '1' && !/راهنمای مدال|Medal Guide|Vodič za medalje/i.test(txt)) return;
+
     e.preventDefault();
     e.stopPropagation();
-    toggleMedalGuide();
+    e.stopImmediatePropagation();
+    toggle();
   }, true);
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(prepare, 300);
+    setTimeout(prepare, 1200);
+    setTimeout(prepare, 2500);
+  });
+
+  window.addEventListener('load', function(){
+    setTimeout(prepare, 500);
+    setTimeout(prepare, 1500);
+  });
+
+  setInterval(prepare, 1500);
 })();
 </script>
 </body>

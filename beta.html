@@ -165,7 +165,7 @@
 -->
 <script src="v63-49-salvation-registration-form-beta.js?v=6358-form"></script>
 <script src="v63-58-newbirth-data.js?v=6358"></script>
-<script src="v63-58-final-stability-clean-beta.js?v=6358e"></script>
+<script src="v63-58-final-stability-clean-beta.js?v=6358f"></script>
 <script src="v63-72-medal-guide-stable-beta.js?v=6372"></script>
 <script src="v63-59-welcome-meeting-registration-beta.js?v=6359"></script>
 <script src="v63-60-remove-duplicate-welcome-amen-beta.js?v=6360"></script>
@@ -314,20 +314,22 @@
 (function(){
   function cleanOldBetaAndDaily(){
     try{
-      [
-        '#v6358DailyCard',
-        '.v6358-toast',
-        '.v6358DailyCard',
-        '#v6358RcReport',
-        '#v6358VersionFooter',
-        '[id="v6358DailyCard"]',
-        '[id*="6358"][id*="Daily"]',
-        '[id*="6358"][id*="RcReport"]',
-        '[id*="6358"][id*="VersionFooter"]',
-        '[class*="6358"][class*="toast"]',
-        '[class*="6358"][class*="Daily"]',
-        '[class*="6358"][class*="daily"]'
-      ].forEach(function(sel){
+     [
+  '#v6358WelcomeCard',
+  '.v6358WelcomeCard',
+  '#v6358DailyCard',
+  '.v6358-toast',
+  '.v6358DailyCard',
+  '#v6358RcReport',
+  '#v6358VersionFooter',
+  '[id="v6358DailyCard"]',
+  '[id*="6358"][id*="Daily"]',
+  '[id*="6358"][id*="RcReport"]',
+  '[id*="6358"][id*="VersionFooter"]',
+  '[class*="6358"][class*="toast"]',
+  '[class*="6358"][class*="Daily"]',
+  '[class*="6358"][class*="daily"]'
+].forEach(function(sel){
         document.querySelectorAll(sel).forEach(function(el){
           el.remove();
         });
@@ -363,7 +365,7 @@
   setInterval(run, 1500);
 })();
 </script>
-<script src="omideno7-daily-message.js?v=14"></script>
+<script src="omideno7-daily-message.js?v=15"></script>
 <script src="omideno7-faith-declarations-v2.js?v=2"></script>
 </body>
 </html>

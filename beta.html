@@ -369,8 +369,98 @@
   setTimeout(run,5000);
   setTimeout(run,8000);
 })();
+<script>
+(function(){
+  function getLang(){
+    try{
+      var v = localStorage.getItem('lang') || localStorage.getItem('omideno7_lang') || document.documentElement.lang || navigator.language || 'fa';
+      v = String(v).toLowerCase();
+      if(v.indexOf('hr') === 0 || v.indexOf('cro') > -1) return 'hr';
+      if(v.indexOf('en') === 0) return 'en';
+      return 'fa';
+    }catch(e){
+      return 'fa';
+    }
+  }
+
+  function fixChurchHeaderTitle(){
+    var lang = getLang();
+
+    var data = {
+      fa: {
+        title: 'کلیسای امیدنو۷',
+        meaning: '',
+        subtitle: 'کلام روزانه، دعا، ایمان'
+      },
+      en: {
+        title: 'OmideNo7 Church',
+        meaning: 'New Hope 7 Church',
+        subtitle: 'Daily Word, Prayer, Faith'
+      },
+      hr: {
+        title: 'Crkva OmideNo7',
+        meaning: 'Crkva Nova Nada 7',
+        subtitle: 'Dnevna riječ, molitva, vjera'
+      }
+    };
+
+    var t = data[lang] || data.fa;
+    var titleEl = document.querySelector('.app-title');
+    var subEl = document.querySelector('.app-subtitle');
+
+    if(titleEl) titleEl.textContent = t.title;
+
+    if(subEl){
+      if(t.meaning){
+        subEl.innerHTML =
+          '<div class="church-name-meaning">' + t.meaning + '</div>' +
+          '<div class="church-header-subtitle">' + t.subtitle + '</div>';
+      }else{
+        subEl.textContent = t.subtitle;
+      }
+    }
+  }
+
+  function addChurchHeaderStyle(){
+    if(document.getElementById('churchHeaderTitleFixStyle')) return;
+    var st = document.createElement('style');
+    st.id = 'churchHeaderTitleFixStyle';
+    st.textContent =
+      '.church-name-meaning{' +
+        'font-size:12px;' +
+        'line-height:1.25;' +
+        'font-weight:500;' +
+        'opacity:.72;' +
+        'margin-top:1px;' +
+      '}' +
+      '.church-header-subtitle{' +
+        'font-size:12px;' +
+        'line-height:1.25;' +
+        'font-weight:600;' +
+        'opacity:.9;' +
+        'margin-top:1px;' +
+      '}';
+    document.head.appendChild(st);
+  }
+
+  function run(){
+    addChurchHeaderStyle();
+    fixChurchHeaderTitle();
+  }
+
+  document.addEventListener('DOMContentLoaded', run);
+  window.addEventListener('load', run);
+  document.addEventListener('click', function(){
+    setTimeout(run, 80);
+    setTimeout(run, 300);
+  }, true);
+
+  setTimeout(run, 100);
+  setTimeout(run, 500);
+  setTimeout(run, 1200);
+})();
 </script>
-<script src="omideno7-daily-message.js?v=20"></script>
+<script src="omideno7-daily-message.js?v=21"></script>
 <script src="omideno7-faith-declarations-v2.js?v=2"></script>
 </body>
 </html>

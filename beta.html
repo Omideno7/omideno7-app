@@ -165,7 +165,7 @@
 -->
 <script src="v63-49-salvation-registration-form-beta.js?v=6358-form"></script>
 <script src="v63-58-newbirth-data.js?v=6358"></script>
-<script src="v63-58-final-stability-clean-beta.js?v=6358f"></script>
+<script src="v63-58-final-stability-clean-beta.js?v=6358g"></script>
 <script src="v63-72-medal-guide-stable-beta.js?v=6372"></script>
 <script src="v63-59-welcome-meeting-registration-beta.js?v=6359"></script>
 <script src="v63-60-remove-duplicate-welcome-amen-beta.js?v=6360"></script>
@@ -453,6 +453,43 @@
   setTimeout(run, 1200);
   setTimeout(run, 2500);
   setInterval(run, 2000);
+})();
+</script>
+<script>
+(function(){
+  function restoreRewardsPanel(){
+    try{
+      if(window.OMIDENO7_V6358_FINAL && typeof window.OMIDENO7_V6358_FINAL.render === 'function'){
+        window.OMIDENO7_V6358_FINAL.render();
+      }
+
+      ['v6358RewardsPanel','v6357RewardsPanel'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(el){
+          el.style.setProperty('display', 'block', 'important');
+          el.style.setProperty('visibility', 'visible', 'important');
+          el.style.setProperty('height', 'auto', 'important');
+          el.style.setProperty('overflow', 'visible', 'important');
+        }
+      });
+    }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(restoreRewardsPanel, 500);
+    setTimeout(restoreRewardsPanel, 1500);
+    setTimeout(restoreRewardsPanel, 3000);
+  });
+
+  window.addEventListener('load', function(){
+    setTimeout(restoreRewardsPanel, 500);
+    setTimeout(restoreRewardsPanel, 1500);
+  });
+
+  document.addEventListener('click', function(){
+    setTimeout(restoreRewardsPanel, 300);
+    setTimeout(restoreRewardsPanel, 1000);
+  }, true);
 })();
 </script>
 </body>

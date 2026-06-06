@@ -373,19 +373,6 @@ if(type === 'faith-declaration'){
 }
 
 await postToOneSignal(allSubscribersPayload(type), type);
-  }
-  return;
-}
-
-if(type === 'faith-declaration'){
-  console.log('Faith declaration notification: sending by language tags');
-  for(const lang of ['fa','en','hr']){
-    await postToOneSignal(singleLanguagePayload(type, lang), `faith-declaration:${lang}`);
-  }
-  return;
-}
-
-await postToOneSignal(allSubscribersPayload(type), type);
 }
 
 send().catch(err => {

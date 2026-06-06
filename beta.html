@@ -629,5 +629,23 @@
   },true);
 })();
 </script>
+<script>
+(function(){
+  function toggleMedalGuide(){
+    var guide = document.getElementById('v6358GuideText');
+    if(!guide) return;
+    var current = window.getComputedStyle(guide).display;
+    guide.style.setProperty('display', current === 'none' ? 'block' : 'none', 'important');
+  }
+
+  document.addEventListener('click', function(e){
+    var btn = e.target && e.target.closest ? e.target.closest('#v6358GuideBtn') : null;
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMedalGuide();
+  }, true);
+})();
+</script>
 </body>
 </html>

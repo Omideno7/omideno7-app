@@ -1,4 +1,4 @@
-/* Omideno7 Faith Declarations V2
+/* Omideno7 Faith Declarations V3
    Safe replacement for #declarationsContent only.
    50-day continuous cycle. Start date: 2026-06-01.
 */
@@ -6,7 +6,7 @@
 'use strict';
 
 var START_DATE = '2026-06-01';
-var VERSION = '2.0.0';
+var VERSION = '3.0.0';
 var BOOK_MAP = {
   "Genesis": "GEN",
   "Exodus": "EXO",
@@ -76,6 +76,54 @@ var BOOK_MAP = {
   "Jude": "JUD",
   "Revelation": "REV"
 };
+
+var BOOK_LABELS = {
+  fa:{
+    "Genesis":"پیدایش","Exodus":"خروج","Leviticus":"لاویان","Numbers":"اعداد","Deuteronomy":"تثنیه","Joshua":"یوشع","Judges":"داوران","Ruth":"روت","1 Samuel":"اول سموئیل","2 Samuel":"دوم سموئیل","1 Kings":"اول پادشاهان","2 Kings":"دوم پادشاهان","1 Chronicles":"اول تواریخ","2 Chronicles":"دوم تواریخ","Ezra":"عزرا","Nehemiah":"نحمیا","Esther":"استر","Job":"ایوب","Psalm":"مزامیر","Psalms":"مزامیر","Proverbs":"امثال","Ecclesiastes":"جامعه","Song of Solomon":"غزل غزل‌ها","Isaiah":"اشعیا","Jeremiah":"ارمیا","Lamentations":"مراثی ارمیا","Ezekiel":"حزقیال","Daniel":"دانیال","Hosea":"هوشع","Joel":"یوئیل","Amos":"عاموس","Obadiah":"عوبدیا","Jonah":"یونس","Micah":"میکاه","Nahum":"ناحوم","Habakkuk":"حبقوق","Zephaniah":"صفنیا","Haggai":"حجی","Zechariah":"زکریا","Malachi":"ملاکی",
+    "Matthew":"متی","Mark":"مرقس","Luke":"لوقا","John":"یوحنا","Acts":"اعمال رسولان","Romans":"رومیان","1 Corinthians":"اول قرنتیان","2 Corinthians":"دوم قرنتیان","Galatians":"غلاطیان","Ephesians":"افسسیان","Philippians":"فیلیپیان","Colossians":"کولسیان","1 Thessalonians":"اول تسالونیکیان","2 Thessalonians":"دوم تسالونیکیان","1 Timothy":"اول تیموتائوس","2 Timothy":"دوم تیموتائوس","Titus":"تیطس","Philemon":"فلیمون","Hebrews":"عبرانیان","James":"یعقوب","1 Peter":"اول پطرس","2 Peter":"دوم پطرس","1 John":"اول یوحنا","2 John":"دوم یوحنا","3 John":"سوم یوحنا","Jude":"یهودا","Revelation":"مکاشفه"
+  },
+  hr:{
+    "Genesis":"Postanak","Exodus":"Izlazak","Leviticus":"Levitski zakonik","Numbers":"Brojevi","Deuteronomy":"Ponovljeni zakon","Joshua":"Jošua","Judges":"Suci","Ruth":"Ruta","1 Samuel":"1. Samuelova","2 Samuel":"2. Samuelova","1 Kings":"1. Kraljevima","2 Kings":"2. Kraljevima","1 Chronicles":"1. Ljetopisa","2 Chronicles":"2. Ljetopisa","Ezra":"Ezra","Nehemiah":"Nehemija","Esther":"Estera","Job":"Job","Psalm":"Psalmi","Psalms":"Psalmi","Proverbs":"Izreke","Ecclesiastes":"Propovjednik","Song of Solomon":"Pjesma nad pjesmama","Isaiah":"Izaija","Jeremiah":"Jeremija","Lamentations":"Tužaljke","Ezekiel":"Ezekiel","Daniel":"Daniel","Hosea":"Hošea","Joel":"Joel","Amos":"Amos","Obadiah":"Obadija","Jonah":"Jona","Micah":"Mihej","Nahum":"Nahum","Habakkuk":"Habakuk","Zephaniah":"Sefanija","Haggai":"Hagaj","Zechariah":"Zaharija","Malachi":"Malahija",
+    "Matthew":"Matej","Mark":"Marko","Luke":"Luka","John":"Ivan","Acts":"Djela apostolska","Romans":"Rimljanima","1 Corinthians":"1. Korinćanima","2 Corinthians":"2. Korinćanima","Galatians":"Galaćanima","Ephesians":"Efežanima","Philippians":"Filipljanima","Colossians":"Kološanima","1 Thessalonians":"1. Solunjanima","2 Thessalonians":"2. Solunjanima","1 Timothy":"1. Timoteju","2 Timothy":"2. Timoteju","Titus":"Titu","Philemon":"Filemonu","Hebrews":"Hebrejima","James":"Jakovljeva","1 Peter":"1. Petrova","2 Peter":"2. Petrova","1 John":"1. Ivanova","2 John":"2. Ivanova","3 John":"3. Ivanova","Jude":"Judina","Revelation":"Otkrivenje"
+  }
+};
+
+function localizeDigits(s){
+  if(lang()!=='fa') return String(s||'');
+  return String(s||'').replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[d];});
+}
+
+function displayRef(ref){
+  var raw = String(ref||'').trim();
+  var p = parseRef(raw);
+  if(!p) return localizeDigits(raw);
+  var l = lang();
+  var book = ((BOOK_LABELS[l]||{})[p.book]) || p.book;
+  var range = p.from===p.to ? String(p.from) : (p.from+'-'+p.to);
+  var sep = l==='fa' ? ' ' : ' ';
+  return localizeDigits(book + sep + p.chapter + ':' + range);
+}
+
+function hideOldDeclarationsIntro(){
+  var patterns = [
+    /این اعلان‌ها را با ایمان و صدای بلند بخوانید/i,
+    /این اعلانها را با ایمان و صدای بلند بخوانید/i,
+    /Read these declarations/i,
+    /Read the declarations/i,
+    /Čitajte ove izjave/i
+  ];
+  var page = document.getElementById('declarations') || document.querySelector('.page.active') || document;
+  page.querySelectorAll('p,div,span').forEach(function(el){
+    var t=(el.textContent||'').replace(/\s+/g,' ').trim();
+    if(!t || t.length>180) return;
+    if(patterns.some(function(re){return re.test(t);})){
+      var card = el.closest('.card,.hero-card,section,div') || el;
+      if(card && !card.id) card.style.setProperty('display','none','important');
+    }
+  });
+}
+
+
 var DATA = [
   {
     "day": 1,
@@ -1516,7 +1564,7 @@ function injectCss(){
  st.textContent = `
   .ofd-wrap{display:grid;gap:16px;margin:12px 0 90px}
   .ofd-hero{background:linear-gradient(135deg,#fff,#eef5ff);border:1px solid #e5eaf5;border-radius:24px;padding:22px;box-shadow:0 18px 40px rgba(6,20,109,.08)}
-  .ofd-hero h3{margin:0 0 8px;font-size:22px;color:#06146d}
+  .ofd-hero h3{margin:0 0 8px;font-size:22px;color:#06146d}.ofd-main-title h3{margin:0;font-size:26px;font-weight:950;line-height:1.7;text-align:center}
   .ofd-hero p{margin:0;color:#4b5575;line-height:1.9}
   .ofd-card{background:#fff;border:1px solid #e8ecf5;border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(6,20,109,.06)}
   .ofd-section-title{font-weight:900;color:#06146d;margin:0 0 10px;font-size:18px}
@@ -1569,7 +1617,7 @@ function showVerse(ref){
    : '<p class="ofd-text">'+esc(T('notFound'))+'</p>';
  var modal=document.createElement('div');
  modal.className='ofd-modal';
- modal.innerHTML='<div class="ofd-modal-box"><div class="ofd-modal-head"><h3>'+esc(ref)+'</h3><button class="ofd-close">'+esc(T('close'))+'</button></div>'+body+'</div>';
+ modal.innerHTML='<div class="ofd-modal-box"><div class="ofd-modal-head"><h3>'+esc(displayRef(ref))+'</h3><button class="ofd-close">'+esc(T('close'))+'</button></div>'+body+'</div>';
  modal.querySelector('.ofd-close').onclick=function(){ modal.remove(); };
  modal.addEventListener('click',function(e){ if(e.target===modal) modal.remove(); });
  document.body.appendChild(modal);
@@ -1577,16 +1625,18 @@ function showVerse(ref){
 
 function render(){
  injectCss();
+ hideOldDeclarationsIntro();
  var root=document.getElementById('declarationsContent');
  if(!root) return;
  var item=DATA[currentIndex()];
  var l=lang();
  var dayLabel = l==='fa' ? toFa(item.day) : item.day;
+ var mainTitle = esc(T('day'))+' '+dayLabel+' — '+esc(L(item.title));
  root.innerHTML =
   '<div class="ofd-wrap">'+
-   '<div class="ofd-hero"><h3>'+esc(T('cycle'))+'</h3><p>'+esc(T('day'))+' '+dayLabel+' — '+esc(L(item.title))+'</p><p>'+esc(T('read'))+'</p></div>'+
+   '<div class="ofd-hero ofd-main-title"><h3>'+mainTitle+'</h3></div>'+
    '<div class="ofd-card"><div class="ofd-section-title">'+esc(T('key'))+'</div><div class="ofd-verses">'+
-     (item.verses||[]).map(function(v){return '<button class="ofd-verse-btn" type="button" data-ofd-verse="'+esc(v)+'">'+esc(v)+'</button>';}).join('')+
+     (item.verses||[]).map(function(v){return '<button class="ofd-verse-btn" type="button" data-ofd-verse="'+esc(v)+'">'+esc(displayRef(v))+'</button>';}).join('')+
    '</div></div>'+
    '<div class="ofd-card"><div class="ofd-section-title">'+esc(T('teaching'))+'</div><div class="ofd-text">'+esc(L(item.teaching))+'</div></div>'+
    '<div class="ofd-card"><div class="ofd-section-title">'+esc(T('declaration'))+'</div><div class="ofd-text ofd-declaration">'+esc(L(item.declaration))+'</div></div>'+

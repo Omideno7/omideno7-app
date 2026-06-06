@@ -1907,17 +1907,36 @@
     if(t===LAST_MESSAGE) return true;
     return ORIGINAL_PATTERNS.some(function(re){return re.test(t);});
   }
-  function findTargets(){
-    var out=[];
-    var home=document.getElementById('home') || document.querySelector('section#home,.page#home,.page.active');
-    var scope=home || document;
-    scope.querySelectorAll('p,div,span').forEach(function(el){
-      if(el.querySelector('button,a,input,select,textarea')) return;
-      var t=clean(el.textContent);
-      if(isOriginalOrOldDailyText(t)) out.push(el);
-    });
-    return out;
-  }
+function findTargets(){
+  var out=[];
+  var home=document.getElementById('home') || document.querySelector('section#home,.page#home,.page.active');
+  var scope=home || document;
+
+  [
+    '#home [data-i18n="homeDesc"]',
+    '#home [data-i18n="daily"]',
+    '#home [data-daily-card]',
+    '#home .daily-card',
+    '#home .status',
+    '#home .notification-status',
+    '#home .hero-card p',
+    '#home .card p'
+  ].forEach(function(sel){
+    try{
+      scope.querySelectorAll(sel).forEach(function(el){
+        if(out.indexOf(el)===-1) out.push(el);
+      });
+    }catch(e){}
+  });
+
+  scope.querySelectorAll('p,div,span').forEach(function(el){
+    if(el.querySelector('button,a,input,select,textarea')) return;
+    var t=clean(el.textContent);
+    if(isOriginalOrOldDailyText(t) && out.indexOf(el)===-1) out.push(el);
+  });
+
+  return out;
+}
   function injectCss(){
     if(document.getElementById('omideno7DailyStableCss')) return;
     var st=document.createElement('style');

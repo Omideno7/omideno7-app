@@ -151,7 +151,13 @@
       const password=String(f.get('password')||'');
       if(!email||!password){ showStatus(tr('required'),true); return; }
       showStatus(tr('loading'));
-      const {data,error}=await sb.auth.signUp({email, password});
+      const {data,error}=await sb.auth.signUp({
+  email: email,
+  password: password,
+  options: {
+    emailRedirectTo: 'https://omideno7.github.io/omideno7-app/beta.html?school=confirmed'
+  }
+});
       if(error){ showStatus(error.message,true); return; }
       session=data?.session||session;
       if(session?.user){
@@ -163,12 +169,12 @@
       }
       // If Supabase email confirmation is enabled, signUp returns no session.
       // Keep the form visible and show a clear message instead of re-rendering and clearing the fields.
-      const lang=getLang();
+      const currentLang=lang();
       const msg={
         fa:'حساب ساخته شد، اما هنوز ورود فعال نشده است. اگر ایمیل تأیید دریافت کردید، آن را تأیید کنید و سپس با همین ایمیل و رمز وارد مدرسه شوید. اگر نمی‌خواهید تأیید ایمیل لازم باشد، در Supabase بخش Auth گزینه Confirm email را خاموش کنید.',
         en:'Account created, but you are not signed in yet. If you received a confirmation email, confirm it, then sign in with the same email and password. To allow immediate access, disable Confirm email in Supabase Auth settings.',
         hr:'Račun je izrađen, ali još niste prijavljeni. Ako ste primili potvrdni email, potvrdite ga i zatim se prijavite istim emailom i lozinkom. Za trenutačan pristup isključite Confirm email u Supabase Auth postavkama.'
-      }[lang]||'Account created. Please confirm your email and sign in.';
+     }[currentLang]||'Account created. Please confirm your email and sign in.';
       showStatus(msg);
     });
   }

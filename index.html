@@ -374,6 +374,13 @@
 })();
 </script>
 <script src="omideno7-daily-message.js?v=22"></script>
+<script>
+setTimeout(function(){
+  if(window.OMIDENO7_DAILY_MESSAGE && window.OMIDENO7_DAILY_MESSAGE.refresh){
+    window.OMIDENO7_DAILY_MESSAGE.refresh();
+  }
+}, 2500);
+</script>
 <script src="omideno7-faith-declarations-v2.js?v=2"></script>
 
 <script>

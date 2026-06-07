@@ -151,14 +151,8 @@
       const password=String(f.get('password')||'');
       if(!email||!password){ showStatus(tr('required'),true); return; }
       showStatus(tr('loading'));
-const {data,error}=await sb.auth.signUp({
-  email: email,
-  password: password,
-  options: {
-    emailRedirectTo: 'https://omideno7.github.io/omideno7-app/beta.html?school=confirmed'
-  }
-});
-       if(error){ showStatus(error.message,true); return; }
+      const {data,error}=await sb.auth.signUp({email, password});
+      if(error){ showStatus(error.message,true); return; }
       session=data?.session||session;
       if(session?.user){
         showStatus(tr('accountCreated'));
@@ -179,15 +173,7 @@ const {data,error}=await sb.auth.signUp({
     });
   }
   function registrationHtml(){ const terms=schoolTerms(); return `<div class="school-card"><h2>${esc(tr('signup'))}</h2><p>${nl(terms.terms||'')}</p><form id="schoolRegistration" class="school-form"><div class="school-grid"><label>${esc(tr('fullName'))}*<input name="full_name" required></label><label>${esc(tr('phone'))}*<input name="phone" required></label><label>${esc(tr('country'))}*<input name="country" required></label><label>${esc(tr('city'))}*<input name="city" required></label><label>${esc(tr('language'))}*<select name="preferred_language" required><option value="fa">فارسی</option><option value="en">English</option><option value="hr">Hrvatski</option></select></label><label>${esc(tr('isBeliever'))}*<select name="is_believer"><option value="true">${esc(tr('yes'))}</option><option value="false">${esc(tr('no'))}</option></select></label><label>${esc(tr('yearsBeliever'))}*<input name="years_believer" required></label><label>${esc(tr('otherChurch'))}*<select name="is_member_of_another_church"><option value="false">${esc(tr('no'))}</option><option value="true">${esc(tr('yes'))}</option></select></label><label>${esc(tr('churchName'))}*<input name="church_name" required placeholder="${lang()==='fa'?'ندارم':'None'}"></label><label>${esc(tr('pastorName'))}*<input name="pastor_name" required placeholder="${lang()==='fa'?'ندارم':'None'}"></label><label>${esc(tr('pastorPhone'))}*<input name="pastor_phone" required placeholder="${lang()==='fa'?'ندارم':'None'}"></label></div><label>${esc(tr('testimony'))}*<textarea name="testimony" required></textarea></label><label><input type="checkbox" name="accepted" required> ${esc(terms.acceptance||tr('accept'))}</label><button class="school-btn gold" type="submit">${esc(tr('createAccount'))}</button></form></div>`; }
-  function bindRegistration(){ document.getElementById('schoolRegistration')?.addEventListener('submit', async e=>{ e.preventDefault(); const f=new FormData(e.target); if(!f.get('accepted')){showStatus(tr('required'),true);return;} const row={user_id:uid(), full_name:f.get('full_name'), email:session.user.email, phone:f.get('phone'), country:f.get('country'), city:f.get('city'), preferred_language:f.get('preferred_language'), is_believer:f.get('is_believer')==='true', years_believer:f.get('years_believer'), testimony:f.get('testimony'), is_member_of_another_church:f.get('is_member_of_another_church')==='true', church_name:f.get('church_name'), pastor_name:f.get('pastor_name'), pastor_phone:f.get('pastor_phone'), accepted_membership_requirement:true, status:'pending_review'}; showStatus(tr('loading')); const {error}=await sb.from('school_students').upsert(row,{onConflict:'user_id'}); if(error) showStatus(error.message,true); else {
-  await loadAll();
- showStatus({
-  fa: 'فرم مدرسه شما ثبت شد و در انتظار تأیید ادمین است.',
-  en: 'Your school registration form has been submitted and is waiting for admin approval.',
-  hr: 'Vaša prijava za školu je poslana i čeka odobrenje administratora.'
-}[lang()] || 'Your school registration form has been submitted and is waiting for admin approval.');
-  render();
-}
+  function bindRegistration(){ document.getElementById('schoolRegistration')?.addEventListener('submit', async e=>{ e.preventDefault(); const f=new FormData(e.target); if(!f.get('accepted')){showStatus(tr('required'),true);return;} const row={user_id:uid(), full_name:f.get('full_name'), email:session.user.email, phone:f.get('phone'), country:f.get('country'), city:f.get('city'), preferred_language:f.get('preferred_language'), is_believer:f.get('is_believer')==='true', years_believer:f.get('years_believer'), testimony:f.get('testimony'), is_member_of_another_church:f.get('is_member_of_another_church')==='true', church_name:f.get('church_name'), pastor_name:f.get('pastor_name'), pastor_phone:f.get('pastor_phone'), accepted_membership_requirement:true, status:'pending_review'}; showStatus(tr('loading')); const {error}=await sb.from('school_students').upsert(row,{onConflict:'user_id'}); if(error) showStatus(error.message,true); else {await loadAll(); activeView='dashboard'; render();} }); }
   function pendingApprovalHtml(){ return `<div class="school-card"><h2>${esc(schoolTxt('pendingTitle'))}</h2><p>${esc(schoolTxt('pending'))}</p><p><strong>${esc(tr('fullName'))}:</strong> ${esc(student?.full_name||'')}</p><p><strong>${esc(tr('email'))}:</strong> ${esc(student?.email||session?.user?.email||'')}</p><p><span class="school-badge active">${esc(schoolTxt('pendingReview'))}</span></p></div>`; }
   function dashboardHtml(){
     const total=lessonList().length;
@@ -619,38 +605,4 @@ async function showQaAdmin(){
     function boot(){ ensureUi(); }
   document.addEventListener('DOMContentLoaded', boot);
   setTimeout(boot,600);
-function schoolRegistrationSafetyFix(){
-  try{
-    var form=document.getElementById('schoolRegistration');
-    if(!form) return;
-
-    var btn=form.querySelector('button[type="submit"], input[type="submit"], button');
-    if(btn){
-      btn.removeAttribute('data-open');
-      btn.removeAttribute('data-i18n');
-      btn.removeAttribute('onclick');
-      btn.setAttribute('type','submit');
-      btn.textContent={
-        fa:'ارسال فرم مدرسه برای بررسی',
-        en:'Submit school form for review',
-        hr:'Pošalji obrazac škole na pregled'
-      }[lang()]||'Submit school form for review';
-    }
-  }catch(e){}
-}
-
-document.addEventListener('click',function(){
-  setTimeout(schoolRegistrationSafetyFix,100);
-  setTimeout(schoolRegistrationSafetyFix,500);
-},true);
-
-document.addEventListener('DOMContentLoaded',function(){
-  setTimeout(schoolRegistrationSafetyFix,300);
-  setTimeout(schoolRegistrationSafetyFix,1200);
-});
-
-window.addEventListener('load',function(){
-  setTimeout(schoolRegistrationSafetyFix,500);
-  setTimeout(schoolRegistrationSafetyFix,1500);
-});
 })();

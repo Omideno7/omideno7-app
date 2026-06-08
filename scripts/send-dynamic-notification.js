@@ -170,7 +170,8 @@ function messageFor(type){
         en: 'Join the Omid No 7 Church morning prayer meeting and begin today in fellowship with the Lord.',
         fa: 'به جمع خانواده الهی در جلسه صبحگاهی کلیسای امیدنو۷ بپیوندید و مشارکت امروز خود را با خداوند آغاز کنید.',
         hr: 'Pridružite se obitelji vjere na jutarnjoj molitvi Crkve Omid No 7 i započnite dan u zajedništvu s Gospodinom.'
-      }
+      },
+      deliveryTime: '04:55:00'
     },
 
     'sunday-service-reminder': {

@@ -209,7 +209,7 @@ function faithDeclarationMessage(){
         fa: `پیام کلام روزانه شماره ${day} آماده است. اپلیکیشن را باز کنید و پیام کامل را بخوانید.`,
         hr: `Dnevna riječ broj ${day} je spremna. Otvorite aplikaciju i pročitajte cijelu poruku.`
       },
-      deliveryTime: '07:00:00'
+      deliveryTime: '04:00:00'
     },
 
    'faith-declaration': faithDeclarationMessage(),
@@ -238,7 +238,8 @@ function faithDeclarationMessage(){
         en: 'Join the Omid No 7 Church morning prayer meeting and begin today in fellowship with the Lord.',
         fa: 'به جمع خانواده الهی در جلسه صبحگاهی کلیسای امیدنو۷ بپیوندید و مشارکت امروز خود را با خداوند آغاز کنید.',
         hr: 'Pridružite se obitelji vjere na jutarnjoj molitvi Crkve Omid No 7 i započnite dan u zajedništvu s Gospodinom.'
-      }
+      },
+      deliveryTime: '04:55:00'
     },
 
     'sunday-service-reminder': {
@@ -251,7 +252,8 @@ function faithDeclarationMessage(){
         en: 'Join the Sunday church service tonight.',
         fa: 'امشب به جلسه کلیسا در روز یکشنبه بپیوندید.',
         hr: 'Pridružite se večeras nedjeljnoj crkvenoj službi.'
-      }
+      },
+      deliveryTime: '19:45:00'
     }
   };
 

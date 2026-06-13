@@ -8,7 +8,7 @@ OMIDENO7 / NEW HOPE 7 — V64 CLOUD + OFFLINE + QR TEST
 3) Commit کنید و صبر کنید GitHub Pages deploy شود.
 
 لینک تست:
-https://omideno7.github.io/omideno7-app/v64-cloud/index.html?v=6401
+https://omideno7.github.io/omideno7-app/v64-cloud/index.html?v=6402
 
 قبل از تست Cloud:
 در Supabase > SQL Editor فایل SUPABASE_USER_APP_STATE_SQL_V64.sql را اجرا کنید.
@@ -38,3 +38,9 @@ https://omideno7.github.io/omideno7-app/v64-cloud/index.html?v=6401
 
 اگر چیزی خراب شد:
 فقط پوشه v64-cloud را حذف کنید. صفحه اصلی اپ دست‌نخورده می‌ماند.
+
+
+V64.02 changes:
+- QR/install block moved from More to the Home install guide/card.
+- Cloud/offline status messages now stay visible and also show an alert on errors.
+- QR image path changed to an absolute GitHub Pages path.

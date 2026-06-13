@@ -1,14 +1,15 @@
-/* Omideno7 V64.01 — Cloud Sync + Offline + QR Install Test
+/* Omideno7 V64.02 — Cloud Sync + Offline + QR Install Test
    This file runs only inside /v64-cloud/ and does not touch the public app.
    Purpose:
-   - Add a More-page panel for cloud save/restore, offline preparation, QR install/share.
+   - Add a More-page panel for cloud save/restore and offline preparation.
+   - Add QR install/share inside the existing Home install guide/card, not under More/footer.
    - Save safe localStorage app-state to Supabase table public.user_app_state.
    - Restore app-state after reinstall/login.
    - Prepare current app assets for offline use through a separate service worker.
 */
 (function(){
   'use strict';
-  var VERSION = 'V64.01 Cloud/Offline/QR Test';
+  var VERSION = 'V64.02 Cloud/Offline/QR Test';
   var TABLE = 'user_app_state';
   var AUTO_KEY = 'omideno7_v64_auto_sync_enabled';
   var LAST_KEY = 'omideno7_v64_last_sync';
@@ -17,6 +18,8 @@
   var saveTimer = null;
   var lastRendered = 0;
   var installPromptEvent = null;
+  var currentStatus = null;
+  var lastAuthText = '';
 
   function isV64(){ return /\/v64-cloud\//i.test(location.pathname); }
   if(!isV64()) return;
@@ -27,8 +30,8 @@
   }
   function dict(){
     var fa={
-      title:'☁️ ذخیره ابری، آفلاین و نصب اپ — تست V64',
-      intro:'این بخش فقط برای تست است. اپ اصلی دست‌نخورده می‌ماند. اطلاعات امن کاربر در کلود ذخیره می‌شود و اپ برای استفاده آفلاین آماده می‌شود.',
+      title:'☁️ ذخیره ابری و آفلاین — تست V64',
+      intro:'این بخش فقط برای تست کلود و آفلاین است. QR نصب اپ از اینجا برداشته شد و داخل راهنمای نصب در صفحه خانه قرار می‌گیرد. اپ اصلی دست‌نخورده می‌ماند.',
       signedOut:'برای ذخیره ابری، اول وارد مدرسه/حساب کاربری شوید. آفلاین و QR بدون ورود هم کار می‌کند.',
       signedIn:'کاربر وارد شده است',
       save:'ذخیره در کلود', restore:'بازیابی از کلود', autoOn:'روشن کردن ذخیره خودکار', autoOff:'خاموش کردن ذخیره خودکار', offline:'آماده‌سازی آفلاین', share:'اشتراک‌گذاری لینک اپ', copy:'کپی لینک اپ', install:'نصب اپ روی این گوشی',
@@ -37,8 +40,8 @@
       ios:'آیفون: لینک را در Safari باز کنید، Share را بزنید، سپس Add to Home Screen و Add.', android:'اندروید: لینک را در Chrome باز کنید و Install App / Add to Home screen را بزنید.'
     };
     var en={
-      title:'☁️ Cloud Save, Offline & App Install — V64 Test',
-      intro:'This panel is for testing only. The public app stays untouched. Safe user app data is saved to cloud and the app can be prepared for offline use.',
+      title:'☁️ Cloud Save & Offline — V64 Test',
+      intro:'This panel is only for cloud/offline testing. The install QR was moved to the Home install guide. The public app stays untouched.',
       signedOut:'For cloud sync, sign in through School/account first. Offline and QR work without login.', signedIn:'Signed in user',
       save:'Save to cloud', restore:'Restore from cloud', autoOn:'Enable auto save', autoOff:'Disable auto save', offline:'Prepare offline', share:'Share app link', copy:'Copy app link', install:'Install app on this device',
       qrTitle:'📲 Install on another phone', qrHelp:'Scan this QR with another phone. Android may show an install button. On iPhone use Safari > Share > Add to Home Screen.',
@@ -46,8 +49,8 @@
       ios:'iPhone: open the link in Safari, tap Share, then Add to Home Screen and Add.', android:'Android: open the link in Chrome and tap Install App / Add to Home screen.'
     };
     var hr={
-      title:'☁️ Cloud spremanje, offline i instalacija — V64 test',
-      intro:'Ovaj panel je samo za test. Javna aplikacija ostaje netaknuta. Sigurni korisnički podaci spremaju se u cloud, a aplikacija se može pripremiti za offline rad.',
+      title:'☁️ Cloud spremanje i offline — V64 test',
+      intro:'Ovaj panel je samo za cloud/offline test. QR za instalaciju premješten je u vodič za instalaciju na početnoj stranici. Javna aplikacija ostaje netaknuta.',
       signedOut:'Za cloud sync prvo se prijavite kroz školu/račun. Offline i QR rade i bez prijave.', signedIn:'Prijavljeni korisnik',
       save:'Spremi u cloud', restore:'Vrati iz clouda', autoOn:'Uključi auto spremanje', autoOff:'Isključi auto spremanje', offline:'Pripremi offline', share:'Podijeli link aplikacije', copy:'Kopiraj link aplikacije', install:'Instaliraj aplikaciju',
       qrTitle:'📲 Instalacija na drugi telefon', qrHelp:'Skenirajte QR drugim telefonom. Android može prikazati gumb za instalaciju. Na iPhoneu koristite Safari > Share > Add to Home Screen.',
@@ -60,9 +63,18 @@
   function esc(v){ return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function now(){ return new Date().toISOString(); }
   function appUrl(){ return 'https://omideno7.github.io/omideno7-app/?install=1'; }
-  function status(msg,type){
-    var el=document.getElementById('v64CloudStatus'); if(!el) return;
-    el.className='v64-status '+(type||'info'); el.textContent=msg;
+  function status(msg,type,sticky){
+    currentStatus={msg:String(msg||''), type:type||'info', time:Date.now(), sticky:sticky!==false};
+    var el=document.getElementById('v64CloudStatus');
+    if(el){ el.className='v64-status '+(currentStatus.type||'info'); el.textContent=currentStatus.msg; }
+  }
+  function getDisplayStatusText(){
+    if(currentStatus && currentStatus.msg) return currentStatus.msg;
+    return lastAuthText || tr('signedOut');
+  }
+  function getDisplayStatusClass(){
+    if(currentStatus && currentStatus.type) return currentStatus.type;
+    return lastAuthText && lastAuthText!==tr('signedOut') ? 'ok' : 'warn';
   }
   function setLast(syncType){ try{ localStorage.setItem(LAST_KEY, JSON.stringify({time:now(), type:syncType||'manual'})); }catch(e){} renderStats(); }
   function getLast(){ try{return JSON.parse(localStorage.getItem(LAST_KEY)||'null');}catch(e){return null;} }
@@ -75,11 +87,11 @@
   }
   async function getUserCtx(){
     var sb=findClient();
-    if(!sb) throw new Error('Supabase client not found. Open School once or make sure v63-40-supabase-client-bridge.js loads before school.');
+    if(!sb) throw new Error(lang()==='fa'?'اتصال Supabase پیدا نشد. یک بار وارد بخش مدرسه شوید و دوباره امتحان کنید.':'Supabase client not found. Open School once and try again.');
     var r=await sb.auth.getUser();
     if(r.error) throw r.error;
     var u=r.data && r.data.user;
-    if(!u) throw new Error('No signed-in user.');
+    if(!u) throw new Error(lang()==='fa'?'برای ذخیره یا بازیابی کلود، اول باید وارد حساب مدرسه شوید.':'For cloud save/restore, sign in to your account first.');
     return {sb:sb,user:u};
   }
 
@@ -180,7 +192,7 @@
   function scheduleAuto(){
     if(!autoEnabled()) return;
     clearTimeout(saveTimer);
-    saveTimer=setTimeout(function(){ saveCloud(true).catch(function(e){ status(tr('error')+': '+(e.message||e),'error'); }); }, 2500);
+    saveTimer=setTimeout(function(){ saveCloud(true).catch(function(e){ status(tr('error')+': '+(e.message||e),'error',true); }); }, 2500);
   }
   function patchStorage(){
     if(window.__om7V64StoragePatched) return; window.__om7V64StoragePatched=true;
@@ -196,13 +208,13 @@
     var assets=[];
     function add(u){ if(!u) return; try{ assets.push(new URL(u, location.href).href); }catch(e){} }
     add(location.href.split('#')[0]);
-    add('/omideno7-app/v64-cloud/index.html?v=6401');
-    add('/omideno7-app/v64-cloud/v64-cloud-sync.js?v=6401');
+    add('/omideno7-app/v64-cloud/index.html?v=6402');
+    add('/omideno7-app/v64-cloud/v64-cloud-sync.js?v=6402');
     add('/omideno7-app/v64-cloud/manifest-v64-cloud.webmanifest');
     add('/omideno7-app/v64-cloud/omideno7-app-qr.png');
     Array.prototype.forEach.call(document.querySelectorAll('script[src],link[rel="stylesheet"][href],link[rel="manifest"][href],img[src]'), function(el){ add(el.src || el.href); });
     assets = Array.from(new Set(assets)).filter(function(u){ return u.indexOf(location.origin)===0; });
-    var cache=await caches.open('omideno7-v64-manual-cache-6401');
+    var cache=await caches.open('omideno7-v64-manual-cache-6402');
     var ok=0, fail=0;
     for(var i=0;i<assets.length;i++){
       try{ await cache.add(assets[i]); ok++; }catch(e){ fail++; }
@@ -222,7 +234,7 @@
     return ios ? tr('ios') : tr('android');
   }
   function addInstallListeners(){
-    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installPromptEvent=e; renderPanel(); });
+    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installPromptEvent=e; patchHomeInstallGuide(); });
   }
   async function installThisDevice(){
     if(installPromptEvent){
@@ -242,6 +254,54 @@
     } else copyLink();
   }
 
+
+  function qrBlockHtml(){
+    var qrSrc='/omideno7-app/v64-cloud/omideno7-app-qr.png';
+    return '<div id="v64InstallQRBlock" class="v64-install-qr-block" dir="auto">'
+      +'<style>.v64-install-qr-block{margin-top:14px;padding:14px;border-radius:18px;border:1px solid rgba(212,175,55,.35);background:rgba(255,255,255,.06)}.v64-install-qr-block .v64-qr-wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.v64-install-qr-block .v64-qr{width:142px;height:142px;background:#fff;border-radius:14px;padding:8px}.v64-install-qr-block .v64-small{font-size:13px;opacity:.88;line-height:1.7}.v64-install-qr-block .v64-link{word-break:break-all;font-size:12px;opacity:.8}</style>'
+      +'<h3>'+esc(tr('qrTitle'))+'</h3>'
+      +'<div class="v64-qr-wrap"><img class="v64-qr" src="'+esc(qrSrc)+'" alt="New Hope 7 app QR"><div><p class="v64-small">'+esc(tr('qrHelp'))+'</p><p class="v64-link">'+esc(appUrl())+'</p><div class="btn-row"><button class="btn gold" data-v64-install-this="1">'+esc(tr('install'))+'</button><button class="btn secondary" data-v64-share-link="1">'+esc(tr('share'))+'</button><button class="btn secondary" data-v64-copy-link="1">'+esc(tr('copy'))+'</button></div></div></div>'
+      +'</div>';
+  }
+  function elementText(el){ return (el && (el.innerText||el.textContent)||'').replace(/\s+/g,' ').trim(); }
+  function looksLikeInstallText(t){ return /(نصب\s*اپ|نصب\s*برنامه|روی\s*گوشی|Add\s+to\s+Home\s+Screen|Install\s+App|Install|instal|aplikacij)/i.test(t||''); }
+  function findInstallContainer(){
+    var home=document.getElementById('home'); if(!home) return null;
+    var cards=home.querySelectorAll('.card,.hero-card,.feature-card,.quick-card,section,div');
+    for(var i=0;i<cards.length;i++){
+      var t=elementText(cards[i]);
+      if(looksLikeInstallText(t)){
+        var card=cards[i].closest && (cards[i].closest('.card') || cards[i].closest('.hero-card') || cards[i]);
+        if(card && card.id!=='v64InstallQRBlock') return card;
+      }
+    }
+    return home;
+  }
+  function patchHomeInstallGuide(){
+    if(document.getElementById('v64InstallQRBlock')) return;
+    var target=findInstallContainer(); if(!target) return;
+    var frag=document.createRange().createContextualFragment(qrBlockHtml());
+    target.appendChild(frag);
+  }
+  function patchOpenInstallDialogs(){
+    var dialogs=document.querySelectorAll('[role="dialog"],.modal,.popup,.sheet,.drawer,.overlay,.app-modal,.install-modal');
+    for(var i=0;i<dialogs.length;i++){
+      var d=dialogs[i];
+      if(d.querySelector('#v64InstallQRBlock')) continue;
+      if(looksLikeInstallText(elementText(d))){
+        d.appendChild(document.createRange().createContextualFragment(qrBlockHtml()));
+      }
+    }
+  }
+  function bindGlobalInstallButtons(){
+    document.addEventListener('click', function(e){
+      var t=e.target;
+      if(t && t.closest && t.closest('[data-v64-install-this]')){ e.preventDefault(); installThisDevice(); }
+      if(t && t.closest && t.closest('[data-v64-share-link]')){ e.preventDefault(); shareLink(); }
+      if(t && t.closest && t.closest('[data-v64-copy-link]')){ e.preventDefault(); copyLink(); }
+    }, true);
+  }
+
   function statsHtml(){
     var snap=buildSnapshot(); var last=getLast(); var online=navigator.onLine?tr('online'):tr('offlineStatus');
     return '<div class="v64-stats"><span>'+esc(online)+'</span><span>'+esc(tr('items'))+': '+snap.item_count+'</span><span>'+esc(tr('size'))+': '+Math.round((snap.total_size||0)/1024)+' KB</span><span>'+esc(tr('last'))+': '+esc(last?last.time:'—')+'</span></div>';
@@ -252,16 +312,14 @@
     if(Date.now()-lastRendered<300) return; lastRendered=Date.now();
     var more=document.getElementById('more'); if(!more) return;
     var existing=document.getElementById('v64CloudCard');
-    var qrSrc='v64-cloud/omideno7-app-qr.png';
+    var qrSrc='/omideno7-app/v64-cloud/omideno7-app-qr.png';
     var html='<div class="card v64-cloud-card" id="v64CloudCard" dir="auto">'
       +'<style>.v64-cloud-card{border:1px solid rgba(212,175,55,.35);box-shadow:0 12px 30px rgba(0,0,0,.18)}.v64-status{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);font-size:13px}.v64-status.ok{background:rgba(21,128,61,.16)}.v64-status.warn{background:rgba(217,119,6,.16)}.v64-status.error{background:rgba(220,38,38,.16)}.v64-stats{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.v64-stats span{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,.08)}.v64-qr-wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.v64-qr{width:150px;height:150px;background:#fff;border-radius:14px;padding:8px}.v64-small{font-size:13px;opacity:.86;line-height:1.7}</style>'
       +'<h3>'+esc(tr('title'))+'</h3><p>'+esc(tr('intro'))+'</p>'
       +'<div id="v64CloudStats">'+statsHtml()+'</div>'
       +'<div class="btn-row"><button class="btn gold" id="v64SaveCloud">'+esc(tr('save'))+'</button><button class="btn secondary" id="v64RestoreCloud">'+esc(tr('restore'))+'</button></div>'
       +'<div class="btn-row"><button class="btn primary" id="v64ToggleAuto">'+esc(autoEnabled()?tr('autoOff'):tr('autoOn'))+'</button><button class="btn secondary" id="v64PrepareOffline">'+esc(tr('offline'))+'</button><button class="btn secondary" id="v64Reload">'+esc(tr('reload'))+'</button></div>'
-      +'<p id="v64CloudStatus" class="v64-status">'+esc(tr('signedOut'))+'</p>'
-      +'<hr style="border:0;border-top:1px solid rgba(255,255,255,.12);margin:16px 0">'
-      +'<h3>'+esc(tr('qrTitle'))+'</h3><div class="v64-qr-wrap"><img class="v64-qr" src="'+esc(qrSrc)+'" alt="New Hope 7 app QR"><div><p class="v64-small">'+esc(tr('qrHelp'))+'</p><p class="v64-small"><strong>Link:</strong><br>'+esc(appUrl())+'</p><div class="btn-row"><button class="btn gold" id="v64InstallThis">'+esc(tr('install'))+'</button><button class="btn secondary" id="v64ShareLink">'+esc(tr('share'))+'</button><button class="btn secondary" id="v64CopyLink">'+esc(tr('copy'))+'</button></div></div></div>'
+      +'<p id="v64CloudStatus" class="v64-status '+esc(getDisplayStatusClass())+'">'+esc(getDisplayStatusText())+'</p>'
       +'</div>';
     if(existing){ existing.outerHTML=html; } else {
       var footer=document.getElementById('mainFooter');
@@ -272,20 +330,25 @@
     checkSignedIn();
   }
   function bindPanel(){
-    function on(id,fn){ var el=document.getElementById(id); if(el) el.onclick=function(){ Promise.resolve(fn()).catch(function(e){status(tr('error')+': '+(e.message||e),'error');}); }; }
+    function on(id,fn){ var el=document.getElementById(id); if(el) el.onclick=function(){ Promise.resolve(fn()).catch(function(e){ console.error('V64 cloud action failed', e); status(tr('error')+': '+(e.message||e),'error',true); alert(tr('error')+': '+(e.message||e)); }); }; }
     on('v64SaveCloud', function(){ return saveCloud(false); });
     on('v64RestoreCloud', restoreCloud);
     on('v64PrepareOffline', prepareOffline);
     on('v64ToggleAuto', function(){ if(autoEnabled()){localStorage.removeItem(AUTO_KEY); status(tr('autoDisabled'),'warn');} else {localStorage.setItem(AUTO_KEY,'1'); status(tr('autoEnabled'),'ok'); scheduleAuto();} renderPanel(); });
     on('v64Reload', function(){ location.reload(); });
-    on('v64CopyLink', copyLink);
-    on('v64ShareLink', shareLink);
-    on('v64InstallThis', installThisDevice);
   }
   async function checkSignedIn(){
     var el=document.getElementById('v64CloudStatus'); if(!el) return;
-    try{ var ctx=await getUserCtx(); el.textContent=tr('signedIn')+': '+(ctx.user.email||ctx.user.id); el.className='v64-status ok'; maybePromptRestore(ctx); }
-    catch(e){ if(el.textContent===tr('signedOut')) return; el.textContent=tr('signedOut'); el.className='v64-status warn'; }
+    try{
+      var ctx=await getUserCtx();
+      lastAuthText=tr('signedIn')+': '+(ctx.user.email||ctx.user.id);
+      if(!currentStatus || Date.now()-currentStatus.time>12000){ el.textContent=lastAuthText; el.className='v64-status ok'; }
+      maybePromptRestore(ctx);
+    }
+    catch(e){
+      lastAuthText=tr('signedOut');
+      if(!currentStatus || Date.now()-currentStatus.time>12000){ el.textContent=lastAuthText; el.className='v64-status warn'; }
+    }
   }
   async function maybePromptRestore(ctx){
     if(localStorage.getItem(RESTORE_PROMPT_KEY)==='1') return;
@@ -300,13 +363,15 @@
 
   function init(){
     addInstallListeners();
+    bindGlobalInstallButtons();
     patchStorage();
     registerSW();
-    document.addEventListener('click', function(){ setTimeout(renderPanel, 100); }, true);
+    document.addEventListener('click', function(e){ if(e.target && (e.target.closest && (e.target.closest('#v64CloudCard') || e.target.closest('#v64InstallQRBlock')))) return; setTimeout(function(){ renderPanel(); patchHomeInstallGuide(); }, 180); }, true);
     document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden') scheduleAuto(); });
     window.addEventListener('online', function(){ flushQueue(); status(tr('online'),'ok'); });
     window.addEventListener('offline', function(){ status(tr('offlineStatus'),'warn'); });
-    [250,800,1600,3000].forEach(function(ms){ setTimeout(renderPanel, ms); });
+    try{ new MutationObserver(function(){ patchHomeInstallGuide(); patchOpenInstallDialogs(); }).observe(document.body,{childList:true,subtree:true}); }catch(e){}
+    [250,800,1600,3000].forEach(function(ms){ setTimeout(function(){ renderPanel(); patchHomeInstallGuide(); patchOpenInstallDialogs(); }, ms); });
     if(autoEnabled()) setTimeout(scheduleAuto, 3500);
     window.OMIDENO7_V64_CLOUD = {version:VERSION, saveCloud:saveCloud, restoreCloud:restoreCloud, buildSnapshot:buildSnapshot, prepareOffline:prepareOffline};
   }

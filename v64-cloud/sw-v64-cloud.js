@@ -1,13 +1,13 @@
-/* Omideno7 V64.01 Cloud/Offline Test Service Worker
+/* Omideno7 V64.02 Cloud/Offline Test Service Worker
    Scope: /omideno7-app/v64-cloud/
    Safe: does not replace the main service-worker.js.
 */
-const OM7_V64_CACHE = 'omideno7-v64-cloud-cache-6401';
-const OM7_V64_RUNTIME = 'omideno7-v64-runtime-6401';
+const OM7_V64_CACHE = 'omideno7-v64-cloud-cache-6402';
+const OM7_V64_RUNTIME = 'omideno7-v64-runtime-6402';
 const CORE_ASSETS = [
-  './index.html?v=6401',
+  './index.html?v=6402',
   './manifest-v64-cloud.webmanifest',
-  './v64-cloud-sync.js?v=6401',
+  './v64-cloud-sync.js?v=6402',
   './omideno7-app-qr.png',
   '../styles-v45.css?v=45',
   '../icon-192.png',
@@ -68,7 +68,7 @@ self.addEventListener('fetch', event => {
         cache.put(req, fresh.clone());
         return fresh;
       } catch(e) {
-        return (await caches.match(req)) || (await caches.match('./index.html?v=6401')) || Response.error();
+        return (await caches.match(req)) || (await caches.match('./index.html?v=6402')) || Response.error();
       }
     })());
     return;

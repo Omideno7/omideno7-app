@@ -6,14 +6,15 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.49 In-App Salvation Registration Beta';
+  var VERSION = 'V63.49B In-App Registration Cloud Save Fix';
   var LOCAL_QUEUE_KEY = 'omideno7_v6349_registration_queue';
   var LOG_KEY = 'omideno7_v6349_registration_log';
 
   function isBeta(){
-    return /beta\.html/i.test(location.pathname) || /v=6349|v=6348|v=6347|v=6346|v=6345|v=6344|v=6343|v=6342|v=6341/i.test(location.search);
+    // V63.49 is now allowed on both main and beta when this file is loaded.
+    // This prevents the registration form from silently disabling itself on the published app.
+    return true;
   }
-  if(!isBeta()) return;
 
   function normalizeLang(v){
     v = String(v || '').toLowerCase().trim();
@@ -74,9 +75,9 @@
       close:'بستن',
       savedCloud:'فرم با موفقیت در کلود ثبت شد.',
       savedLocal:'فرم فعلاً در دستگاه ذخیره شد. وقتی اتصال کلود آماده باشد، می‌توانیم آن را ارسال کنیم.',
-      required:'همه فیلدها اجباری هستند.',
+      required:'لطفاً همه بخش‌های ضروری را کامل کنید.',
       invalidEmail:'ایمیل را درست وارد کنید.',
-      requiredHint:'لطفاً تمام سوالات را در کمال صداقت پاسخ دهید. ما اینجا برای کمک به شما هستیم.',
+      requiredHint:'همه فیلدها اجباری هستند. اگر موردی ندارید، بنویسید: ندارم.',
       openSaved:'نمایش فرم‌های ذخیره‌شده محلی',
       sendQueued:'ارسال فرم‌های ذخیره‌شده به کلود',
       localQueue:'فرم‌های ذخیره‌شده محلی',
@@ -132,9 +133,9 @@
       close:'Close',
       savedCloud:'The form was submitted to the cloud successfully.',
       savedLocal:'The form was saved on this device for now. When cloud connection is ready, it can be sent.',
-      required:'All fields are required.',
+      required:'Please complete all required fields.',
       invalidEmail:'Please enter a valid email.',
-      requiredHint:'Please answer all questions with complete honesty. We are here to help you.',
+      requiredHint:'All fields are required. If something does not apply, write: None.',
       openSaved:'Show locally saved forms',
       sendQueued:'Send saved forms to cloud',
       localQueue:'Locally saved forms',
@@ -190,9 +191,9 @@
       close:'Zatvori',
       savedCloud:'Obrazac je uspješno poslan u cloud.',
       savedLocal:'Obrazac je za sada spremljen na ovom uređaju. Kada cloud veza bude spremna, može se poslati.',
-      required:'Sva polja su obavezna.',
+      required:'Molimo ispunite sva obavezna polja.',
       invalidEmail:'Unesite ispravnu email adresu.',
-      requiredHint:'Molimo odgovorite na sva pitanja potpuno iskreno. Ovdje smo da vam pomognemo.',
+      requiredHint:'Sva polja su obavezna. Ako se nešto ne odnosi na vas, napišite: Nemam.',
       openSaved:'Prikaži lokalno spremljene obrasce',
       sendQueued:'Pošalji spremljene obrasce u cloud',
       localQueue:'Lokalno spremljeni obrasci',
@@ -394,7 +395,7 @@
     }catch(e){return null;}
   }
 
-  async function submitToCloud(data){
+ async function submitToCloud(data){
   var sb = findClient();
   if(!sb || !sb.from) throw new Error('Supabase client not available');
 
@@ -438,9 +439,11 @@
       log('success',T('savedCloud'),{id:res && res.id, email:data.email});
       form.reset();
     }catch(e){
-      queueAdd({id:'local_'+Date.now(), data:data, queued_at:now(), error:e.message||String(e)});
-      setStatus(T('savedLocal'),'warn');
-      log('warn',T('savedLocal'),{error:e.message||String(e), email:data.email});
+      var errMsg=e && e.message ? e.message : String(e);
+      queueAdd({id:'local_'+Date.now(), data:data, queued_at:now(), error:errMsg});
+      setStatus(T('error')+': فرم در Supabase ثبت نشد. '+errMsg, 'error');
+      log('error','Cloud registration failed',{error:errMsg, email:data.email});
+      try{ alert(T('error')+': فرم در Supabase ثبت نشد. '+errMsg); }catch(_){}
     }
     return false;
   }
@@ -461,7 +464,13 @@
       }
     }
     queueSet(remaining);
-    setStatus(sent ? T('sentQueued')+' '+sent : T('error'),'ok');
+    if(sent){
+      setStatus(T('sentQueued')+' '+sent,'ok');
+    }else{
+      const last=(remaining[0]&&remaining[0].last_error)?remaining[0].last_error:'';
+      setStatus(T('error')+': '+last,'error');
+      try{ alert(T('error')+': '+last); }catch(_){}
+    }
     showQueue();
   }
 
@@ -524,7 +533,7 @@
   function render(){
     css();
     replaceButtons();
-   // addMorePanel();
+    addMorePanel();
   }
 
   document.addEventListener('DOMContentLoaded',render);

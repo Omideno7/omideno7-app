@@ -394,26 +394,35 @@
     }catch(e){return null;}
   }
 
-  async function submitToCloud(data){
-    var sb=findClient();
-    if(!sb || !sb.from) throw new Error('Supabase client not available');
-    var user=await getUser(sb);
-    var payload = {
-      user_id: user ? user.id : null,
-      email: data.email,
-      first_name: data.first_name,
-      last_name: data.last_name,
-      phone: data.phone,
-      language: data.language,
-      status: 'new',
-      payload: data,
-      consent: true,
-      created_at: now()
-    };
-    var r=await sb.from('church_member_registrations').insert(payload).select('id').single();
-    if(r.error) throw r.error;
-    return r.data;
-  }
+ async function submitToCloud(data){
+  var sb = findClient();
+  if(!sb || !sb.from) throw new Error('Supabase client not available');
+
+  var firstName = (data.first_name || '').trim();
+  var lastName = (data.last_name || '').trim();
+  var fullName = (firstName + ' ' + lastName).trim();
+
+  var payload = {
+    full_name: fullName || data.email || 'Unknown',
+    email: data.email,
+    country: data.country || 'Unknown',
+    relationship: 'member',
+    reason: 'participate',
+    status: 'pending',
+    approved_role: null,
+    risk: 'normal',
+    owner_note: 'Phone: ' + (data.phone || '') + ' | Language: ' + (data.language || '')
+  };
+
+  var r = await sb
+    .from('access_requests')
+    .insert(payload)
+    .select('id,email,status')
+    .single();
+
+  if(r.error) throw r.error;
+  return r.data;
+}
 
   async function handleSubmit(ev){
     ev.preventDefault();

@@ -6,15 +6,47 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.49B In-App Registration Cloud Save Fix';
+  var VERSION = 'V63.49C Registration Cloud Save Fix';
   var LOCAL_QUEUE_KEY = 'omideno7_v6349_registration_queue';
   var LOG_KEY = 'omideno7_v6349_registration_log';
+  var SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
+  var FALLBACK_SB = null;
+
+  function loadSupabaseSdk(){
+    return new Promise(function(resolve,reject){
+      if(window.supabase && window.supabase.createClient){ resolve(); return; }
+      var old=document.querySelector('script[data-om7-supabase-sdk="1"]');
+      if(old){ old.addEventListener('load',resolve); old.addEventListener('error',reject); return; }
+      var s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      s.async=true;
+      s.dataset.om7SupabaseSdk='1';
+      s.onload=resolve;
+      s.onerror=function(){reject(new Error('Could not load Supabase SDK'));};
+      document.head.appendChild(s);
+    });
+  }
+
+  async function getCloudClient(){
+    var existing=findClient();
+    if(existing && existing.from && existing.auth) return existing;
+    if(FALLBACK_SB && FALLBACK_SB.from && FALLBACK_SB.auth) return FALLBACK_SB;
+    await loadSupabaseSdk();
+    if(!window.supabase || !window.supabase.createClient) throw new Error('Supabase SDK not available');
+    FALLBACK_SB = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    try{
+      window.omideno7Supabase = window.omideno7Supabase || FALLBACK_SB;
+      window.supabaseClient = window.supabaseClient || FALLBACK_SB;
+    }catch(e){}
+    return FALLBACK_SB;
+  }
 
   function isBeta(){
-    // V63.49 is now allowed on both main and beta when this file is loaded.
-    // This prevents the registration form from silently disabling itself on the published app.
+    // V63.49C: this registration module must run on the live app too, not only beta.html.
     return true;
   }
+  if(!isBeta()) return;
 
   function normalizeLang(v){
     v = String(v || '').toLowerCase().trim();
@@ -396,7 +428,7 @@
   }
 
  async function submitToCloud(data){
-  var sb = findClient();
+  var sb = await getCloudClient();
   if(!sb || !sb.from) throw new Error('Supabase client not available');
 
   var firstName = (data.first_name || '').trim();
@@ -439,11 +471,10 @@
       log('success',T('savedCloud'),{id:res && res.id, email:data.email});
       form.reset();
     }catch(e){
-      var errMsg=e && e.message ? e.message : String(e);
-      queueAdd({id:'local_'+Date.now(), data:data, queued_at:now(), error:errMsg});
-      setStatus(T('error')+': فرم در Supabase ثبت نشد. '+errMsg, 'error');
-      log('error','Cloud registration failed',{error:errMsg, email:data.email});
-      try{ alert(T('error')+': فرم در Supabase ثبت نشد. '+errMsg); }catch(_){}
+      var msg = (e && e.message) ? e.message : String(e);
+      setStatus(T('error') + ': ' + msg, 'error');
+      log('error','Cloud registration failed',{error:msg, email:data.email});
+      try{ alert(T('error') + ': ' + msg); }catch(_e){}
     }
     return false;
   }
@@ -464,13 +495,7 @@
       }
     }
     queueSet(remaining);
-    if(sent){
-      setStatus(T('sentQueued')+' '+sent,'ok');
-    }else{
-      const last=(remaining[0]&&remaining[0].last_error)?remaining[0].last_error:'';
-      setStatus(T('error')+': '+last,'error');
-      try{ alert(T('error')+': '+last); }catch(_){}
-    }
+    setStatus(sent ? T('sentQueued')+' '+sent : T('error'),'ok');
     showQueue();
   }
 

@@ -6,14 +6,15 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.49 In-App Salvation Registration Beta';
+  var VERSION = 'V63.49B In-App Registration Cloud Save Fix';
   var LOCAL_QUEUE_KEY = 'omideno7_v6349_registration_queue';
   var LOG_KEY = 'omideno7_v6349_registration_log';
 
   function isBeta(){
-    return /beta\.html/i.test(location.pathname) || /v=6349|v=6348|v=6347|v=6346|v=6345|v=6344|v=6343|v=6342|v=6341/i.test(location.search);
+    // V63.49 is now allowed on both main and beta when this file is loaded.
+    // This prevents the registration form from silently disabling itself on the published app.
+    return true;
   }
-  if(!isBeta()) return;
 
   function normalizeLang(v){
     v = String(v || '').toLowerCase().trim();
@@ -438,9 +439,11 @@
       log('success',T('savedCloud'),{id:res && res.id, email:data.email});
       form.reset();
     }catch(e){
-      queueAdd({id:'local_'+Date.now(), data:data, queued_at:now(), error:e.message||String(e)});
-      setStatus(T('savedLocal'),'warn');
-      log('warn',T('savedLocal'),{error:e.message||String(e), email:data.email});
+      var errMsg=e && e.message ? e.message : String(e);
+      queueAdd({id:'local_'+Date.now(), data:data, queued_at:now(), error:errMsg});
+      setStatus(T('error')+': فرم در Supabase ثبت نشد. '+errMsg, 'error');
+      log('error','Cloud registration failed',{error:errMsg, email:data.email});
+      try{ alert(T('error')+': فرم در Supabase ثبت نشد. '+errMsg); }catch(_){}
     }
     return false;
   }
@@ -461,7 +464,13 @@
       }
     }
     queueSet(remaining);
-    setStatus(sent ? T('sentQueued')+' '+sent : T('error'),'ok');
+    if(sent){
+      setStatus(T('sentQueued')+' '+sent,'ok');
+    }else{
+      const last=(remaining[0]&&remaining[0].last_error)?remaining[0].last_error:'';
+      setStatus(T('error')+': '+last,'error');
+      try{ alert(T('error')+': '+last); }catch(_){}
+    }
     showQueue();
   }
 

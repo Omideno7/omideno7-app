@@ -84,16 +84,12 @@
     if (!email) throw new Error(t('requiredEmail'));
     if (!fullName.trim()) throw new Error(t('requiredName'));
 
-    const payload = {
-      full_name: fullName.trim(),
-      email: email.toLowerCase(),
-      phone: phone || null,
-      country: country || null,
-      status: 'pending',
-      request_type: 'meeting_access',
-      source: 'newhope7_app_v63_90',
-      created_at: new Date().toISOString()
-    };
+  const payload = {
+  full_name: fullName.trim(),
+  email: email.toLowerCase(),
+  country: country || null,
+  status: 'pending'
+};
 
     const res = await sb.from(ACCESS_TABLE).insert(payload).select().single();
     if (res.error) throw res.error;

@@ -1,51 +1,19 @@
-/* Omideno7 V63.63D — Professional Admin Requests Panel
-   V4: Works on main/beta, reads access_requests, collapsible cards, approve/reject/delete.
-   This panel is for meeting-code access requests. School requests are handled inside v63-online-school.js.
+/* Omideno7 V63.63E — Admin Requests Legacy Disabled
+   The old meeting request panel used to render inside More and caused jumping/closed details.
+   It is intentionally disabled. The active panel is now inside Online School > Admin via omideno7-v63-86-admin-panel-in-school-fix.js.
 */
 (function(){
-'use strict';
-var VERSION='V63.63D Professional Admin Requests V4';
-var ADMIN_EMAILS=['omideno7church@gmail.com','yuhana1360@gmail.com'];
-var TABLE='access_requests';
-var CODE='789987';
-function norm(v){v=String(v||'').toLowerCase().trim();if(v==='en'||v.startsWith('en-')||v.indexOf('english')>-1)return'en';if(v==='hr'||v.startsWith('hr-')||v.indexOf('cro')>-1||v.indexOf('hrv')>-1||v.indexOf('kro')>-1)return'hr';return'fa'}
-function lang(){try{return norm(localStorage.getItem('lang')||document.documentElement.lang||navigator.language||'fa')}catch(e){return'fa'}}
-function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function T(k){var fa={title:'درخواست‌های دریافت لینک و کد جلسه',sub:'اینجا درخواست‌های جدید اعضا برای دریافت لینک و کد جلسه را بررسی کن. هر کارت بسته است؛ روی اسم کلیک کن تا جزئیات باز شود.',load:'بارگذاری درخواست‌ها',pending:'در انتظار تأیید',approved:'تأیید شده',rejected:'رد شده',approve:'تأیید و فعال‌سازی دسترسی جلسه',reject:'رد کردن درخواست',del:'حذف از لیست',refresh:'به‌روزرسانی',noRows:'درخواستی برای نمایش وجود ندارد.',saved:'انجام شد.',error:'خطا',email:'ایمیل',name:'نام',phone:'تلفن',status:'وضعیت',date:'تاریخ',country:'کشور',reason:'دلیل/رابطه',note:'یادداشت',adminLogin:'برای دیدن درخواست‌ها ابتدا با ایمیل ادمین وارد شوید.',deleteConfirm:'آیا مطمئن هستید می‌خواهید این درخواست را حذف کنید؟',rejectConfirm:'آیا مطمئن هستید می‌خواهید این درخواست را رد کنید؟',code:'کد جلسه بعد از تأیید: '};
-var en={title:'Meeting Access Requests',sub:'Review member requests for meeting link/code. Cards are collapsed; tap a name to open details.',load:'Load requests',pending:'Pending',approved:'Approved',rejected:'Rejected',approve:'Approve & activate meeting access',reject:'Reject request',del:'Delete from list',refresh:'Refresh',noRows:'No requests to display.',saved:'Done.',error:'Error',email:'Email',name:'Name',phone:'Phone',status:'Status',date:'Date',country:'Country',reason:'Reason/relationship',note:'Note',adminLogin:'Sign in with the admin email to view requests.',deleteConfirm:'Are you sure you want to delete this request?',rejectConfirm:'Are you sure you want to reject this request?',code:'Meeting code after approval: '};
-var hr={title:'Zahtjevi za pristup sastanku',sub:'Pregledajte zahtjeve članova za link/kod sastanka. Kartice su zatvorene; dodirnite ime za detalje.',load:'Učitaj zahtjeve',pending:'Na čekanju',approved:'Odobreno',rejected:'Odbijeno',approve:'Odobri i aktiviraj pristup',reject:'Odbij zahtjev',del:'Izbriši s popisa',refresh:'Osvježi',noRows:'Nema zahtjeva za prikaz.',saved:'Gotovo.',error:'Greška',email:'E-mail',name:'Ime',phone:'Telefon',status:'Status',date:'Datum',country:'Država',reason:'Razlog/odnos',note:'Bilješka',adminLogin:'Prijavite se administratorskim e-mailom za pregled zahtjeva.',deleteConfirm:'Jeste li sigurni da želite izbrisati ovaj zahtjev?',rejectConfirm:'Jeste li sigurni da želite odbiti ovaj zahtjev?',code:'Kod sastanka nakon odobrenja: '};var l=lang();return(l==='hr'?hr:(l==='en'?en:fa))[k]||fa[k]||k}
-function css(){if(document.getElementById('v6363dCss'))return;var st=document.createElement('style');st.id='v6363dCss';st.textContent=[
-'#v6363AdminCard{border-top:5px solid #06146D!important;background:linear-gradient(160deg,#fff,#f8fbff)!important}',
-'#v6363AdminCard h3{margin:0 0 8px;color:#06146D;font-weight:950}',
-'#v6363AdminCard p{line-height:1.8;color:#24304F;font-weight:750}',
-'.v6363-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}',
-'.v6363-btn{border:0;border-radius:999px;padding:10px 14px;font-weight:950;cursor:pointer;box-shadow:0 6px 16px rgba(6,20,109,.12)}',
-'.v6363-blue{background:#06146D;color:#fff}.v6363-green{background:#00B91F;color:#fff}.v6363-red{background:#fff0f0;color:#9b1c1c;border:1px solid #fecaca}.v6363-light{background:#eef4ff;color:#06146D}',
-'.v6363-row{background:#fff;border:1px solid #dbe3ef;border-radius:18px;padding:13px;margin:10px 0;box-shadow:0 4px 16px rgba(6,20,109,.05)}',
-'.v6363-row summary{cursor:pointer;font-weight:950;color:#06146D;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}',
-'.v6363-row.pending{border-inline-start:6px solid #F59E0B}.v6363-row.approved{border-inline-start:6px solid #00B91F}.v6363-row.rejected{border-inline-start:6px solid #ef4444}',
-'.v6363-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0}',
-'.v6363-field{background:#f8fbff;border-radius:12px;padding:8px;line-height:1.6}.v6363-field small{display:block;opacity:.65;font-weight:900}.v6363-field strong{color:#06146D}',
-'.v6363-status{font-weight:950;border-radius:999px;padding:5px 10px;display:inline-block;background:#eef4ff;color:#06146D}',
-'.v6363-status.approved{background:#eaffef;color:#08751a}.v6363-status.rejected{background:#fff0f0;color:#9b1c1c}.v6363-status.pending{background:#fff7df;color:#7a4d00}',
-'.v6363-note{background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:10px;margin:10px 0;color:#7c2d12;font-weight:800;line-height:1.7}',
-'.fa #v6363AdminCard{direction:rtl;text-align:right}'
-].join('\n');document.head.appendChild(st)}
-function findClient(){try{if(window.OMIDENO7_V6347C_SECURITY_FIX_BETA&&typeof window.OMIDENO7_V6347C_SECURITY_FIX_BETA.findClient==='function'){var c=window.OMIDENO7_V6347C_SECURITY_FIX_BETA.findClient();if(c&&c.from&&c.auth)return c}}catch(e){}var names=['omideno7Supabase','schoolSupabase','supabaseClient','om7Supabase','OMIDENO7_SUPABASE_CLIENT','__supabase','supabase'];for(var i=0;i<names.length;i++){try{var x=window[names[i]];if(x&&x.from&&x.auth)return x}catch(e){}}return null}
-async function getUser(){var sb=findClient();try{if(sb&&sb.auth&&sb.auth.getUser){var r=await sb.auth.getUser();return r&&r.data&&r.data.user}}catch(e){}return null}
-function isAdminEmail(email){return ADMIN_EMAILS.indexOf(String(email||'').toLowerCase().trim())>-1}
-function val(row,keys){for(var i=0;i<keys.length;i++){if(row&&row[keys[i]]!=null&&row[keys[i]]!=='')return row[keys[i]]}return''}
-function statusOf(row){var s=String(row.status||row.approval_status||'pending').toLowerCase();if(s==='approved')return'approved';if(s==='rejected'||s==='blocked')return'rejected';return'pending'}
-function statusLabel(s){return s==='approved'?T('approved'):(s==='rejected'?T('rejected'):T('pending'))}
-function rowHtml(row){var st=statusOf(row),name=val(row,['full_name','name','display_name'])||((val(row,['first_name'])+' '+val(row,['last_name'])).trim())||'—',email=val(row,['email']),phone=val(row,['phone','phone_number','mobile','contact_number']),created=val(row,['created_at','inserted_at','submitted_at','updated_at']),country=val(row,['country','residence_country']),reason=(val(row,['relationship'])+' / '+val(row,['reason'])).replace(/^\s*\/\s*|\s*\/\s*$/g,'')||'—',note=val(row,['owner_note','note','message','payload']);return '<details class="v6363-row '+st+'" data-id="'+esc(row.id)+'"><summary><span>👤 '+esc(name)+'</span><span class="v6363-status '+st+'">'+esc(statusLabel(st))+'</span><small>'+esc(email||'')+'</small></summary><div class="v6363-grid"><div class="v6363-field"><small>'+esc(T('name'))+'</small><strong>'+esc(name)+'</strong></div><div class="v6363-field"><small>'+esc(T('email'))+'</small><strong>'+esc(email||'—')+'</strong></div><div class="v6363-field"><small>'+esc(T('phone'))+'</small><strong>'+esc(phone||'—')+'</strong></div><div class="v6363-field"><small>'+esc(T('country'))+'</small><strong>'+esc(country||'—')+'</strong></div><div class="v6363-field"><small>'+esc(T('reason'))+'</small><strong>'+esc(reason)+'</strong></div><div class="v6363-field"><small>'+esc(T('date'))+'</small><strong>'+esc(created?String(created).slice(0,19).replace('T',' '):'—')+'</strong></div></div><div class="v6363-field"><small>'+esc(T('note'))+'</small><strong>'+esc(note||'—')+'</strong></div><p class="v6363-note">'+esc(T('code'))+esc(CODE)+'</p><div class="v6363-actions">'+(st==='approved'?'':'<button class="v6363-btn v6363-green" data-approve="'+esc(row.id)+'">✅ '+esc(T('approve'))+'</button>')+(st==='rejected'?'':'<button class="v6363-btn v6363-light" data-reject="'+esc(row.id)+'">⛔ '+esc(T('reject'))+'</button>')+'<button class="v6363-btn v6363-red" data-delete="'+esc(row.id)+'">🗑 '+esc(T('del'))+'</button></div></details>'}
-function renderRows(rows){var box=document.getElementById('v6363List');if(!box)return;if(!rows||!rows.length){box.innerHTML='<div class="v6363-note">'+esc(T('noRows'))+'</div>';return}var pending=rows.filter(function(r){return statusOf(r)==='pending'}).length;box.innerHTML='<div class="v6363-note">'+esc(T('pending'))+': '+pending+'</div>'+rows.map(rowHtml).join('');box.querySelectorAll('[data-approve]').forEach(function(b){b.onclick=function(e){e.preventDefault();approve(b.getAttribute('data-approve'))}});box.querySelectorAll('[data-reject]').forEach(function(b){b.onclick=function(e){e.preventDefault();rejectRow(b.getAttribute('data-reject'))}});box.querySelectorAll('[data-delete]').forEach(function(b){b.onclick=function(e){e.preventDefault();deleteRow(b.getAttribute('data-delete'))}})}
-async function loadRows(){css();var box=document.getElementById('v6363List');if(box)box.innerHTML='<div class="v6363-note">⏳ '+esc(T('load'))+'...</div>';var sb=findClient();if(!sb||!sb.from){if(box)box.innerHTML='<div class="v6363-note">'+esc(T('error'))+' — Supabase client not found.</div>';return}var user=await getUser();if(!user||!isAdminEmail(user.email)){if(box)box.innerHTML='<div class="v6363-note">'+esc(T('adminLogin'))+'</div>';return}try{var r=await sb.from(TABLE).select('*').order('created_at',{ascending:false}).limit(200);if(r.error){r=await sb.from(TABLE).select('*').limit(200)}if(r.error)throw r.error;renderRows(r.data||[])}catch(err){if(box)box.innerHTML='<div class="v6363-note">'+esc(T('error'))+': '+esc(err&&err.message?err.message:String(err))+'</div>'}}
-async function updateRow(id,payload,success){var sb=findClient();try{var r=await sb.from(TABLE).update(payload).eq('id',id).select();if(r.error)throw r.error;await loadRows();alert(success||T('saved'))}catch(err){alert(T('error')+': '+(err&&err.message?err.message:String(err)))}}
-async function approve(id){await updateRow(id,{status:'approved',approved_role:'approved_member',owner_note:'Approved by admin. Meeting code: '+CODE},T('saved'))}
-async function rejectRow(id){if(!confirm(T('rejectConfirm')))return;await updateRow(id,{status:'rejected',approved_role:null,owner_note:'Rejected by admin'},T('saved'))}
-async function deleteRow(id){if(!confirm(T('deleteConfirm')))return;var sb=findClient();try{var r=await sb.from(TABLE).delete().eq('id',id);if(r.error)throw r.error;await loadRows();alert(T('saved'))}catch(err){alert(T('error')+': '+(err&&err.message?err.message:String(err)))}}
-async function renderCard(){css();var more=document.getElementById('more');if(!more)return;var user=await getUser();var show=!!(user&&isAdminEmail(user.email));var existing=document.getElementById('v6363AdminCard');if(!show){if(existing)existing.remove();return}if(!existing){existing=document.createElement('div');existing.id='v6363AdminCard';existing.className='card';var footer=more.querySelector('.footer')||document.getElementById('v6358VersionFooter');more.insertBefore(existing,footer||null)}existing.innerHTML='<h3>🛡️ '+esc(T('title'))+'</h3><p>'+esc(T('sub'))+'</p><div class="v6363-actions"><button class="v6363-btn v6363-blue" id="v6363Load">🔄 '+esc(T('load'))+'</button><button class="v6363-btn v6363-light" id="v6363Refresh">'+esc(T('refresh'))+'</button></div><div id="v6363List"></div>';document.getElementById('v6363Load').onclick=loadRows;document.getElementById('v6363Refresh').onclick=loadRows;setTimeout(loadRows,100)}
-function render(){renderCard()}
-document.addEventListener('DOMContentLoaded',render);window.addEventListener('load',render);document.addEventListener('click',function(){setTimeout(render,250)},true);setTimeout(render,600);setTimeout(render,2000);setInterval(render,5000);
-window.OMIDENO7_V6363_ADMIN_REGISTRATION_APPROVAL={render:render,loadRows:loadRows,approve:approve,reject:rejectRow,deleteRow:deleteRow,version:VERSION};
+  'use strict';
+  function hideOldPanels(){
+    var cssId='v6363eDisableMoreAdminCss';
+    if(!document.getElementById(cssId)){
+      var st=document.createElement('style');
+      st.id=cssId;
+      st.textContent='#v6363AdminCard,#om7v6385Admin{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important}';
+      document.head.appendChild(st);
+    }
+  }
+  hideOldPanels();
+  document.addEventListener('DOMContentLoaded',hideOldPanels);
+  window.OMIDENO7_V6363_ADMIN_REGISTRATION_APPROVAL={render:hideOldPanels,loadRows:function(){},version:'V63.63E disabled; use V63.86 school admin panel'};
 })();

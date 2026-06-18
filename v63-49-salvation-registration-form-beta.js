@@ -6,17 +6,16 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.49D Registration Save Fix V4';
+  var VERSION = 'V63.49E Registration Save Fix Stable';
   var LOCAL_QUEUE_KEY = 'omideno7_v6349_registration_queue';
   var LOG_KEY = 'omideno7_v6349_registration_log';
   var SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
-  var autoQueueTried = false;
 
   function isBeta(){
     return /beta\.html/i.test(location.pathname) || /v=6349|v=6348|v=6347|v=6346|v=6345|v=6344|v=6343|v=6342|v=6341/i.test(location.search);
   }
-  // V63.49C: active on main, beta, and test pages. Do not return early.
+  // Stable fix: active on main, beta, and admin/testing URLs. Do not return early.
 
   function normalizeLang(v){
     v = String(v || '').toLowerCase().trim();
@@ -225,6 +224,67 @@
     localStorage.setItem(LOG_KEY,JSON.stringify(arr));
   }
 
+
+  function loadScript(src){
+    return new Promise(function(resolve, reject){
+      if(window.supabase && window.supabase.createClient){ resolve(); return; }
+      var existing=document.querySelector('script[data-om7-supabase-sdk][src="'+src+'"]');
+      var done=false;
+      var timer=setTimeout(function(){
+        if(done) return;
+        done=true;
+        reject(new Error('Supabase SDK load timeout'));
+      }, 9000);
+      function ok(){ if(done) return; done=true; clearTimeout(timer); resolve(); }
+      function bad(){ if(done) return; done=true; clearTimeout(timer); reject(new Error('Supabase SDK load failed')); }
+      if(existing){
+        existing.addEventListener('load',ok,{once:true});
+        existing.addEventListener('error',bad,{once:true});
+        setTimeout(function(){ if(window.supabase && window.supabase.createClient) ok(); },300);
+        return;
+      }
+      var s=document.createElement('script');
+      s.src=src;
+      s.async=true;
+      s.dataset.om7SupabaseSdk='1';
+      s.onload=ok;
+      s.onerror=bad;
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensureClient(){
+    var c = findClient();
+    if(c && c.from && c.auth) return c;
+    if(window.OMIDENO7_GET_SUPABASE_CLIENT){
+      c = await window.OMIDENO7_GET_SUPABASE_CLIENT();
+      if(c && c.from && c.auth) return c;
+    }
+    if(window.OMIDENO7_SUPABASE_READY){
+      c = await window.OMIDENO7_SUPABASE_READY;
+      if(c && c.from && c.auth) return c;
+    }
+    if(!window.supabase || !window.supabase.createClient){
+      var urls=[
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+        'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js',
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js'
+      ];
+      var lastErr=null;
+      for(var i=0;i<urls.length;i++){
+        try{ await loadScript(urls[i]); if(window.supabase && window.supabase.createClient) break; }
+        catch(e){ lastErr=e; }
+      }
+      if(!window.supabase || !window.supabase.createClient){
+        throw lastErr || new Error('Supabase SDK could not be loaded. Please check internet connection and reload the app.');
+      }
+    }
+    window.omideno7Supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    window.schoolSupabase = window.omideno7Supabase;
+    window.supabaseClient = window.omideno7Supabase;
+    return window.omideno7Supabase;
+  }
+
   function findClient(){
     try{
       if(window.OMIDENO7_V6347C_SECURITY_FIX_BETA && typeof window.OMIDENO7_V6347C_SECURITY_FIX_BETA.findClient === 'function'){
@@ -309,8 +369,6 @@
           '</div>'+
           '<div class="v6349-actions">'+
             '<button type="submit" class="btn primary">'+esc(T('submit'))+'</button>'+
-            '<button type="button" class="btn secondary" id="v6349SendQueue">'+esc(T('sendQueued'))+'</button>'+
-            '<button type="button" class="btn light" id="v6349ShowQueue">'+esc(T('openSaved'))+'</button>'+
           '</div>'+
         '</form>'+
         '<div id="v6349QueueBox"></div>'+
@@ -357,44 +415,12 @@
     modal.querySelector('.v6349-x').onclick=closeForm;
     modal.querySelector('.v6349-backdrop').onclick=closeForm;
     document.getElementById('v6349Form').onsubmit=handleSubmit;
-    document.getElementById('v6349ShowQueue').onclick=function(ev){ev.preventDefault(); showQueue();};
-    document.getElementById('v6349SendQueue').onclick=function(ev){ev.preventDefault(); sendQueue();};
+    var q1=document.getElementById('v6349ShowQueue'); if(q1) q1.onclick=function(ev){ev.preventDefault(); showQueue();};
+    var q2=document.getElementById('v6349SendQueue'); if(q2) q2.onclick=function(ev){ev.preventDefault(); sendQueue();};
   }
   function closeForm(){
     var modal=document.getElementById('v6349Modal');
     if(modal) modal.remove();
-  }
-
-
-  function finalBox(ok, title, message){
-    var modal=document.getElementById('v6349Modal');
-    if(!modal) return;
-    var box=modal.querySelector('.v6349-box');
-    if(!box) return;
-    box.innerHTML='<button type="button" class="v6349-x" aria-label="'+esc(T('close'))+'">×</button>'+
-      '<h2>'+esc(title)+'</h2>'+
-      '<div class="v6349-status '+(ok?'ok':'error')+'" style="font-size:16px;line-height:1.9">'+esc(message)+'</div>'+
-      '<div class="v6349-actions"><button type="button" class="btn primary" id="v6349FinalClose">'+esc(T('close'))+'</button></div>';
-    box.querySelector('.v6349-x').onclick=closeForm;
-    box.querySelector('#v6349FinalClose').onclick=closeForm;
-  }
-
-  function submitSuccessMessage(){
-    var l=lang();
-    return ({
-      fa:'ثبت‌نام شما واقعاً در سیستم کلیسا ثبت شد و اکنون در انتظار بررسی و تأیید ادمین است. پس از تأیید، راهنمای دسترسی و کد جلسه برای شما فعال خواهد شد.',
-      en:'Your registration was saved in the church system and is now waiting for admin review and approval. After approval, meeting access details will be enabled for you.',
-      hr:'Vaša registracija je spremljena u crkveni sustav i sada čeka pregled i odobrenje administratora. Nakon odobrenja, podaci za pristup sastanku bit će omogućeni.'
-    })[l] || 'Your registration was saved and is waiting for admin approval.';
-  }
-
-  function submitFailMessage(err){
-    var base={
-      fa:'ثبت‌نام در کلود انجام نشد. لطفاً این پیام خطا را برای ادمین بفرستید: ',
-      en:'Registration was not saved to the cloud. Please send this error to the admin: ',
-      hr:'Registracija nije spremljena u cloud. Pošaljite ovu grešku administratoru: '
-    }[lang()] || 'Registration was not saved: ';
-    return base + (err && (err.message || String(err)) || 'Unknown error');
   }
 
   function collectForm(form){
@@ -434,44 +460,29 @@
       return r && r.data && r.data.user ? r.data.user : null;
     }catch(e){return null;}
   }
-
   async function submitToCloud(data){
-    var sb = findClient();
-    if(!sb || !sb.from) throw new Error('Supabase client not available');
+    var sb = await ensureClient();
 
-    var firstName = String(data.first_name || '').trim();
-    var lastName = String(data.last_name || '').trim();
+    var firstName = (data.first_name || '').trim();
+    var lastName = (data.last_name || '').trim();
     var fullName = (firstName + ' ' + lastName).trim();
-    var country = String(data.residence_country || data.origin || '').trim() || 'Unknown';
-    var noteParts = [
-      'Phone: ' + (data.phone || ''),
-      'Language: ' + (data.language || ''),
-      'Origin: ' + (data.origin || ''),
-      'Birth date: ' + (data.birth_date || ''),
-      'Salvation date: ' + (data.salvation_date || ''),
-      'Water baptism: ' + (data.water_baptism || ''),
-      'Pastor: ' + (data.pastor_name || ''),
-      'Marital status: ' + (data.marital_status || ''),
-      'Children: ' + (data.has_children || '') + ' / ' + (data.children_count || ''),
-      'Education: ' + (data.education || ''),
-      'Physical condition: ' + (data.physical_condition || ''),
-      'Health details: ' + (data.health_details || ''),
-      'Wants SMS: ' + (data.wants_sms || ''),
-      'Bible class before: ' + (data.bible_class_before || ''),
-      'Course details: ' + (data.course_details || ''),
-      'Source: ' + (data.source || VERSION)
-    ];
+    var country = data.residence_country || data.country || data.origin || 'Unknown';
 
     var payload = {
       full_name: fullName || data.email || 'Unknown',
-      email: String(data.email || '').trim().toLowerCase(),
+      email: data.email,
       country: country,
       relationship: 'member',
       reason: 'participate',
       status: 'pending',
       approved_role: null,
       risk: 'normal',
-      owner_note: noteParts.join(' | ')
+      owner_note:
+        'Phone: ' + (data.phone || '') +
+        ' | Origin: ' + (data.origin || '') +
+        ' | Language: ' + (data.language || '') +
+        ' | Baptism: ' + (data.water_baptism || '') +
+        ' | Salvation date: ' + (data.salvation_date || '')
     };
 
     var r = await sb
@@ -481,12 +492,38 @@
       .single();
 
     if(r.error) throw r.error;
-    if(!r.data || !r.data.id) throw new Error('Registration did not return a saved id');
     return r.data;
   }
 
-  async function handleSubmit(ev){
+  function showFinalSuccess(email){
+    var modal=document.getElementById('v6349Modal');
+    var message = lang()==='fa'
+      ? 'ثبت‌نام شما با موفقیت برای ادمین ارسال شد. لطفاً منتظر تأیید بمانید. بعد از تأیید، لینک و کد جلسه برای شما فعال می‌شود.'
+      : (lang()==='hr'
+        ? 'Vaša registracija je uspješno poslana administratoru. Molimo pričekajte odobrenje. Nakon odobrenja link i kod sastanka bit će aktivirani.'
+        : 'Your request was successfully sent to admin. Please wait for approval. After approval, the meeting link and code will be activated.');
+    if(modal){
+      var box=modal.querySelector('.v6349-box');
+      if(box){
+        box.innerHTML = '<button type="button" class="v6349-x" aria-label="'+esc(T('close'))+'">×</button>' +
+          '<h2>✅ '+esc(T('savedCloud'))+'</h2>' +
+          '<div class="v6349-status ok">'+esc(message)+'</div>' +
+          '<p class="v6349-privacy">📧 '+esc(email||'')+'</p>' +
+          '<div class="v6349-actions"><button type="button" class="btn primary" id="v6349DoneClose">'+esc(T('close'))+'</button></div>';
+        box.querySelector('.v6349-x').onclick=closeForm;
+        box.querySelector('#v6349DoneClose').onclick=closeForm;
+      }
+    } else {
+      alert(message);
+    }
+  }
+
+  
+async function handleSubmit(ev){
     ev.preventDefault();
+    ev.stopPropagation();
+    if(ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+
     var form=ev.currentTarget;
     var data=collectForm(form);
     var err=validate(data);
@@ -495,14 +532,14 @@
     try{
       setStatus(T('sending'),'warn');
       var res=await submitToCloud(data);
-      log('success','Saved to access_requests',{id:res && res.id, email:data.email});
+      log('success',T('savedCloud'),{id:res && res.id, email:data.email});
       form.reset();
-      finalBox(true, T('savedCloud'), submitSuccessMessage());
+      showFinalSuccess(data.email);
     }catch(e){
-      var msg=submitFailMessage(e);
-      setStatus(msg,'error');
-      log('error','Registration save failed',{error:e.message||String(e), email:data.email});
-      try{ alert(msg); }catch(_e){}
+      var msg = e && e.message ? e.message : String(e);
+      setStatus(T('error') + ': ' + msg,'error');
+      log('error','Cloud registration failed',{error:msg, email:data.email});
+      alert(T('error') + ': ' + msg);
     }
     return false;
   }
@@ -570,28 +607,14 @@
   }
 
   function addMorePanel(){
-    var more=document.getElementById('more');
-    if(!more || document.getElementById('v6349MorePanel')) return;
-    var div=document.createElement('div');
-    div.id='v6349MorePanel';
-    div.className='card';
-    div.style.borderTop='5px solid #00B91F';
-    div.innerHTML='<h3>'+esc(T('openChurchBtn'))+'</h3><p>'+esc(T('intro'))+'</p><div class="v6349-actions"><button type="button" class="btn primary" id="v6349OpenFromMore">'+esc(T('openBtn'))+'</button><button type="button" class="btn secondary" id="v6349SendFromMore">'+esc(T('sendQueued'))+'</button></div>';
-    var footer=more.querySelector('.footer');
-    more.insertBefore(div, footer || null);
-    document.getElementById('v6349OpenFromMore').onclick=function(ev){ev.preventDefault(); openForm();};
-    document.getElementById('v6349SendFromMore').onclick=function(ev){ev.preventDefault(); openForm(); setTimeout(sendQueue,200);};
+    // V63.88: Registration panel must not be inserted in More. Admin requests live only inside School Admin.
+    return;
   }
 
   function render(){
     css();
     replaceButtons();
     addMorePanel();
-    // Try to rescue old local queued registrations after this fix is deployed.
-    if(!autoQueueTried && queueGet().length){
-      autoQueueTried = true;
-      setTimeout(function(){ try{ sendQueue(); }catch(e){} }, 2500);
-    }
   }
 
   document.addEventListener('DOMContentLoaded',render);

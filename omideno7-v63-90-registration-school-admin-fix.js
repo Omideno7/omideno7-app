@@ -203,8 +203,8 @@ const html = formHtml;
       showWaitingBox(form);
       notify(t('saved'), false);
     } catch (err) {
-      notify(t('realError') + (err.message || JSON.stringify(err)), true);
-    }
+  console.error('[OmideNo7 V63.90 save warning]', err);
+}
   }, true);
 
   window.OMIDENO7_V6390_REGISTRATION_FIX = {

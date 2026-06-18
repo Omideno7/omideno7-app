@@ -65,7 +65,7 @@ async function getAccess(email){
   if(!c||!c.from||!email) return null;
   const r=await c.from(TABLE)
     .select('*')
-    .eq('email',email.toLowerCase())
+    .eq('email',String(email).trim().toLowerCase())
     .order('created_at',{ascending:false})
     .limit(1);
   if(r.error||!r.data||!r.data[0]) return null;
@@ -99,6 +99,8 @@ function showApproved(){
 function hideVisibleMeetingCodes(){
   document.querySelectorAll('section,article,div,.card,.box,.panel').forEach(el=>{
     if(el.id==='v6392bMeetingModal') return;
+    if(el.closest && el.closest('#v6392bMeetingModal')) return;
+
     const tx=el.innerText||'';
     if((tx.includes('789987')||tx.includes('fccdl.in/i/omideno7church')) && el.children.length<50){
       el.style.display='none';

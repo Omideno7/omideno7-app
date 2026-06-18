@@ -6,47 +6,17 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.49C Registration Cloud Save Fix';
+  var VERSION = 'V63.49D Registration Save Fix V4';
   var LOCAL_QUEUE_KEY = 'omideno7_v6349_registration_queue';
   var LOG_KEY = 'omideno7_v6349_registration_log';
   var SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
-  var FALLBACK_SB = null;
-
-  function loadSupabaseSdk(){
-    return new Promise(function(resolve,reject){
-      if(window.supabase && window.supabase.createClient){ resolve(); return; }
-      var old=document.querySelector('script[data-om7-supabase-sdk="1"]');
-      if(old){ old.addEventListener('load',resolve); old.addEventListener('error',reject); return; }
-      var s=document.createElement('script');
-      s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-      s.async=true;
-      s.dataset.om7SupabaseSdk='1';
-      s.onload=resolve;
-      s.onerror=function(){reject(new Error('Could not load Supabase SDK'));};
-      document.head.appendChild(s);
-    });
-  }
-
-  async function getCloudClient(){
-    var existing=findClient();
-    if(existing && existing.from && existing.auth) return existing;
-    if(FALLBACK_SB && FALLBACK_SB.from && FALLBACK_SB.auth) return FALLBACK_SB;
-    await loadSupabaseSdk();
-    if(!window.supabase || !window.supabase.createClient) throw new Error('Supabase SDK not available');
-    FALLBACK_SB = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    try{
-      window.omideno7Supabase = window.omideno7Supabase || FALLBACK_SB;
-      window.supabaseClient = window.supabaseClient || FALLBACK_SB;
-    }catch(e){}
-    return FALLBACK_SB;
-  }
+  var autoQueueTried = false;
 
   function isBeta(){
-    // V63.49C: this registration module must run on the live app too, not only beta.html.
-    return true;
+    return /beta\.html/i.test(location.pathname) || /v=6349|v=6348|v=6347|v=6346|v=6345|v=6344|v=6343|v=6342|v=6341/i.test(location.search);
   }
-  if(!isBeta()) return;
+  // V63.49C: active on main, beta, and test pages. Do not return early.
 
   function normalizeLang(v){
     v = String(v || '').toLowerCase().trim();
@@ -269,6 +239,12 @@
         if(x && x.from && x.auth) return x;
       }catch(e){}
     }
+    try{
+      if(window.supabase && window.supabase.createClient){
+        window.omideno7Supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        return window.omideno7Supabase;
+      }
+    }catch(e){}
     return null;
   }
 
@@ -389,6 +365,38 @@
     if(modal) modal.remove();
   }
 
+
+  function finalBox(ok, title, message){
+    var modal=document.getElementById('v6349Modal');
+    if(!modal) return;
+    var box=modal.querySelector('.v6349-box');
+    if(!box) return;
+    box.innerHTML='<button type="button" class="v6349-x" aria-label="'+esc(T('close'))+'">×</button>'+
+      '<h2>'+esc(title)+'</h2>'+
+      '<div class="v6349-status '+(ok?'ok':'error')+'" style="font-size:16px;line-height:1.9">'+esc(message)+'</div>'+
+      '<div class="v6349-actions"><button type="button" class="btn primary" id="v6349FinalClose">'+esc(T('close'))+'</button></div>';
+    box.querySelector('.v6349-x').onclick=closeForm;
+    box.querySelector('#v6349FinalClose').onclick=closeForm;
+  }
+
+  function submitSuccessMessage(){
+    var l=lang();
+    return ({
+      fa:'ثبت‌نام شما واقعاً در سیستم کلیسا ثبت شد و اکنون در انتظار بررسی و تأیید ادمین است. پس از تأیید، راهنمای دسترسی و کد جلسه برای شما فعال خواهد شد.',
+      en:'Your registration was saved in the church system and is now waiting for admin review and approval. After approval, meeting access details will be enabled for you.',
+      hr:'Vaša registracija je spremljena u crkveni sustav i sada čeka pregled i odobrenje administratora. Nakon odobrenja, podaci za pristup sastanku bit će omogućeni.'
+    })[l] || 'Your registration was saved and is waiting for admin approval.';
+  }
+
+  function submitFailMessage(err){
+    var base={
+      fa:'ثبت‌نام در کلود انجام نشد. لطفاً این پیام خطا را برای ادمین بفرستید: ',
+      en:'Registration was not saved to the cloud. Please send this error to the admin: ',
+      hr:'Registracija nije spremljena u cloud. Pošaljite ovu grešku administratoru: '
+    }[lang()] || 'Registration was not saved: ';
+    return base + (err && (err.message || String(err)) || 'Unknown error');
+  }
+
   function collectForm(form){
     var fd=new FormData(form);
     var data={};
@@ -427,35 +435,55 @@
     }catch(e){return null;}
   }
 
- async function submitToCloud(data){
-  var sb = await getCloudClient();
-  if(!sb || !sb.from) throw new Error('Supabase client not available');
+  async function submitToCloud(data){
+    var sb = findClient();
+    if(!sb || !sb.from) throw new Error('Supabase client not available');
 
-  var firstName = (data.first_name || '').trim();
-  var lastName = (data.last_name || '').trim();
-  var fullName = (firstName + ' ' + lastName).trim();
+    var firstName = String(data.first_name || '').trim();
+    var lastName = String(data.last_name || '').trim();
+    var fullName = (firstName + ' ' + lastName).trim();
+    var country = String(data.residence_country || data.origin || '').trim() || 'Unknown';
+    var noteParts = [
+      'Phone: ' + (data.phone || ''),
+      'Language: ' + (data.language || ''),
+      'Origin: ' + (data.origin || ''),
+      'Birth date: ' + (data.birth_date || ''),
+      'Salvation date: ' + (data.salvation_date || ''),
+      'Water baptism: ' + (data.water_baptism || ''),
+      'Pastor: ' + (data.pastor_name || ''),
+      'Marital status: ' + (data.marital_status || ''),
+      'Children: ' + (data.has_children || '') + ' / ' + (data.children_count || ''),
+      'Education: ' + (data.education || ''),
+      'Physical condition: ' + (data.physical_condition || ''),
+      'Health details: ' + (data.health_details || ''),
+      'Wants SMS: ' + (data.wants_sms || ''),
+      'Bible class before: ' + (data.bible_class_before || ''),
+      'Course details: ' + (data.course_details || ''),
+      'Source: ' + (data.source || VERSION)
+    ];
 
-  var payload = {
-    full_name: fullName || data.email || 'Unknown',
-    email: data.email,
-    country: data.country || 'Unknown',
-    relationship: 'member',
-    reason: 'participate',
-    status: 'pending',
-    approved_role: null,
-    risk: 'normal',
-    owner_note: 'Phone: ' + (data.phone || '') + ' | Language: ' + (data.language || '')
-  };
+    var payload = {
+      full_name: fullName || data.email || 'Unknown',
+      email: String(data.email || '').trim().toLowerCase(),
+      country: country,
+      relationship: 'member',
+      reason: 'participate',
+      status: 'pending',
+      approved_role: null,
+      risk: 'normal',
+      owner_note: noteParts.join(' | ')
+    };
 
-  var r = await sb
-    .from('access_requests')
-    .insert(payload)
-    .select('id,email,status')
-    .single();
+    var r = await sb
+      .from('access_requests')
+      .insert(payload)
+      .select('id,email,status')
+      .single();
 
-  if(r.error) throw r.error;
-  return r.data;
-}
+    if(r.error) throw r.error;
+    if(!r.data || !r.data.id) throw new Error('Registration did not return a saved id');
+    return r.data;
+  }
 
   async function handleSubmit(ev){
     ev.preventDefault();
@@ -467,14 +495,14 @@
     try{
       setStatus(T('sending'),'warn');
       var res=await submitToCloud(data);
-      setStatus(T('savedCloud'),'ok');
-      log('success',T('savedCloud'),{id:res && res.id, email:data.email});
+      log('success','Saved to access_requests',{id:res && res.id, email:data.email});
       form.reset();
+      finalBox(true, T('savedCloud'), submitSuccessMessage());
     }catch(e){
-      var msg = (e && e.message) ? e.message : String(e);
-      setStatus(T('error') + ': ' + msg, 'error');
-      log('error','Cloud registration failed',{error:msg, email:data.email});
-      try{ alert(T('error') + ': ' + msg); }catch(_e){}
+      var msg=submitFailMessage(e);
+      setStatus(msg,'error');
+      log('error','Registration save failed',{error:e.message||String(e), email:data.email});
+      try{ alert(msg); }catch(_e){}
     }
     return false;
   }
@@ -559,6 +587,11 @@
     css();
     replaceButtons();
     addMorePanel();
+    // Try to rescue old local queued registrations after this fix is deployed.
+    if(!autoQueueTried && queueGet().length){
+      autoQueueTried = true;
+      setTimeout(function(){ try{ sendQueue(); }catch(e){} }, 2500);
+    }
   }
 
   document.addEventListener('DOMContentLoaded',render);

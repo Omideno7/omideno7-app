@@ -154,10 +154,22 @@
 
   document.addEventListener('submit', async function (e) {
     const form = e.target;
+    const formHtml = (form.outerHTML || '').toLowerCase();
+const btnText = Array.from(form.querySelectorAll('button')).map(b => b.textContent || '').join(' ').toLowerCase();
+
+if (
+  formHtml.includes('password') ||
+  formHtml.includes('رمز') ||
+  btnText.includes('login') ||
+  btnText.includes('ورود') ||
+  btnText.includes('sign in')
+) {
+  return;
+}
     if (!form || !form.querySelector) return;
 
-    const text = (form.innerText || form.textContent || '').toLowerCase();
-    const html = (form.outerHTML || '').toLowerCase();
+const text = (form.innerText || form.textContent || '').toLowerCase();
+const html = formHtml;
 
     const isSchool =
       html.includes('school') ||

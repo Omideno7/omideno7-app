@@ -57,9 +57,9 @@
   }
 
   function notify(msg, isError) {
-    alert(msg);
-    console[isError ? 'error' : 'log']('[OmideNo7 V63.90]', msg);
-  }
+  console[isError ? 'error' : 'log']('[OmideNo7 V63.90]', msg);
+  if (isError) alert(msg);
+}
 
   function getValue(names) {
     for (const n of names) {

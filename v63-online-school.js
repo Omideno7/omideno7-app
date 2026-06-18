@@ -165,10 +165,10 @@
       // Keep the form visible and show a clear message instead of re-rendering and clearing the fields.
       const l=lang();
       const msg={
-        fa:'حساب ساخته شد، اما هنوز ورود فعال نشده است. اگر ایمیل تأیید دریافت کردید، آن را تأیید کنید و سپس با همین ایمیل و رمز وارد مدرسه شوید. اگر نمی‌خواهید تأیید ایمیل لازم باشد، در Supabase بخش Auth گزینه Confirm email را خاموش کنید.',
-        en:'Account created, but you are not signed in yet. If you received a confirmation email, confirm it, then sign in with the same email and password. To allow immediate access, disable Confirm email in Supabase Auth settings.',
-        hr:'Račun je izrađen, ali još niste prijavljeni. Ako ste primili potvrdni email, potvrdite ga i zatim se prijavite istim emailom i lozinkom. Za trenutačan pristup isključite Confirm email u Supabase Auth postavkama.'
-      }[l]||'Account created. Please confirm your email and sign in.';
+        fa:'حساب شما ساخته شد. لطفاً صندوق ورودی ایمیل خود را باز کنید، ایمیل تأیید را بزنید، سپس با همین ایمیل و رمز وارد مدرسه شوید. بعد از ورود، فرم ثبت‌نام مدرسه را کامل کنید و منتظر تأیید ادمین بمانید.',
+        en:'Your account has been created. Please open your email inbox, confirm your email address, then sign in with the same email and password. After signing in, complete the school registration form and wait for admin approval.',
+        hr:'Vaš račun je izrađen. Otvorite svoj email, potvrdite email adresu, zatim se prijavite istim emailom i lozinkom. Nakon prijave ispunite obrazac za školu i pričekajte odobrenje administratora.'
+      }[l]||'Your account has been created. Please confirm your email, sign in, complete the school form, and wait for admin approval.';
       showStatus(msg);
     });
   }

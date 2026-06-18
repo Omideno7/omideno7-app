@@ -141,7 +141,7 @@ async function handleMeetingClick(ev){
 
   const status=String(row.status||'pending').toLowerCase();
 
-  if(status==='approved'){
+  if(status==='approved' || status==='approve' || status==='active' || status==='accepted'){
     showApproved();
   }else if(status==='rejected'){
     showMessage(t('rejected'));

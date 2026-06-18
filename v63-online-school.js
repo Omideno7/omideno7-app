@@ -48,13 +48,38 @@
   function showStatus(msg, bad){ const el=document.querySelector('#schoolStatus'); if(el){ el.textContent=msg||''; el.style.color=bad?'#b00020':'#0a6b2b'; } }
   function schoolTerms(){ return DATA.terms[lang()]||DATA.terms.fa||DATA.terms.en||{}; }
 
-  function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+  function loadScript(src){
+    return new Promise((res,rej)=>{
+      if(window.supabase?.createClient){ res(); return; }
+      let existing=document.querySelector('script[data-om7-supabase-sdk][src="'+src+'"]');
+      let done=false;
+      let timer=setTimeout(()=>{ if(done) return; done=true; rej(new Error('Supabase SDK load timeout')); },9000);
+      function ok(){ if(done) return; done=true; clearTimeout(timer); res(); }
+      function bad(){ if(done) return; done=true; clearTimeout(timer); rej(new Error('Supabase SDK load failed')); }
+      if(existing){ existing.addEventListener('load',ok,{once:true}); existing.addEventListener('error',bad,{once:true}); setTimeout(()=>{ if(window.supabase?.createClient) ok(); },300); return; }
+      const s=document.createElement('script'); s.src=src; s.async=true; s.dataset.om7SupabaseSdk='1'; s.onload=ok; s.onerror=bad; document.head.appendChild(s);
+    });
+  }
   async function ensureSupabase(){
     if(sb) return sb;
-    if(!window.supabase?.createClient){ await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'); }
-    sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if(window.OMIDENO7_GET_SUPABASE_CLIENT){
+      sb=await window.OMIDENO7_GET_SUPABASE_CLIENT();
+    }
+    if(!sb && window.OMIDENO7_SUPABASE_READY){
+      sb=await window.OMIDENO7_SUPABASE_READY;
+    }
+    if(!sb){
+      if(!window.supabase?.createClient){
+        const urls=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js'];
+        let lastErr=null;
+        for(const u of urls){ try{ await loadScript(u); if(window.supabase?.createClient) break; }catch(e){ lastErr=e; } }
+        if(!window.supabase?.createClient) throw (lastErr||new Error('Supabase SDK could not be loaded. Please check internet connection and reload the app.'));
+      }
+      sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      window.omideno7Supabase=sb; window.schoolSupabase=sb; window.supabaseClient=sb;
+    }
     const {data}=await sb.auth.getSession(); session=data?.session||null;
-    sb.auth.onAuthStateChange((_event, sess)=>{ session=sess; refreshSchool(); });
+    if(!sb.__om7SchoolAuthBound){ sb.__om7SchoolAuthBound=true; sb.auth.onAuthStateChange((_event, sess)=>{ session=sess; refreshSchool(); }); }
     return sb;
   }
 

@@ -228,14 +228,27 @@
   function loadScript(src){
     return new Promise(function(resolve, reject){
       if(window.supabase && window.supabase.createClient){ resolve(); return; }
-      var existing=document.querySelector('script[data-om7-supabase-sdk="1"]');
-      if(existing){ existing.addEventListener('load',resolve); existing.addEventListener('error',reject); return; }
+      var existing=document.querySelector('script[data-om7-supabase-sdk][src="'+src+'"]');
+      var done=false;
+      var timer=setTimeout(function(){
+        if(done) return;
+        done=true;
+        reject(new Error('Supabase SDK load timeout'));
+      }, 9000);
+      function ok(){ if(done) return; done=true; clearTimeout(timer); resolve(); }
+      function bad(){ if(done) return; done=true; clearTimeout(timer); reject(new Error('Supabase SDK load failed')); }
+      if(existing){
+        existing.addEventListener('load',ok,{once:true});
+        existing.addEventListener('error',bad,{once:true});
+        setTimeout(function(){ if(window.supabase && window.supabase.createClient) ok(); },300);
+        return;
+      }
       var s=document.createElement('script');
       s.src=src;
       s.async=true;
       s.dataset.om7SupabaseSdk='1';
-      s.onload=resolve;
-      s.onerror=reject;
+      s.onload=ok;
+      s.onerror=bad;
       document.head.appendChild(s);
     });
   }
@@ -243,14 +256,33 @@
   async function ensureClient(){
     var c = findClient();
     if(c && c.from && c.auth) return c;
+    if(window.OMIDENO7_GET_SUPABASE_CLIENT){
+      c = await window.OMIDENO7_GET_SUPABASE_CLIENT();
+      if(c && c.from && c.auth) return c;
+    }
+    if(window.OMIDENO7_SUPABASE_READY){
+      c = await window.OMIDENO7_SUPABASE_READY;
+      if(c && c.from && c.auth) return c;
+    }
     if(!window.supabase || !window.supabase.createClient){
-      await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+      var urls=[
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+        'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js',
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js'
+      ];
+      var lastErr=null;
+      for(var i=0;i<urls.length;i++){
+        try{ await loadScript(urls[i]); if(window.supabase && window.supabase.createClient) break; }
+        catch(e){ lastErr=e; }
+      }
+      if(!window.supabase || !window.supabase.createClient){
+        throw lastErr || new Error('Supabase SDK could not be loaded. Please check internet connection and reload the app.');
+      }
     }
-    if(window.supabase && window.supabase.createClient){
-      window.omideno7Supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      return window.omideno7Supabase;
-    }
-    throw new Error('Supabase client not available');
+    window.omideno7Supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    window.schoolSupabase = window.omideno7Supabase;
+    window.supabaseClient = window.omideno7Supabase;
+    return window.omideno7Supabase;
   }
 
   function findClient(){
@@ -337,8 +369,6 @@
           '</div>'+
           '<div class="v6349-actions">'+
             '<button type="submit" class="btn primary">'+esc(T('submit'))+'</button>'+
-            '<button type="button" class="btn secondary" id="v6349SendQueue">'+esc(T('sendQueued'))+'</button>'+
-            '<button type="button" class="btn light" id="v6349ShowQueue">'+esc(T('openSaved'))+'</button>'+
           '</div>'+
         '</form>'+
         '<div id="v6349QueueBox"></div>'+
@@ -385,8 +415,8 @@
     modal.querySelector('.v6349-x').onclick=closeForm;
     modal.querySelector('.v6349-backdrop').onclick=closeForm;
     document.getElementById('v6349Form').onsubmit=handleSubmit;
-    document.getElementById('v6349ShowQueue').onclick=function(ev){ev.preventDefault(); showQueue();};
-    document.getElementById('v6349SendQueue').onclick=function(ev){ev.preventDefault(); sendQueue();};
+    var q1=document.getElementById('v6349ShowQueue'); if(q1) q1.onclick=function(ev){ev.preventDefault(); showQueue();};
+    var q2=document.getElementById('v6349SendQueue'); if(q2) q2.onclick=function(ev){ev.preventDefault(); sendQueue();};
   }
   function closeForm(){
     var modal=document.getElementById('v6349Modal');
@@ -577,17 +607,8 @@ async function handleSubmit(ev){
   }
 
   function addMorePanel(){
-    var more=document.getElementById('more');
-    if(!more || document.getElementById('v6349MorePanel')) return;
-    var div=document.createElement('div');
-    div.id='v6349MorePanel';
-    div.className='card';
-    div.style.borderTop='5px solid #00B91F';
-    div.innerHTML='<h3>'+esc(T('openChurchBtn'))+'</h3><p>'+esc(T('intro'))+'</p><div class="v6349-actions"><button type="button" class="btn primary" id="v6349OpenFromMore">'+esc(T('openBtn'))+'</button><button type="button" class="btn secondary" id="v6349SendFromMore">'+esc(T('sendQueued'))+'</button></div>';
-    var footer=more.querySelector('.footer');
-    more.insertBefore(div, footer || null);
-    document.getElementById('v6349OpenFromMore').onclick=function(ev){ev.preventDefault(); openForm();};
-    document.getElementById('v6349SendFromMore').onclick=function(ev){ev.preventDefault(); openForm(); setTimeout(sendQueue,200);};
+    // V63.88: Registration panel must not be inserted in More. Admin requests live only inside School Admin.
+    return;
   }
 
   function render(){

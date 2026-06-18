@@ -1,9 +1,8 @@
-/* OmideNo7 V63.92 - Auth Access + Smart Form Rules */
+/* OmideNo7 V63.92B - Meeting Access Button Only */
 (function(){
 'use strict';
 
 const TABLE='access_requests';
-const MEETING_CODE='789987';
 
 function sb(){
   return window.supabaseClient || window.SUPABASE_CLIENT || window.omideno7Supabase || window.OMIDENO7_SUPABASE || window.sb || null;
@@ -18,34 +17,37 @@ function lang(){
 
 const TXT={
  fa:{
-  pending:'درخواست شما ثبت شده و در انتظار تأیید ادمین است.',
+  login:'برای دریافت لینک و کد جلسه، ابتدا باید ثبت‌نام کنید و وارد حساب خود شوید. پس از بررسی و تأیید ادمین، اطلاعات ورود به جلسه در همین اپلیکیشن برای شما نمایش داده می‌شود.',
+  pending:'درخواست شما ثبت شده و در انتظار تأیید ادمین است. پس از تأیید، لینک و کد جلسه در همین اپلیکیشن نمایش داده می‌شود.',
+  notFound:'برای دریافت لینک و کد جلسه، ابتدا فرم ثبت‌نام را تکمیل کنید. درخواست شما توسط ادمین بررسی می‌شود و پس از تأیید، اطلاعات ورود به جلسه در همین اپلیکیشن نمایش داده خواهد شد.',
+  rejected:'درخواست شما تأیید نشده است. لطفاً با کلیسا تماس بگیرید.',
   approved:'دسترسی شما تأیید شده است.',
-  loginRequired:'برای دیدن لینک و کد جلسه باید وارد حساب خود شوید.',
-  notApproved:'کد جلسه فقط بعد از تأیید ادمین نمایش داده می‌شود.',
-  badPhone:'لطفاً شماره تماس واقعی و معتبر وارد کنید.',
-  noPastor:'ندارم',
-  noIllness:'ندارم',
-  noCourse:'ندارم'
+  link:'لینک ورود به جلسه',
+  code:'کد امنیتی جلسه',
+  close:'بستن',
+  badPhone:'لطفاً شماره تماس واقعی و معتبر وارد کنید.'
  },
  en:{
-  pending:'Your request has been submitted and is waiting for admin approval.',
+  login:'To receive the meeting link and code, please register and log in first. After admin review and approval, the meeting access information will be shown inside this app.',
+  pending:'Your request has been submitted and is waiting for admin approval. After approval, the meeting link and code will be shown inside this app.',
+  notFound:'To receive the meeting link and code, please complete the registration form first. Your request will be reviewed by admin, and after approval the meeting access information will be shown inside this app.',
+  rejected:'Your request was not approved. Please contact the church.',
   approved:'Your access has been approved.',
-  loginRequired:'Please log in to see the meeting link and code.',
-  notApproved:'The meeting code is shown only after admin approval.',
-  badPhone:'Please enter a real and valid phone number.',
-  noPastor:'No pastor',
-  noIllness:'No illness',
-  noCourse:'No course'
+  link:'Meeting link',
+  code:'Meeting security code',
+  close:'Close',
+  badPhone:'Please enter a real and valid phone number.'
  },
  hr:{
-  pending:'Vaš zahtjev je poslan i čeka odobrenje administratora.',
+  login:'Za primanje linka i koda za sastanak najprije se registrirajte i prijavite u svoj račun. Nakon pregleda i odobrenja administratora, podaci za ulazak u sastanak prikazat će se u ovoj aplikaciji.',
+  pending:'Vaš zahtjev je poslan i čeka odobrenje administratora. Nakon odobrenja, link i kod za sastanak prikazat će se u ovoj aplikaciji.',
+  notFound:'Za primanje linka i koda za sastanak najprije ispunite registracijski obrazac. Administrator će pregledati zahtjev i nakon odobrenja podaci za ulazak bit će prikazani u ovoj aplikaciji.',
+  rejected:'Vaš zahtjev nije odobren. Kontaktirajte crkvu.',
   approved:'Vaš pristup je odobren.',
-  loginRequired:'Prijavite se kako biste vidjeli link i kod sastanka.',
-  notApproved:'Kod sastanka prikazuje se tek nakon odobrenja administratora.',
-  badPhone:'Unesite stvaran i ispravan broj telefona.',
-  noPastor:'Nemam pastora',
-  noIllness:'Nemam bolest',
-  noCourse:'Nisam pohađao/la tečaj'
+  link:'Link za sastanak',
+  code:'Sigurnosni kod',
+  close:'Zatvori',
+  badPhone:'Unesite stvaran i ispravan broj telefona.'
  }
 };
 
@@ -58,165 +60,124 @@ async function currentUser(){
   return r?.data?.user||null;
 }
 
-async function accessStatus(email){
+async function getAccess(email){
   const c=sb();
   if(!c||!c.from||!email) return null;
-  const r=await c.from(TABLE).select('*').eq('email',email.toLowerCase()).order('created_at',{ascending:false}).limit(1);
+  const r=await c.from(TABLE)
+    .select('*')
+    .eq('email',email.toLowerCase())
+    .order('created_at',{ascending:false})
+    .limit(1);
   if(r.error||!r.data||!r.data[0]) return null;
-  return r.data[0].status||'pending';
+  return r.data[0];
+}
+
+function modal(html){
+  let m=document.getElementById('v6392bMeetingModal');
+  if(!m){
+    m=document.createElement('div');
+    m.id='v6392bMeetingModal';
+    m.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:18px;';
+    document.body.appendChild(m);
+  }
+  m.innerHTML='<div style="max-width:520px;width:100%;background:#fff;border-radius:22px;padding:22px;line-height:1.8;font-weight:800;color:#102044;box-shadow:0 18px 60px rgba(0,0,0,.25);direction:inherit">'+html+'<div style="margin-top:16px;text-align:center"><button id="v6392bClose" style="border:0;border-radius:14px;padding:10px 22px;background:#06146d;color:white;font-weight:900">'+t('close')+'</button></div></div>';
+  document.getElementById('v6392bClose').onclick=function(){m.remove();};
+}
+
+function showMessage(msg){
+  modal('<div>'+msg+'</div>');
+}
+
+function showApproved(){
+  modal(
+    '<div style="font-size:20px;color:#06146d;margin-bottom:10px">'+t('approved')+'</div>'+
+    '<div><b>'+t('link')+':</b><br><a href="https://fccdl.in/i/omideno7church" target="_blank" rel="noopener">https://fccdl.in/i/omideno7church</a></div>'+
+    '<div style="margin-top:12px"><b>'+t('code')+':</b> 789987</div>'
+  );
+}
+
+function hideVisibleMeetingCodes(){
+  document.querySelectorAll('section,article,div,.card,.box,.panel').forEach(el=>{
+    if(el.id==='v6392bMeetingModal') return;
+    const tx=el.innerText||'';
+    if((tx.includes('789987')||tx.includes('fccdl.in/i/omideno7church')) && el.children.length<50){
+      el.style.display='none';
+      el.setAttribute('data-v6392b-hidden-meeting','1');
+    }
+  });
+}
+
+function isMeetingButton(el){
+  if(!el) return false;
+  const tx=((el.innerText||el.textContent||'')+' '+(el.getAttribute('aria-label')||'')+' '+(el.className||'')).toLowerCase();
+  return tx.includes('fcc') ||
+    tx.includes('ورود به جلسه') ||
+    tx.includes('جلسه') ||
+    tx.includes('join meeting') ||
+    tx.includes('meeting') ||
+    tx.includes('sastanak');
+}
+
+async function handleMeetingClick(ev){
+  const btn=ev.target.closest('button,a,.btn,.card,div');
+  if(!isMeetingButton(btn)) return;
+
+  ev.preventDefault();
+  ev.stopImmediatePropagation();
+
+  hideVisibleMeetingCodes();
+
+  const u=await currentUser();
+  if(!u||!u.email){
+    showMessage(t('login'));
+    return;
+  }
+
+  const row=await getAccess(u.email);
+  if(!row){
+    showMessage(t('notFound'));
+    return;
+  }
+
+  const status=String(row.status||'pending').toLowerCase();
+
+  if(status==='approved'){
+    showApproved();
+  }else if(status==='rejected'){
+    showMessage(t('rejected'));
+  }else{
+    showMessage(t('pending'));
+  }
 }
 
 function validPhone(v){
-  const raw=String(v||'').trim();
-  const digits=raw.replace(/\D/g,'');
+  const digits=String(v||'').replace(/\D/g,'');
   if(digits.length<7||digits.length>15) return false;
   if(/^(\d)\1+$/.test(digits)) return false;
   if(['1234567','12345678','123456789','0000000','1111111'].includes(digits)) return false;
   return true;
 }
 
-function applyPhoneRules(){
-  document.querySelectorAll('input[type="tel"], input[name*="phone"], input[name*="mobile"], input[id*="phone"], input[id*="mobile"]').forEach(i=>{
-    i.setAttribute('minlength','7');
-    i.setAttribute('maxlength','20');
+function phoneRules(){
+  document.querySelectorAll('input[type="tel"],input[name*="phone"],input[id*="phone"],input[name*="mobile"],input[id*="mobile"]').forEach(i=>{
     i.setAttribute('autocomplete','tel');
     i.addEventListener('input',function(){
-      if(i.value && !validPhone(i.value)) i.setCustomValidity(t('badPhone'));
+      if(i.value&&!validPhone(i.value)) i.setCustomValidity(t('badPhone'));
       else i.setCustomValidity('');
     });
   });
 }
 
-function applyConditionalRules(){
-  document.querySelectorAll('select, input[type="radio"], input[type="checkbox"]').forEach(el=>{
-    el.addEventListener('change',updateConditionalRequired);
-  });
-  updateConditionalRequired();
-}
-
-function valueContainsNo(v){
-  v=String(v||'').toLowerCase();
-  return v.includes('no')||v.includes('ندار')||v.includes('nemam')||v.includes('ne');
-}
-
-function updateConditionalRequired(){
-  const all=[...document.querySelectorAll('input, select, textarea')];
-
-  const pastorAnswer=all.find(x=>
-    /pastor|shepherd|شبان|pastir/i.test((x.name||'')+(x.id||'')+(x.placeholder||''))
-    && (x.type==='radio'||x.tagName==='SELECT'||x.type==='checkbox')
-    && (x.checked||x.tagName==='SELECT')
-  );
-
-  const illnessAnswer=all.find(x=>
-    /illness|disease|sickness|بیمار|bolest/i.test((x.name||'')+(x.id||'')+(x.placeholder||''))
-    && (x.type==='radio'||x.tagName==='SELECT'||x.type==='checkbox')
-    && (x.checked||x.tagName==='SELECT')
-  );
-
-  const courseAnswer=all.find(x=>
-    /course|class|training|تعلیم|دوره|tečaj/i.test((x.name||'')+(x.id||'')+(x.placeholder||''))
-    && (x.type==='radio'||x.tagName==='SELECT'||x.type==='checkbox')
-    && (x.checked||x.tagName==='SELECT')
-  );
-
-  all.forEach(f=>{
-    const key=((f.name||'')+(f.id||'')+(f.placeholder||'')).toLowerCase();
-
-    if(/pastor_name|shepherd_name|نام شبان|pastir/i.test(key) && pastorAnswer && valueContainsNo(pastorAnswer.value)){
-      f.required=false; f.value='';
-    }
-
-    if(/illness_detail|disease_detail|نوع بیماری|توضیح بیماری|bolest/i.test(key) && illnessAnswer && valueContainsNo(illnessAnswer.value)){
-      f.required=false; f.value='';
-    }
-
-    if(/course_name|training_name|نام دوره|دوره تعلیمی|tečaj/i.test(key) && courseAnswer && valueContainsNo(courseAnswer.value)){
-      f.required=false; f.value='';
-    }
-  });
-}
-
-function findMeetingCodeBlocks(){
-  const blocks=[];
-  document.querySelectorAll('section, article, .card, .panel, .box, div').forEach(el=>{
-    if(el.id==='v6392AccessNotice') return;
-    const tx=el.innerText||'';
-    if(tx.includes(MEETING_CODE)||tx.includes('fccdl.in')||tx.includes('freeconferencecall')){
-      if(el !== document.body && el.children.length<40) blocks.push(el);
-    }
-  });
-  return blocks;
-}
-
-function notice(msg){
-  let n=document.getElementById('v6392AccessNotice');
-  if(!n){
-    n=document.createElement('div');
-    n.id='v6392AccessNotice';
-    n.style.cssText='margin:12px 0;padding:14px;border-radius:14px;background:#fff4cf;color:#5c4200;font-weight:900;line-height:1.7;';
-    const home=document.querySelector('#home')||document.querySelector('main')||document.body;
-    home.prepend(n);
-  }
-  n.textContent=msg;
-}
-
-async function protectMeetingCode(){
-  const u=await currentUser();
-  const blocks=findMeetingCodeBlocks();
-
-  if(!u||!u.email){
-    blocks.forEach(b=>b.style.display='none');
-    notice(t('loginRequired'));
-    return;
-  }
-
-  const st=await accessStatus(u.email);
-
-  if(st==='approved'){
-    blocks.forEach(b=>b.style.display='');
-    const n=document.getElementById('v6392AccessNotice');
-    if(n) n.remove();
-  }else{
-    blocks.forEach(b=>b.style.display='none');
-    notice(st==='pending'?t('pending'):t('notApproved'));
-  }
-}
-
-async function hideRequestFormIfAlreadySubmitted(){
-  const u=await currentUser();
-  if(!u||!u.email) return;
-  const st=await accessStatus(u.email);
-  if(!st) return;
-
-  document.querySelectorAll('form').forEach(f=>{
-    const tx=(f.innerText||f.outerHTML||'').toLowerCase();
-    if(tx.includes('meeting')||tx.includes('جلسه')||tx.includes('access')||tx.includes('کد')){
-      f.style.display='none';
-      let m=document.getElementById('v6392RequestStatus');
-      if(!m){
-        m=document.createElement('div');
-        m.id='v6392RequestStatus';
-        m.style.cssText='margin:12px 0;padding:14px;border-radius:14px;background:#eef7ff;border:1px solid #b6dcff;font-weight:900;line-height:1.7;';
-        f.parentNode.insertBefore(m,f.nextSibling);
-      }
-      m.textContent=st==='approved'?t('approved'):t('pending');
-    }
-  });
-}
-
 function boot(){
-  applyPhoneRules();
-  applyConditionalRules();
-  protectMeetingCode();
-  hideRequestFormIfAlreadySubmitted();
+  hideVisibleMeetingCodes();
+  phoneRules();
 }
 
-document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,900));
-window.addEventListener('load',()=>setTimeout(boot,1300));
-document.addEventListener('click',()=>setTimeout(boot,600),true);
-document.addEventListener('input',()=>setTimeout(()=>{applyPhoneRules();updateConditionalRequired();},200),true);
+document.addEventListener('click',handleMeetingClick,true);
+document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,300));
+window.addEventListener('load',()=>setTimeout(boot,500));
+setInterval(hideVisibleMeetingCodes,700);
 
-window.OMIDENO7_V6392_AUTH_ACCESS_RULES={boot,protectMeetingCode};
-console.log('OmideNo7 V63.92 loaded');
+window.OMIDENO7_V6392B_MEETING_ACCESS={boot,hideVisibleMeetingCodes};
+console.log('OmideNo7 V63.92B loaded');
 })();

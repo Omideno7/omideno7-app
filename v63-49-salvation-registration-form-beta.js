@@ -6,17 +6,14 @@
 (function(){
   'use strict';
 
-  var VERSION = 'V63.49D Registration Save Fix V4';
+  var VERSION = 'V63.49 In-App Salvation Registration Beta';
   var LOCAL_QUEUE_KEY = 'omideno7_v6349_registration_queue';
   var LOG_KEY = 'omideno7_v6349_registration_log';
-  var SUPABASE_URL = 'https://uibhpgcsgcievktxmcfg.supabase.co';
-  var SUPABASE_KEY = 'sb_publishable_clP99PgnpuT6a5MCyDfVWQ_e_7wWYrk';
-  var autoQueueTried = false;
 
   function isBeta(){
     return /beta\.html/i.test(location.pathname) || /v=6349|v=6348|v=6347|v=6346|v=6345|v=6344|v=6343|v=6342|v=6341/i.test(location.search);
   }
-  // V63.49C: active on main, beta, and test pages. Do not return early.
+  if(!isBeta()) return;
 
   function normalizeLang(v){
     v = String(v || '').toLowerCase().trim();
@@ -77,9 +74,9 @@
       close:'بستن',
       savedCloud:'فرم با موفقیت در کلود ثبت شد.',
       savedLocal:'فرم فعلاً در دستگاه ذخیره شد. وقتی اتصال کلود آماده باشد، می‌توانیم آن را ارسال کنیم.',
-      required:'لطفاً همه بخش‌های ضروری را کامل کنید.',
+      required:'همه فیلدها اجباری هستند.',
       invalidEmail:'ایمیل را درست وارد کنید.',
-      requiredHint:'همه فیلدها اجباری هستند. اگر موردی ندارید، بنویسید: ندارم.',
+      requiredHint:'لطفاً تمام سوالات را در کمال صداقت پاسخ دهید. ما اینجا برای کمک به شما هستیم.',
       openSaved:'نمایش فرم‌های ذخیره‌شده محلی',
       sendQueued:'ارسال فرم‌های ذخیره‌شده به کلود',
       localQueue:'فرم‌های ذخیره‌شده محلی',
@@ -135,9 +132,9 @@
       close:'Close',
       savedCloud:'The form was submitted to the cloud successfully.',
       savedLocal:'The form was saved on this device for now. When cloud connection is ready, it can be sent.',
-      required:'Please complete all required fields.',
+      required:'All fields are required.',
       invalidEmail:'Please enter a valid email.',
-      requiredHint:'All fields are required. If something does not apply, write: None.',
+      requiredHint:'Please answer all questions with complete honesty. We are here to help you.',
       openSaved:'Show locally saved forms',
       sendQueued:'Send saved forms to cloud',
       localQueue:'Locally saved forms',
@@ -193,9 +190,9 @@
       close:'Zatvori',
       savedCloud:'Obrazac je uspješno poslan u cloud.',
       savedLocal:'Obrazac je za sada spremljen na ovom uređaju. Kada cloud veza bude spremna, može se poslati.',
-      required:'Molimo ispunite sva obavezna polja.',
+      required:'Sva polja su obavezna.',
       invalidEmail:'Unesite ispravnu email adresu.',
-      requiredHint:'Sva polja su obavezna. Ako se nešto ne odnosi na vas, napišite: Nemam.',
+      requiredHint:'Molimo odgovorite na sva pitanja potpuno iskreno. Ovdje smo da vam pomognemo.',
       openSaved:'Prikaži lokalno spremljene obrasce',
       sendQueued:'Pošalji spremljene obrasce u cloud',
       localQueue:'Lokalno spremljeni obrasci',
@@ -239,12 +236,6 @@
         if(x && x.from && x.auth) return x;
       }catch(e){}
     }
-    try{
-      if(window.supabase && window.supabase.createClient){
-        window.omideno7Supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        return window.omideno7Supabase;
-      }
-    }catch(e){}
     return null;
   }
 
@@ -365,38 +356,6 @@
     if(modal) modal.remove();
   }
 
-
-  function finalBox(ok, title, message){
-    var modal=document.getElementById('v6349Modal');
-    if(!modal) return;
-    var box=modal.querySelector('.v6349-box');
-    if(!box) return;
-    box.innerHTML='<button type="button" class="v6349-x" aria-label="'+esc(T('close'))+'">×</button>'+
-      '<h2>'+esc(title)+'</h2>'+
-      '<div class="v6349-status '+(ok?'ok':'error')+'" style="font-size:16px;line-height:1.9">'+esc(message)+'</div>'+
-      '<div class="v6349-actions"><button type="button" class="btn primary" id="v6349FinalClose">'+esc(T('close'))+'</button></div>';
-    box.querySelector('.v6349-x').onclick=closeForm;
-    box.querySelector('#v6349FinalClose').onclick=closeForm;
-  }
-
-  function submitSuccessMessage(){
-    var l=lang();
-    return ({
-      fa:'ثبت‌نام شما واقعاً در سیستم کلیسا ثبت شد و اکنون در انتظار بررسی و تأیید ادمین است. پس از تأیید، راهنمای دسترسی و کد جلسه برای شما فعال خواهد شد.',
-      en:'Your registration was saved in the church system and is now waiting for admin review and approval. After approval, meeting access details will be enabled for you.',
-      hr:'Vaša registracija je spremljena u crkveni sustav i sada čeka pregled i odobrenje administratora. Nakon odobrenja, podaci za pristup sastanku bit će omogućeni.'
-    })[l] || 'Your registration was saved and is waiting for admin approval.';
-  }
-
-  function submitFailMessage(err){
-    var base={
-      fa:'ثبت‌نام در کلود انجام نشد. لطفاً این پیام خطا را برای ادمین بفرستید: ',
-      en:'Registration was not saved to the cloud. Please send this error to the admin: ',
-      hr:'Registracija nije spremljena u cloud. Pošaljite ovu grešku administratoru: '
-    }[lang()] || 'Registration was not saved: ';
-    return base + (err && (err.message || String(err)) || 'Unknown error');
-  }
-
   function collectForm(form){
     var fd=new FormData(form);
     var data={};
@@ -436,52 +395,23 @@
   }
 
   async function submitToCloud(data){
-    var sb = findClient();
+    var sb=findClient();
     if(!sb || !sb.from) throw new Error('Supabase client not available');
-
-    var firstName = String(data.first_name || '').trim();
-    var lastName = String(data.last_name || '').trim();
-    var fullName = (firstName + ' ' + lastName).trim();
-    var country = String(data.residence_country || data.origin || '').trim() || 'Unknown';
-    var noteParts = [
-      'Phone: ' + (data.phone || ''),
-      'Language: ' + (data.language || ''),
-      'Origin: ' + (data.origin || ''),
-      'Birth date: ' + (data.birth_date || ''),
-      'Salvation date: ' + (data.salvation_date || ''),
-      'Water baptism: ' + (data.water_baptism || ''),
-      'Pastor: ' + (data.pastor_name || ''),
-      'Marital status: ' + (data.marital_status || ''),
-      'Children: ' + (data.has_children || '') + ' / ' + (data.children_count || ''),
-      'Education: ' + (data.education || ''),
-      'Physical condition: ' + (data.physical_condition || ''),
-      'Health details: ' + (data.health_details || ''),
-      'Wants SMS: ' + (data.wants_sms || ''),
-      'Bible class before: ' + (data.bible_class_before || ''),
-      'Course details: ' + (data.course_details || ''),
-      'Source: ' + (data.source || VERSION)
-    ];
-
+    var user=await getUser(sb);
     var payload = {
-      full_name: fullName || data.email || 'Unknown',
-      email: String(data.email || '').trim().toLowerCase(),
-      country: country,
-      relationship: 'member',
-      reason: 'participate',
-      status: 'pending',
-      approved_role: null,
-      risk: 'normal',
-      owner_note: noteParts.join(' | ')
+      user_id: user ? user.id : null,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone: data.phone,
+      language: data.language,
+      status: 'new',
+      payload: data,
+      consent: true,
+      created_at: now()
     };
-
-    var r = await sb
-      .from('access_requests')
-      .insert(payload)
-      .select('id,email,status')
-      .single();
-
+    var r=await sb.from('church_member_registrations').insert(payload).select('id').single();
     if(r.error) throw r.error;
-    if(!r.data || !r.data.id) throw new Error('Registration did not return a saved id');
     return r.data;
   }
 
@@ -495,14 +425,13 @@
     try{
       setStatus(T('sending'),'warn');
       var res=await submitToCloud(data);
-      log('success','Saved to access_requests',{id:res && res.id, email:data.email});
+      setStatus(T('savedCloud'),'ok');
+      log('success',T('savedCloud'),{id:res && res.id, email:data.email});
       form.reset();
-      finalBox(true, T('savedCloud'), submitSuccessMessage());
     }catch(e){
-      var msg=submitFailMessage(e);
-      setStatus(msg,'error');
-      log('error','Registration save failed',{error:e.message||String(e), email:data.email});
-      try{ alert(msg); }catch(_e){}
+      queueAdd({id:'local_'+Date.now(), data:data, queued_at:now(), error:e.message||String(e)});
+      setStatus(T('savedLocal'),'warn');
+      log('warn',T('savedLocal'),{error:e.message||String(e), email:data.email});
     }
     return false;
   }
@@ -586,12 +515,7 @@
   function render(){
     css();
     replaceButtons();
-    addMorePanel();
-    // Try to rescue old local queued registrations after this fix is deployed.
-    if(!autoQueueTried && queueGet().length){
-      autoQueueTried = true;
-      setTimeout(function(){ try{ sendQueue(); }catch(e){} }, 2500);
-    }
+   // addMorePanel();
   }
 
   document.addEventListener('DOMContentLoaded',render);

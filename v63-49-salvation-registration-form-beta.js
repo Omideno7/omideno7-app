@@ -470,6 +470,7 @@
   function replaceButtons(){
     var candidates = Array.prototype.slice.call(document.querySelectorAll('button,a,[role="button"]'));
     candidates.forEach(function(el){
+      if (el.closest && el.closest('#schoolRegistration, #schoolLogin, #schoolSignup, #school, .school-card, .school-form')) return;
       if(el.dataset.v6349Bound === '1') return;
       var txt=(el.textContent||'').trim();
       var href=(el.getAttribute && (el.getAttribute('href')||'')) || '';

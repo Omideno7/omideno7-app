@@ -154,6 +154,7 @@
 
   document.addEventListener('submit', async function (e) {
     const form = e.target;
+    if (form && form.id === 'schoolRegistration') return;
     const formHtml = (form.outerHTML || '').toLowerCase();
 const btnText = Array.from(form.querySelectorAll('button')).map(b => b.textContent || '').join(' ').toLowerCase();
 

@@ -79,6 +79,18 @@ async function getAccessByEmail(email){
  return r.data[0];
 }
 
+ async function getSchoolAccessByEmail(email){
+ const c=sb();
+ if(!c||!c.from||!email) return null;
+ const r=await c.from('school_students')
+  .select('*')
+  .eq('email',String(email).trim().toLowerCase())
+  .order('registered_at',{ascending:false})
+  .limit(1);
+ if(r.error||!r.data||!r.data[0]) return null;
+ return r.data[0];
+}
+
 function statusOk(s){
  s=String(s||'').toLowerCase();
  return s==='approved'||s==='approve'||s==='accepted'||s==='active';
@@ -149,6 +161,27 @@ async function handleClick(ev){
  }
 
  if(!row){
+  const schoolRow=await getSchoolAccessByEmail(u.email);
+
+  if(schoolRow){
+    const schoolStatus=String(schoolRow.status||'pending_review').toLowerCase();
+
+    if(statusOk(schoolStatus)){
+      showApproved();
+      return;
+    }
+
+    if(schoolStatus==='pending_review'||schoolStatus==='pending'){
+      showMessage(t('pending'));
+      return;
+    }
+
+    if(schoolStatus==='rejected'){
+      showMessage(t('rejected'));
+      return;
+    }
+  }
+
   showMessage(t('notFound'));
   return;
  }
@@ -160,7 +193,12 @@ async function handleClick(ev){
  }else if(st==='rejected'){
   showMessage(t('rejected'));
  }else{
-  showMessage(t('pending'));
+  const schoolRow=await getSchoolAccessByEmail(u.email);
+  if(schoolRow && statusOk(schoolRow.status)){
+    showApproved();
+  }else{
+    showMessage(t('pending'));
+  }
  }
 }
 
